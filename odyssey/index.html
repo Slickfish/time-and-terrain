@@ -15,12 +15,12 @@
   //     the slow-burn orchestral builds suit "tense".
   //   Sea ambience loop (CC0 from freesound.org) as sfx.ambience.
   window.AUDIO_CONFIG = {
-    base: "audio/",
+    base: "audio/", fallback: false,   // fallback: false = never play the synthesised score, even if recordings fail
     tracks: [
+      { file: "the-fury.mp3", title: "Monomyth – The Fury", by: "Scott Buckley", license: "CC BY 4.0", moods: ["tense"] },
+      { file: "passage.mp3", title: "Passage", by: "Scott Buckley", license: "CC BY 4.0", moods: ["grief", "lonely"] },
       { file: "aphelion.mp3", title: "Aphelion", by: "Scott Buckley", license: "CC BY 4.0", moods: ["lonely"] },
       { file: "palera-seikilos-lyre.mp3", title: "Seikilos Epitaph with the Lyre of Apollo", by: "Lina Palera (Lyre 2.0 Project)", license: "CC BY-NC-SA 3.0", moods: ["calm", "lonely", "home"], gain: 0.9 },
-      { file: "passage.mp3", title: "Passage", by: "Scott Buckley", license: "CC BY 4.0", moods: ["grief", "lonely"] },
-      { file: "the-fury.mp3", title: "Monomyth \u2013 The Fury", by: "Scott Buckley", license: "CC BY 4.0", moods: ["tense"] },
       { file: "with-these-hands.mp3", title: "With These Hands", by: "Scott Buckley", license: "CC BY 4.0", moods: ["home"] }
     ],
     sfx: { ambience: ["sea-and-waves.mp3"] }
@@ -365,7 +365,7 @@ body{ font-size:17px; font-weight:500; }
       <label for="musicVol">Volume</label> <input type="range" id="musicVol" min="0" max="100" value="55" aria-label="Music volume">
       <div class="mrow"><button type="button" id="musicMute" class="tbtn" aria-pressed="false">Mute</button><button type="button" id="musicOff" class="tbtn">Turn off</button></div>
       <div id="musicNow" class="lnote" style="margin-bottom:6px"></div>
-      <div class="lnote">Recordings play from the audio folder when present; otherwise an original score composed live by the page: lyre, aulos drone, wordless chant, frame drum and the sea, in the ancient Greek Dorian mode. The music changes with the story. Nothing is sampled or copied.</div>
+      <div class="lnote">Recorded music chosen by the mood of each episode, with the sea underneath. Credits for the track playing are shown above.</div>
     </div>
     <div id="cards" aria-label="The story: episodes in progress"></div>
     <button id="readNext" class="tbtn" type="button" hidden>Continue the story ▸</button>
@@ -2129,6 +2129,7 @@ function musicMood() {
 function musicSchedule() {
   const ctx = MUSIC.ctx; if (!ctx || !MUSIC.on) return;
   const now = ctx.currentTime;
+  if (MUSIC.sfxOnly) return;
   if (now - MUSIC.lastMoodCheck > 1) {
     MUSIC.lastMoodCheck = now; const m = musicMood();
     if (m !== MUSIC.mood) { MUSIC.mood = m; const md = MOODS[m]; MUSIC.nodes.drumG.gain.setTargetAtTime(md.drum, now, 2); MUSIC.nodes.droneG.gain.setTargetAtTime(md.drone, now, 4); MUSIC.nodes.seaG.gain.setTargetAtTime(md.sea, now, 4); }
@@ -2173,7 +2174,7 @@ window.addEventListener("load", () => setTimeout(musicUI, 50));
 //  otherwise from the synthesised fallback. If no tracks are configured, the generative score plays.
 //  Configure in the page header: window.AUDIO_CONFIG = { base, tracks: [...], sfx: {...} }
 // ============================================================================
-const PL = { on: false, cur: null, prev: null, els: [], idx: 0, history: [], startedAt: 0, mood: null, timer: null, buffers: {}, ready: false, loadErrors: 0 };
+const PL = { on: false, cur: null, prev: null, els: [], idx: 0, history: [], startedAt: 0, mood: null, timer: null, buffers: {}, ready: false, loadErrors: 0, failed: [] };
 const _genStart = musicStart, _genStop = musicStop, _genVol = musicApplyVolume;
 function plConfig() { return window.AUDIO_CONFIG || { tracks: [], sfx: {} }; }
 function plHas() { const c = plConfig(); return Array.isArray(c.tracks) && c.tracks.length > 0 && PL.loadErrors < 3; }
@@ -2183,6 +2184,9 @@ musicStart = function () {
   if (!plHas()) return _genStart();
   musicSetup(); const ctx = MUSIC.ctx; if (ctx && ctx.state === "suspended") ctx.resume();
   MUSIC.on = true; MUSIC.sfxOnly = true; musicApplyVolume();
+  const N = MUSIC.nodes, t0 = ctx.currentTime;                     // recordings replace the synthesised beds entirely
+  ["droneG", "seaG", "windG"].forEach(k => { if (N[k]) { N[k].gain.cancelScheduledValues(t0); N[k].gain.setTargetAtTime(0, t0, 0.3); } });
+  ["seaLFOG", "windLFOG"].forEach(k => { if (N[k]) N[k].gain.value = 0; });
   if (typeof musicSchedule === "function" && !MUSIC.timer) { MUSIC.nextStep = ctx.currentTime + 0.5; MUSIC.timer = setInterval(musicSchedule, 100); }
   if (!PL.timer) PL.timer = setInterval(plTick, 500);
   plLoadSfx();
@@ -2224,7 +2228,7 @@ function plFade(el, to, secs, done) {
 }
 function plPlay(track) {
   const c = plConfig(), el = new Audio(); el.preload = "auto"; el.src = (c.base || "audio/") + track.file; el.loop = false; el.volume = 0; el._track = track; el._gain = track.gain || 1;
-  el.addEventListener("error", () => { PL.loadErrors++; console.warn("audio track failed to load:", el.src); if (PL.cur === el) { PL.cur = null; if (plHas()) plTick(true); else { PL.on = false; _genStart(); } } });
+  el.addEventListener("error", () => { PL.loadErrors++; PL.failed.push(track.file); console.warn("audio track failed to load:", el.src); plCredit(); if (PL.cur === el) { PL.cur = null; if (plHas()) plTick(true); else if (plConfig().fallback === false) { PL.on = false; plCredit(); } else { PL.on = false; MUSIC.sfxOnly = false; _genStart(); plCredit(); } } });
   el.addEventListener("ended", () => { if (PL.cur === el) { PL.cur = null; plTick(true); } });
   const p = el.play(); if (p && p.catch) p.catch(err => console.warn("playback blocked:", err.message));
   const old = PL.cur; PL.cur = el; PL.els.push(el); PL.startedAt = performance.now();
@@ -2249,7 +2253,9 @@ function plTick(force) {
 function plCredit() {
   const box = $("#musicNow"); if (!box) return;
   const t = PL.cur && PL.cur._track;
-  box.innerHTML = t ? `<b>Now playing:</b> ${esc(t.title || t.file)}${t.by ? " — " + esc(t.by) : ""}${t.license ? ` <span class="lnote">(${esc(t.license)})</span>` : ""}` : (plHas() ? "" : "<b>Generated score</b> — no recordings found in the audio folder.");
+  const base = new URL((plConfig().base || "audio/"), location.href).href;
+  const failed = PL.failed.length ? `<div class="lnote" style="color:#9E2B25">Could not load: ${PL.failed.map(esc).join(", ")}<br>Looked in: ${esc(base)}</div>` : "";
+  box.innerHTML = (t ? `<b>Now playing:</b> ${esc(t.title || t.file)}${t.by ? " — " + esc(t.by) : ""}${t.license ? ` <span class="lnote">(${esc(t.license)})</span>` : ""}` : (plHas() ? "" : plConfig().fallback === false ? "<b>No music</b> — the recordings could not be loaded." : "<b>Generated score</b> — the recordings could not be loaded.")) + failed;
 }
 
 // ---- sampled effects (optional); the synthesised versions remain the fallback
