@@ -861,7 +861,10 @@ async function initGlobe() {
     opts.terrain = C.Terrain.fromWorldTerrain({ requestVertexNormals: true });
     opts.baseLayer = C.ImageryLayer.fromProviderAsync(C.IonImageryProvider.fromAssetId(3954));   // Sentinel-2 cloudless (ion)
   } else {
-    opts.baseLayer = C.ImageryLayer.fromProviderAsync(C.TileMapServiceImageryProvider.fromUrl(C.buildModuleUrl("Assets/Textures/NaturalEarthII")));
+    // No ion token: EOX Sentinel-2 cloudless (free for non-commercial use with attribution), 10 m imagery, flat globe
+    opts.baseLayer = new C.ImageryLayer(new C.UrlTemplateImageryProvider({
+      url: "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2020_3857/default/g/{z}/{y}/{x}.jpg", maximumLevel: 14, tileWidth: 256, tileHeight: 256,
+      credit: new C.Credit('<a href="https://s2maps.eu" target="_blank" rel="noopener">Sentinel-2 cloudless</a> by <a href="https://eox.at" target="_blank" rel="noopener">EOX IT Services GmbH</a> (Contains modified Copernicus Sentinel data 2020)', true) }));
   }
   const viewer = new C.Viewer("gl", opts);
   SC.viewer = viewer; SC.scene = viewer.scene; SC.camera = viewer.camera; SC.useIon = useIon;
@@ -875,7 +878,7 @@ async function initGlobe() {
   viewer.resolutionScale = Math.min(window.devicePixelRatio || 1, MOBILE ? 1.5 : 2) / (window.devicePixelRatio || 1);
   // muted, sepia-leaning imagery so the modern land cover reads as background, not as the subject
   const base = viewer.imageryLayers.get(0);
-  base.saturation = useIon ? 0.35 : 0.45; base.brightness = 1.06; base.contrast = 1.05; base.gamma = 1.05;
+  base.saturation = 0.38; base.brightness = 1.06; base.contrast = 1.05; base.gamma = 1.05;
   const tint = document.createElement("canvas"); tint.width = tint.height = 4; const tx = tint.getContext("2d"); tx.fillStyle = "#C9A66B"; tx.fillRect(0, 0, 4, 4);
   const tintLayer = new C.ImageryLayer(new C.SingleTileImageryProvider({ url: tint.toDataURL(), tileWidth: 4, tileHeight: 4 }));
   tintLayer.alpha = 0.16; viewer.imageryLayers.add(tintLayer);
@@ -1224,7 +1227,7 @@ function buildLegend() {
     ${tg("lyRoute", "Alexander's route", true)}${tg("lyCols", "Other columns", true)}${tg("lyFleets", "Fleets", true)}
     ${tg("lyBattle", "Battles and sieges", true)}${tg("lyFound", "Cities founded", true)}${tg("lyCourt", "Court, cult and deaths", true)}${tg("lyPass", "Marches and crossings", true)}
     ${tg("lyPast", "Earlier events stay on the globe", true)}${tg("lyTraces", "Keep faded route traces", true)}${tg("lyPlaces", "Ancient place names", true)}${tg("lyRegions", "Satrapies and regions", true)}
-    <div class="lnote">${SC.useIon ? "Terrain and imagery: Cesium World Terrain and Sentinel-2 via Cesium ion." : "No Cesium ion token set: flat globe with Natural Earth II imagery. Add a token in the page header for real terrain."} Satellite imagery shows today's coasts and rivers; Tyre, for instance, was an island until Alexander's mole.</div>`;
+    <div class="lnote">${SC.useIon ? "Terrain and imagery: Cesium World Terrain and Sentinel-2 via Cesium ion." : "Imagery: Sentinel-2 cloudless by EOX. No Cesium ion token is set, so the globe is flat; add a token in the page header for real terrain."} Satellite imagery shows today's coasts and rivers; Tyre, for instance, was an island until Alexander's mole.</div>`;
   const bind = (id, fn) => $(id).addEventListener("change", e => fn(e.target.checked));
   bind("#lyRoute", v => ST.layers.route = v); bind("#lyCols", v => ST.layers.columns = v); bind("#lyFleets", v => ST.layers.fleets = v);
   bind("#lyBattle", v => { ST.layers.battle = v; ST.layers.siege = v; }); bind("#lyFound", v => ST.layers.foundation = v);
