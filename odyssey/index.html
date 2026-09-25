@@ -4,6 +4,28 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>The Wanderings of Odysseus — an interactive chart of Homer's Odyssey</title>
+<script>
+  // ---- RECORDED MUSIC (optional) --------------------------------------------------------------
+  // Put audio files in a folder named "audio" next to this page and list them here. Moods the chart
+  // reports: calm, lonely, tense, grief, home. Suggested sources (check each licence before use):
+  //   Lina Palera, "Seikilos Epitaph with the Lyre of Apollo" (14:51, real lyre; CC BY-NC-SA 3.0):
+  //     https://freemusicarchive.org/music/The_Music_of_Ancient_Greece/An_Appreciation
+  //   Scott Buckley's cinematic library (CC BY 4.0, credit required): https://www.scottbuckley.com.au/library/mood/emotional/
+  //     and https://www.scottbuckley.com.au/library/mood/epic/  — solo-cello and string pieces suit "lonely"/"grief",
+  //     the slow-burn orchestral builds suit "tense".
+  //   Sea ambience loop (CC0 from freesound.org) as sfx.ambience.
+  window.AUDIO_CONFIG = {
+    base: "audio/",
+    tracks: [
+      { file: "aphelion.mp3", title: "Aphelion", by: "Scott Buckley", license: "CC BY 4.0", moods: ["lonely"] },
+      { file: "palera-seikilos-lyre.mp3", title: "Seikilos Epitaph with the Lyre of Apollo", by: "Lina Palera (Lyre 2.0 Project)", license: "CC BY-NC-SA 3.0", moods: ["calm", "lonely", "home"], gain: 0.9 },
+      { file: "with-these-hands.mp3", title: "With These Hands", by: "Scott Buckley", license: "CC BY 4.0", moods: ["home"] },
+      { file: "the-fury.mp3", title: "Monomyth \u2013 The Fury", by: "Scott Buckley", license: "CC BY 4.0", moods: ["tense"] },
+      { file: "passage.mp3", title: "Passage", by: "Scott Buckley", license: "CC BY 4.0", moods: ["grief", "lonely"] }
+    ],
+    sfx: { ambience: ["564437__fester993__ambience-sea-and-waves.wav"] }
+  };
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
@@ -342,7 +364,8 @@ body{ font-size:17px; font-weight:500; }
     <div id="musicPop" hidden>
       <label for="musicVol">Volume</label> <input type="range" id="musicVol" min="0" max="100" value="55" aria-label="Music volume">
       <div class="mrow"><button type="button" id="musicMute" class="tbtn" aria-pressed="false">Mute</button><button type="button" id="musicOff" class="tbtn">Turn off</button></div>
-      <div class="lnote">An original score composed live by the page: lyre, aulos drone, wordless chant, frame drum and the sea, in the ancient Greek Dorian mode. The music changes with the story. Nothing is sampled or copied.</div>
+      <div id="musicNow" class="lnote" style="margin-bottom:6px"></div>
+      <div class="lnote">Recordings play from the audio folder when present; otherwise an original score composed live by the page: lyre, aulos drone, wordless chant, frame drum and the sea, in the ancient Greek Dorian mode. The music changes with the story. Nothing is sampled or copied.</div>
     </div>
     <div id="cards" aria-label="The story: episodes in progress"></div>
     <button id="readNext" class="tbtn" type="button" hidden>Continue the story ▸</button>
@@ -1623,7 +1646,7 @@ function buildAbout() {
     <p><b>Event order</b> shows things as they happened. <b>Story order</b> follows the poem: Telemachus first, then Calypso and the Phaeacians, then the wanderings told in flashback in Books 9 to 12, then Ithaca. In story order the wakes are drawn as Odysseus tells them.</p>
     <p>Of the episodes shown: ${counts}.</p>
     <h3>The music</h3>
-    <p>The score is composed live by the page each time it plays: a lyre synthesised as a plucked string, an aulos-like drone on the tonic and fifth, a wordless chant, a frame drum and the sea, all in the ancient Greek Dorian mode (E–F–G–A–B–C–D, the modern Phrygian). Phrases are generated as the story runs and the mood follows the episode: sparse and lonely on Ogygia, a drum under the fighting, a lament in the land of the dead. Nothing is sampled or copied from any recording or film score. The volume is under the Music button; M toggles it.</p>
+    <p>When the audio folder holds recordings, the chart plays them, chosen by the mood of the episode and crossfaded, and credits them under the Music button. Without recordings, a score is composed live by the page each time it plays: a lyre synthesised as a plucked string, an aulos-like drone on the tonic and fifth, a wordless chant, a frame drum and the sea, all in the ancient Greek Dorian mode (E–F–G–A–B–C–D, the modern Phrygian). Phrases are generated as the story runs and the mood follows the episode: sparse and lonely on Ogygia, a drum under the fighting, a lament in the land of the dead. Nothing is sampled or copied from any recording or film score. The volume is under the Music button; M toggles it.</p>
     <h3>Sources</h3>${srcHTML(Object.keys(SOURCES))}
     <h3>Using the exhibit</h3>
     <p>Reading mode (on by default) pauses at every episode so the card can be read in full; press Continue or Enter to sail on, or switch it off to let the story run. Press Play to sail; the camera follows the action. Drag to pan, scroll or pinch to zoom, right-drag or two-finger drag to tilt. Keyboard: Space plays or pauses, arrow keys nudge the story (Shift: next episode), G toggles guided view, Esc closes panels. The address bar holds a link to the current moment.</p>`;
@@ -2110,6 +2133,7 @@ function musicSchedule() {
     MUSIC.lastMoodCheck = now; const m = musicMood();
     if (m !== MUSIC.mood) { MUSIC.mood = m; const md = MOODS[m]; MUSIC.nodes.drumG.gain.setTargetAtTime(md.drum, now, 2); MUSIC.nodes.droneG.gain.setTargetAtTime(md.drone, now, 4); MUSIC.nodes.seaG.gain.setTargetAtTime(md.sea, now, 4); }
   }
+  if (MUSIC.sfxOnly) return;
   const md = MOODS[MUSIC.mood], beat = 60 / md.bpm;
   while (MUSIC.nextBeat < now + 0.4) {
     const when = MUSIC.nextBeat;
@@ -2142,6 +2166,112 @@ function musicUI() {
   document.addEventListener("visibilitychange", () => { if (MUSIC.ctx && MUSIC.on) { if (document.hidden) MUSIC.ctx.suspend(); else MUSIC.ctx.resume(); } });
 }
 window.addEventListener("load", () => setTimeout(musicUI, 50));
+
+// ============================================================================
+//  Part 6: recorded music. Plays real recordings from the exhibit's audio/ folder, chosen by the mood
+//  of the moment and crossfaded, with credits. Sound effects come from sample files when present,
+//  otherwise from the synthesised fallback. If no tracks are configured, the generative score plays.
+//  Configure in the page header: window.AUDIO_CONFIG = { base, tracks: [...], sfx: {...} }
+// ============================================================================
+const PL = { on: false, cur: null, prev: null, els: [], idx: 0, history: [], startedAt: 0, mood: null, timer: null, buffers: {}, ready: false, loadErrors: 0 };
+const _genStart = musicStart, _genStop = musicStop, _genVol = musicApplyVolume;
+function plConfig() { return window.AUDIO_CONFIG || { tracks: [], sfx: {} }; }
+function plHas() { const c = plConfig(); return Array.isArray(c.tracks) && c.tracks.length > 0 && PL.loadErrors < 3; }
+function plVol() { return MUSIC.muted || !MUSIC.on ? 0 : Math.pow(MUSIC.vol, 1.6); }
+
+musicStart = function () {
+  if (!plHas()) return _genStart();
+  musicSetup(); const ctx = MUSIC.ctx; if (ctx && ctx.state === "suspended") ctx.resume();
+  MUSIC.on = true; MUSIC.sfxOnly = true; musicApplyVolume();
+  if (typeof musicSchedule === "function" && !MUSIC.timer) { MUSIC.nextStep = ctx.currentTime + 0.5; MUSIC.timer = setInterval(musicSchedule, 100); }
+  if (!PL.timer) PL.timer = setInterval(plTick, 500);
+  plLoadSfx();
+  PL.on = true; plTick(true);
+  return true;
+};
+musicStop = function () {
+  if (!plHas()) return _genStop();
+  PL.on = false; MUSIC.on = false; musicApplyVolume();
+  PL.els.forEach(el => plFade(el, 0, 1.2, () => { try { el.pause(); } catch (e) {} }));
+  PL.cur = null; PL.mood = null;
+};
+musicApplyVolume = function () {
+  _genVol();
+  const v = plVol();
+  PL.els.forEach(el => { if (el === PL.cur) el.volume = v * (el._gain || 1); });
+  plCredit();
+};
+
+// ---- track selection
+function plMoodNow() {
+  if (typeof musicMood !== "function") return { mood: "calm", side: null };
+  const m = musicMood(); return typeof m === "string" ? { mood: m, side: null } : m;
+}
+function plPool(mood, side) {
+  const T = plConfig().tracks;
+  let pool = T.filter(t => (t.moods || ["any"]).includes(mood) && (!t.side || !side || t.side === side));
+  if (!pool.length) pool = T.filter(t => (t.moods || ["any"]).includes(mood));
+  if (!pool.length) pool = T.filter(t => (t.moods || ["any"]).includes("any"));
+  if (!pool.length) pool = T.slice();
+  const recent = PL.history.slice(-Math.min(3, Math.max(0, pool.length - 1)));
+  const fresh = pool.filter(t => !recent.includes(t.file));
+  return fresh.length ? fresh : pool;
+}
+function plFade(el, to, secs, done) {
+  const from = el.volume, t0 = performance.now();
+  const step = () => { const k = Math.min(1, (performance.now() - t0) / (secs * 1000)); el.volume = from + (to - from) * k; if (k < 1 && PL.on !== false) requestAnimationFrame(step); else if (done) done(); };
+  step();
+}
+function plPlay(track) {
+  const c = plConfig(), el = new Audio(); el.preload = "auto"; el.src = (c.base || "audio/") + track.file; el.loop = false; el.volume = 0; el._track = track; el._gain = track.gain || 1;
+  el.addEventListener("error", () => { PL.loadErrors++; console.warn("audio track failed to load:", el.src); if (PL.cur === el) { PL.cur = null; if (plHas()) plTick(true); else { PL.on = false; _genStart(); } } });
+  el.addEventListener("ended", () => { if (PL.cur === el) { PL.cur = null; plTick(true); } });
+  const p = el.play(); if (p && p.catch) p.catch(err => console.warn("playback blocked:", err.message));
+  const old = PL.cur; PL.cur = el; PL.els.push(el); PL.startedAt = performance.now();
+  PL.history.push(track.file); if (PL.history.length > 12) PL.history.shift();
+  plFade(el, plVol() * el._gain, 2.5);
+  if (old) plFade(old, 0, 3, () => { try { old.pause(); } catch (e) {} PL.els = PL.els.filter(x => x !== old); });
+  plCredit();
+}
+function plTick(force) {
+  if (!PL.on || !plHas()) return;
+  const now = plMoodNow(), moodKey = now.mood + ":" + (now.side || "");
+  const cur = PL.cur, playedFor = (performance.now() - PL.startedAt) / 1000;
+  const remaining = cur && isFinite(cur.duration) ? cur.duration - cur.currentTime : 999;
+  const moodChanged = PL.mood !== null && moodKey !== PL.mood && !(cur && (cur._track.moods || []).includes(now.mood));
+  if (!force && cur && playedFor < 6) { PL.mood = moodKey; return; }
+  if (force || !cur || remaining < 4 || (moodChanged && playedFor > 45)) {
+    const pool = plPool(now.mood, now.side);
+    if (pool.length) plPlay(pool[Math.floor(Math.random() * pool.length)]);
+  }
+  PL.mood = moodKey;
+}
+function plCredit() {
+  const box = $("#musicNow"); if (!box) return;
+  const t = PL.cur && PL.cur._track;
+  box.innerHTML = t ? `<b>Now playing:</b> ${esc(t.title || t.file)}${t.by ? " — " + esc(t.by) : ""}${t.license ? ` <span class="lnote">(${esc(t.license)})</span>` : ""}` : (plHas() ? "" : "<b>Generated score</b> — no recordings found in the audio folder.");
+}
+
+// ---- sampled effects (optional); the synthesised versions remain the fallback
+async function plLoadSfx() {
+  const c = plConfig(), ctx = MUSIC.ctx; if (!ctx || PL.ready || !c.sfx) return; PL.ready = true;
+  for (const [name, files] of Object.entries(c.sfx)) {
+    PL.buffers[name] = [];
+    for (const f of files) { try { const r = await fetch((c.base || "audio/") + f); if (!r.ok) throw new Error(r.status); const b = await ctx.decodeAudioData(await r.arrayBuffer()); PL.buffers[name].push(b); } catch (e) { console.warn("sfx not loaded:", f, e.message); } }
+  }
+  // ambient loop, if provided
+  if (PL.buffers.ambience && PL.buffers.ambience.length) {
+    const s = ctx.createBufferSource(); s.buffer = PL.buffers.ambience[0]; s.loop = true; const g = ctx.createGain(); g.gain.value = 0.35; s.connect(g).connect(MUSIC.nodes.master); s.start(); PL.ambience = s;
+  }
+}
+function plSample(name, when, vel = 0.8, rateJitter = 0.1) {
+  const list = PL.buffers[name]; if (!list || !list.length || !MUSIC.ctx) return false;
+  const ctx = MUSIC.ctx, s = ctx.createBufferSource(); s.buffer = list[Math.floor(Math.random() * list.length)]; s.playbackRate.value = 1 + (Math.random() - 0.5) * 2 * rateJitter;
+  const g = ctx.createGain(); g.gain.value = vel; const pan = ctx.createStereoPanner ? ctx.createStereoPanner() : null; if (pan) pan.pan.value = (Math.random() - 0.5) * 0.8;
+  s.connect(g); (pan ? g.connect(pan).connect(MUSIC.nodes.guns || MUSIC.nodes.master) : g.connect(MUSIC.nodes.guns || MUSIC.nodes.master)); s.start(when); return true;
+}
+if (typeof cannon === "function") { const _cannon = cannon; cannon = function (when, vel) { if (!plSample("cannon", when, vel, 0.12)) _cannon(when, vel); }; }
+if (typeof musket === "function") { const _musket = musket; musket = function (when, vel) { if (!plSample("musket", when, vel, 0.15)) _musket(when, vel); }; }
 
 
 </script>
