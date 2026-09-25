@@ -365,7 +365,7 @@ body{ font-size:17px; font-weight:500; }
       <label for="musicVol">Volume</label> <input type="range" id="musicVol" min="0" max="100" value="55" aria-label="Music volume">
       <div class="mrow"><button type="button" id="musicMute" class="tbtn" aria-pressed="false">Mute</button><button type="button" id="musicOff" class="tbtn">Turn off</button></div>
       <div id="musicNow" class="lnote" style="margin-bottom:6px"></div>
-      <div class="lnote">Recorded music chosen by the mood of each episode, with the sea underneath. Credits for the track playing are shown above.</div>
+      <div class="lnote">Recorded music chosen by the mood of each episode, with the sea underneath. Credits for the track playing are shown above. <span style="opacity:.6">Build 3 · recordings only</span></div>
     </div>
     <div id="cards" aria-label="The story: episodes in progress"></div>
     <button id="readNext" class="tbtn" type="button" hidden>Continue the story ▸</button>
@@ -2017,6 +2017,10 @@ function musicSetup() {
   N.dry = ctx.createGain(); N.dry.gain.value = 0.8;
   N.verb.connect(N.verbGain).connect(N.master); N.dry.connect(N.master);
   N.bus = ctx.createGain(); N.bus.gain.value = 2.6; N.bus.connect(N.dry); N.bus.connect(N.verb);
+  if (window.AUDIO_CONFIG && window.AUDIO_CONFIG.fallback === false) {   // recordings only: build no synthesised beds or instruments
+    N.lyreG = ctx.createGain(); N.voiceG = ctx.createGain(); N.drumG = ctx.createGain(); N.noSynth = true;
+    return true;
+  }
   // the sea: filtered noise breathing like swell
   const nb = ctx.createBuffer(1, sr * 4, sr); const nd = nb.getChannelData(0); for (let i = 0; i < nd.length; i++) nd[i] = Math.random() * 2 - 1;
   N.sea = ctx.createBufferSource(); N.sea.buffer = nb; N.sea.loop = true;
@@ -2046,6 +2050,7 @@ function musicStart() {
   const ctx = MUSIC.ctx; if (ctx.state === "suspended") ctx.resume();
   MUSIC.on = true; musicApplyVolume();
   const t = ctx.currentTime;
+  if (MUSIC.nodes.noSynth) return true;
   MUSIC.nodes.seaG.gain.setTargetAtTime(0.22, t, 3); MUSIC.nodes.droneG.gain.setTargetAtTime(0.16, t, 4);
   if (!MUSIC.timer) { MUSIC.nextBeat = t + 1.5; MUSIC.timer = setInterval(musicSchedule, 120); }
   return true;
@@ -2267,7 +2272,14 @@ async function plLoadSfx() {
   }
   // ambient loop, if provided
   if (PL.buffers.ambience && PL.buffers.ambience.length) {
-    const s = ctx.createBufferSource(); s.buffer = PL.buffers.ambience[0]; s.loop = true; const g = ctx.createGain(); g.gain.value = 0.35; s.connect(g).connect(MUSIC.nodes.master); s.start(); PL.ambience = s;
+    const s = ctx.createBufferSource(); s.buffer = PL.buffers.ambience[0]; s.loop = true; const g = ctx.createGain(); g.gain.value = 0.35; s.connect(g).connect(MUSIC.nodes.master); s.start(); PL.ambience = s; PL.ambGain = g;
+    const pop = $("#musicPop"), row = pop && pop.querySelector(".mrow");
+    if (pop && row && !$("#ambVol")) {
+      const lab = document.createElement("label"); lab.htmlFor = "ambVol"; lab.textContent = "Sea";
+      const r = document.createElement("input"); r.type = "range"; r.id = "ambVol"; r.min = 0; r.max = 100; r.value = 35; r.setAttribute("aria-label", "Sea ambience volume");
+      r.addEventListener("input", () => { g.gain.setTargetAtTime(+r.value / 100, ctx.currentTime, 0.1); });
+      pop.insertBefore(lab, row); pop.insertBefore(r, row);
+    }
   }
 }
 function plSample(name, when, vel = 0.8, rateJitter = 0.1) {
