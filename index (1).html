@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Time &amp; Terrain — interactive historical maps</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital@0;1&family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&display=swap" rel="stylesheet">
+<style>
+:root{ --bg:#E9DFC9; --panel:#F3EBD9; --ink:#231C15; --ink3:#6E614F; --rule:rgba(35,28,21,.3); --brass:#A8843F;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px); }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --bg:#15120E; --panel:#1E1914; --ink:#EDE3CC; --ink3:#A39478; --rule:rgba(237,227,204,.25); --brass:#C9A55A; } }
+:root[data-theme="dark"]{ --bg:#15120E; --panel:#1E1914; --ink:#EDE3CC; --ink3:#A39478; --rule:rgba(237,227,204,.25); --brass:#C9A55A; }
+*,*::before,*::after{ box-sizing:inherit; }
+html{ scroll-padding-top:env(safe-area-inset-top,0px); }
+body{ margin:0; background:var(--bg); color:var(--ink); font:18px/1.55 "EB Garamond", Georgia, serif; }
+main{ max-width:880px; margin:0 auto; padding:56px 24px 64px; }
+.kick{ font-family:"IM Fell English SC", Georgia, serif; letter-spacing:.16em; color:var(--ink3); font-size:14px; }
+h1{ font-family:"IM Fell English", Georgia, serif; font-weight:normal; font-size:clamp(40px, 7vw, 64px); line-height:1.05; margin:6px 0 12px; }
+.lede{ font-size:20px; color:var(--ink3); font-style:italic; max-width:640px; margin:0 0 36px; }
+.ex{ display:block; text-decoration:none; color:inherit; background:var(--panel); border:1px solid var(--rule); padding:22px 24px; margin:0 0 16px; position:relative; }
+.ex::before{ content:""; position:absolute; left:0; top:0; bottom:0; width:5px; background:var(--brass); }
+a.ex:hover, a.ex:focus-visible{ border-color:var(--brass); outline:none; }
+.ex h2{ font-family:"IM Fell English", Georgia, serif; font-weight:normal; font-size:28px; margin:2px 0 4px; }
+.ex p{ margin:0; }
+.ex .meta{ font-family:"IM Fell English SC", Georgia, serif; letter-spacing:.1em; font-size:13px; color:var(--ink3); }
+.ex.soon{ opacity:.7; }
+.ex.soon::before{ background:var(--rule); }
+footer{ margin-top:40px; border-top:1px solid var(--rule); padding-top:14px; font-size:15px; color:var(--ink3); }
+</style>
+</head>
+<body>
+<main>
+  <div class="kick">Interactive historical maps</div>
+  <h1>Time &amp; Terrain</h1>
+  <p class="lede">Campaigns and journeys told on a relief map, day by day, with every event linked to its sources.</p>
+
+  <a class="ex" href="revolutionary-war/">
+    <div class="meta">1775 – 1783 · Eastern North America</div>
+    <h2>The War for Independence</h2>
+    <p>180 events and 76 troop and fleet movements, with a timeline you can play, scrub or step through.</p>
+  </a>
+  <div class="ex soon" aria-disabled="true">
+    <div class="meta">334 – 323 BCE · Greece to the Indus · In preparation</div>
+    <h2>The Campaigns of Alexander</h2>
+  </div>
+  <div class="ex soon" aria-disabled="true">
+    <div class="meta">Legendary · The Mediterranean · In preparation</div>
+    <h2>The Wanderings of Odysseus</h2>
+  </div>
+
+  <footer>Code: MIT. Historical data and text: CC BY 4.0. Base cartography from Natural Earth (public domain).</footer>
+</main>
+</body>
+</html>
