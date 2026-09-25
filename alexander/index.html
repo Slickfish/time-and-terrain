@@ -1,0 +1,1528 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Campaigns of Alexander, 336–323 BC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&display=swap" rel="stylesheet">
+<script>
+  // ---- CONFIGURATION ------------------------------------------------------
+  // Paste a Cesium ion access token (https://ion.cesium.com/tokens) to enable
+  // Cesium World Terrain and satellite imagery. Create a token limited to
+  // "assets:read" for the assets you use, not your default token.
+  // Leave empty to run without ion: a flat globe with Natural Earth II imagery.
+  window.ION_TOKEN = "";
+  window.CESIUM_BASE_URL = "https://cesium.com/downloads/cesiumjs/releases/1.145/Build/Cesium/";
+</script>
+<script src="https://cesium.com/downloads/cesiumjs/releases/1.145/Build/Cesium/Cesium.js"></script>
+<link rel="stylesheet" href="https://cesium.com/downloads/cesiumjs/releases/1.145/Build/Cesium/Widgets/widgets.css">
+<style>:root{
+  --ink:#231C15; --ink-2:#4A3F33; --ink-3:#6E614F; --paper:#F1E8D4; --paper-2:#E6D9BC;
+  --panel:rgba(243,235,217,.94); --panel-solid:#F3EBD9; --rule:rgba(35,28,21,.28); --rule-strong:rgba(35,28,21,.55);
+  --brass:#A8843F; --brass-2:#8A6A2C; --gilt:#B8912F;
+  --mac:#5B2C83; --per:#1C6B8A; --loc:#B0782A; --neutral:#5B5246;
+  --mac-ui:#5B2C83; --per-ui:#1C6B8A; --pol-ui:#8A6A2C;
+  --scene:#C9BFA9; --shadow:0 10px 30px rgba(35,28,21,.28);
+  --focus:#B8912F;
+  --display:"IM Fell English", "IM FELL English", Georgia, "Times New Roman", serif;
+  --sc:"IM Fell English SC", "IM FELL English SC", Georgia, serif;
+  --body:"EB Garamond", Garamond, Georgia, "Times New Roman", serif;
+  --tl-h:206px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ink:#EDE3CC; --ink-2:#CDBF9F; --ink-3:#A39478; --paper:#2A231B; --paper-2:#231D16;
+    --panel:rgba(27,22,17,.93); --panel-solid:#1E1914; --rule:rgba(237,227,204,.2); --rule-strong:rgba(237,227,204,.45);
+    --brass:#C9A55A; --brass-2:#A8843F; --mac-ui:#B48BD9; --per-ui:#6FB3CF; --pol-ui:#C9A55A;
+    --scene:#15120E; --shadow:0 12px 34px rgba(0,0,0,.55);
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#EDE3CC; --ink-2:#CDBF9F; --ink-3:#A39478; --paper:#2A231B; --paper-2:#231D16;
+  --panel:rgba(27,22,17,.93); --panel-solid:#1E1914; --rule:rgba(237,227,204,.2); --rule-strong:rgba(237,227,204,.45);
+  --brass:#C9A55A; --brass-2:#A8843F; --mac-ui:#B48BD9; --per-ui:#6FB3CF; --pol-ui:#C9A55A;
+  --scene:#15120E; --shadow:0 12px 34px rgba(0,0,0,.55);
+}
+:root{ box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px); }
+html{ scroll-padding-top:env(safe-area-inset-top,0px); height:100%; }
+*,*::before,*::after{ box-sizing:inherit; }
+html,body{ margin:0; height:100%; }
+body{ background:var(--scene); color:var(--ink); font-family:var(--body); font-size:16px; overflow:hidden; -webkit-font-smoothing:antialiased; }
+button{ font:inherit; color:inherit; }
+a{ color:inherit; }
+:focus-visible{ outline:2px solid var(--focus); outline-offset:2px; }
+.sr-only{ position:absolute!important; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+
+#stage{ position:fixed; inset:0; }
+#gl{ position:absolute; inset:0; width:100%; height:100%; }
+#gl .cesium-viewer, #gl .cesium-viewer-cesiumWidgetContainer, #gl .cesium-widget, #gl .cesium-widget canvas{ width:100%; height:100%; }
+#gl .cesium-widget-credits{ display:none!important; }
+#credits{ position:absolute; right:10px; bottom:calc(var(--tl-h) + 4px); font-size:11px; color:var(--ink-3); opacity:.75; pointer-events:auto; max-width:50vw; text-align:right; }
+#credits a{ color:inherit; }
+#overlay{ position:absolute; inset:0; pointer-events:none; }
+#leaders{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; overflow:visible; }
+#labels{ position:absolute; inset:0; pointer-events:none; overflow:hidden; }
+
+/* ---------- map labels (towns, columns) ---------- */
+.town{ position:absolute; transform:translate(6px,-50%); font-family:var(--display); font-size:13px; color:#2b2219; white-space:nowrap;
+  text-shadow:0 0 3px #efe5cc,0 0 3px #efe5cc,0 0 2px #efe5cc; letter-spacing:.02em; }
+.prec{ font-family:var(--sc); font-size:12px; letter-spacing:.08em; color:var(--ink-3); }
+.town::before{ content:""; position:absolute; left:-9px; top:50%; width:5px; height:5px; margin-top:-2.5px; border:1px solid #2b2219; background:#efe5cc; border-radius:50%; }
+.town.r1{ font-size:15px; font-family:var(--sc); letter-spacing:.06em; }
+.col{ position:absolute; transform:translate(-50%,-150%); font-family:var(--sc); font-size:12.5px; letter-spacing:.05em; white-space:nowrap; padding:1px 6px 2px;
+  border-radius:2px; color:#F4ECD9; background:rgba(35,28,21,.82); border-left:3px solid var(--c,#555); box-shadow:0 2px 6px rgba(0,0,0,.25); }
+.col .ap{ opacity:.75; font-family:var(--body); font-style:italic; letter-spacing:0; margin-left:4px; }
+
+/* ---------- top-left cartouche ---------- */
+#cartouche{ position:absolute; left:max(16px, env(safe-area-inset-left,0px)); top:calc(14px + env(safe-area-inset-top,0px)); pointer-events:auto;
+  background:var(--panel); border:1px solid var(--rule-strong); box-shadow:var(--shadow); padding:12px 18px 12px; min-width:300px; max-width:420px; }
+#cartouche::before{ content:""; position:absolute; inset:4px; border:1px solid var(--rule); pointer-events:none; }
+#kicker{ font-family:var(--sc); font-size:13px; letter-spacing:.14em; color:var(--ink-3); }
+#dateBig{ font-family:var(--display); font-size:40px; line-height:1.05; margin:4px 0 2px; font-feature-settings:"lnum" 0; }
+#weekday{ font-family:var(--sc); font-size:13px; letter-spacing:.12em; color:var(--ink-3); }
+#phase{ font-family:var(--display); font-style:italic; font-size:18px; color:var(--ink-2); margin-top:6px; border-top:1px solid var(--rule); padding-top:6px; }
+#phase2{ font-size:14px; color:var(--ink-3); font-style:italic; }
+
+/* ---------- toolbar ---------- */
+#tools{ position:absolute; right:max(16px, env(safe-area-inset-right,0px)); top:calc(14px + env(safe-area-inset-top,0px)); display:flex; gap:6px; pointer-events:auto; flex-wrap:wrap; justify-content:flex-end; max-width:60vw; }
+.tbtn{ appearance:none; border:1px solid var(--rule-strong); background:var(--panel); box-shadow:var(--shadow); padding:7px 12px; cursor:pointer;
+  font-family:var(--sc); font-size:14px; letter-spacing:.08em; color:var(--ink); min-height:36px; }
+.tbtn:hover{ border-color:var(--brass); }
+.tbtn[aria-pressed="true"]{ background:var(--ink); color:var(--panel-solid); }
+#guideBtn{ display:none; }
+#guideBtn.show{ display:inline-block; background:var(--brass); color:#1b150f; border-color:var(--brass-2); }
+
+/* ---------- dispatch cards ---------- */
+#cards{ position:absolute; right:max(16px, env(safe-area-inset-right,0px)); top:calc(66px + env(safe-area-inset-top,0px)); bottom:calc(var(--tl-h) + 18px);
+  width:340px; display:flex; flex-direction:column; gap:10px; pointer-events:none; justify-content:flex-start; overflow:hidden; }
+.card{ pointer-events:auto; position:relative; background:var(--panel); border:1px solid var(--rule-strong); box-shadow:var(--shadow);
+  padding:10px 14px 11px 16px; cursor:pointer; text-align:left; width:100%; }
+.card::after{ content:""; position:absolute; left:0; top:0; bottom:0; width:5px; background:var(--c,var(--neutral)); }
+.card:hover{ border-color:var(--brass); }
+.card .meta{ font-family:var(--sc); font-size:12.5px; letter-spacing:.09em; color:var(--ink-3); display:flex; justify-content:space-between; gap:8px; }
+.card .ttl{ font-family:var(--display); font-size:21px; line-height:1.12; margin:3px 0 2px; }
+.card .pl{ font-style:italic; font-size:14.5px; color:var(--ink-2); }
+.card .sm{ font-size:15px; line-height:1.35; margin-top:5px; color:var(--ink); display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+.card .foot{ display:flex; align-items:center; gap:8px; margin-top:7px; font-size:13px; color:var(--ink-3); }
+.badge{ font-family:var(--sc); font-size:12px; letter-spacing:.08em; padding:1px 7px 2px; border:1px solid currentColor; border-radius:2px; white-space:nowrap; }
+.badge.A{ color:var(--mac-ui); } .badge.B{ color:var(--per-ui); } .badge.I,.badge.U{ color:var(--ink-3); } .badge.P{ color:var(--pol-ui); }
+.approx{ font-family:var(--sc); font-size:11.5px; letter-spacing:.06em; color:var(--brass-2); border:1px dashed var(--brass); padding:0 5px; border-radius:2px; }
+.flagimg{ height:14px; width:auto; border:1px solid rgba(0,0,0,.35); vertical-align:-2px; }
+
+/* ---------- timeline ---------- */
+#timeline{ position:absolute; left:0; right:0; bottom:0; height:calc(var(--tl-h) + env(safe-area-inset-bottom,0px)); padding-bottom:env(safe-area-inset-bottom,0px);
+  background:var(--panel-solid); border-top:1px solid var(--rule-strong); box-shadow:0 -8px 24px rgba(0,0,0,.18); pointer-events:auto; display:flex; flex-direction:column; }
+#tlTop{ display:flex; align-items:center; gap:10px; padding:8px 16px 4px; }
+#playBtn{ width:46px; height:46px; border-radius:50%; border:1px solid var(--brass-2); background:radial-gradient(circle at 35% 30%, #d9bb74, var(--brass) 55%, var(--brass-2)); cursor:pointer;
+  display:grid; place-items:center; box-shadow:0 2px 6px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.35); flex:0 0 auto; }
+#playBtn svg{ width:18px; height:18px; fill:#1b150f; }
+.speed{ display:flex; border:1px solid var(--rule-strong); }
+.speed button{ appearance:none; border:0; background:transparent; padding:5px 9px; cursor:pointer; font-family:var(--sc); font-size:13.5px; letter-spacing:.05em; color:var(--ink-2); min-height:32px; }
+.speed button[aria-pressed="true"]{ background:var(--ink); color:var(--panel-solid); }
+#tlDate{ font-family:var(--display); font-size:18px; min-width:150px; }
+#tlHint{ margin-left:auto; font-size:13.5px; color:var(--ink-3); font-style:italic; }
+.stepbtn{ appearance:none; border:1px solid var(--rule-strong); background:transparent; min-width:34px; min-height:32px; cursor:pointer; font-size:15px; color:var(--ink-2); }
+#tlBody{ position:relative; flex:1; margin:0 16px 8px 16px; }
+#tlCanvas{ position:absolute; inset:0; width:100%; height:100%; }
+#scrub{ position:absolute; left:var(--lane-w,120px); right:0; top:0; bottom:0; width:calc(100% - var(--lane-w,120px)); margin:0; background:transparent; -webkit-appearance:none; appearance:none; cursor:pointer; }
+#scrub::-webkit-slider-runnable-track{ height:100%; background:transparent; }
+#scrub::-moz-range-track{ height:100%; background:transparent; }
+#scrub::-webkit-slider-thumb{ -webkit-appearance:none; width:18px; height:100%; background:transparent; border:0; }
+#scrub::-moz-range-thumb{ width:18px; height:100%; background:transparent; border:0; }
+#scrub:focus-visible{ outline:2px solid var(--focus); outline-offset:1px; }
+#tlTip{ position:absolute; bottom:calc(100% + 6px); transform:translateX(-50%); background:var(--panel-solid); border:1px solid var(--rule-strong); padding:4px 8px; font-size:13.5px;
+  white-space:nowrap; pointer-events:none; display:none; box-shadow:var(--shadow); z-index:3; }
+
+/* ---------- legend ---------- */
+#legend{ position:absolute; left:max(16px, env(safe-area-inset-left,0px)); bottom:calc(var(--tl-h) + 14px); width:300px; pointer-events:auto; background:var(--panel);
+  border:1px solid var(--rule-strong); box-shadow:var(--shadow); font-size:14px; }
+#legend summary{ cursor:pointer; padding:7px 12px; font-family:var(--sc); letter-spacing:.1em; font-size:13.5px; list-style:none; display:flex; justify-content:space-between; }
+#legend summary::-webkit-details-marker{ display:none; }
+#legend summary::after{ content:"+"; }
+#legend[open] summary::after{ content:"–"; }
+#legend .lg{ padding:2px 12px 10px; max-height:46vh; overflow:auto; }
+.lrow{ display:flex; align-items:center; gap:8px; margin:4px 0; line-height:1.25; }
+.lrow svg,.lrow canvas{ flex:0 0 auto; }
+.lh{ font-family:var(--sc); letter-spacing:.08em; font-size:12.5px; color:var(--ink-3); margin:9px 0 3px; border-top:1px solid var(--rule); padding-top:6px; }
+.lnote{ font-size:13px; color:var(--ink-3); font-style:italic; line-height:1.3; }
+.toggle{ display:flex; align-items:center; gap:8px; margin:5px 0; cursor:pointer; }
+.toggle input{ accent-color:var(--brass); width:16px; height:16px; }
+
+/* ---------- beyond the map ---------- */
+#beyond{ position:absolute; left:max(16px, env(safe-area-inset-left,0px)); top:calc(210px + env(safe-area-inset-top,0px)); width:300px; pointer-events:auto; display:none; }
+#beyond.show{ display:block; }
+#beyond .bx{ background:var(--panel); border:1px solid var(--rule-strong); box-shadow:var(--shadow); padding:8px 12px 10px; }
+#beyond h3{ margin:0 0 4px; font-family:var(--sc); font-weight:normal; letter-spacing:.1em; font-size:12.5px; color:var(--ink-3); }
+#beyond button{ display:block; width:100%; text-align:left; appearance:none; border:0; border-top:1px solid var(--rule); background:none; padding:6px 0; cursor:pointer; }
+#beyond button:first-of-type{ border-top:0; }
+#beyond .bt{ font-family:var(--display); font-size:17px; }
+#beyond .bd{ font-size:13px; color:var(--ink-3); font-style:italic; }
+
+/* ---------- drawer & panels ---------- */
+.sheet{ position:absolute; top:0; right:0; bottom:0; width:min(480px, 100%); background:var(--panel-solid); border-left:1px solid var(--rule-strong); box-shadow:-10px 0 30px rgba(0,0,0,.3);
+  transform:translateX(105%); transition:transform .35s ease; pointer-events:auto; display:flex; flex-direction:column; z-index:10; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px); }
+.sheet.open{ transform:none; }
+.sheet header{ padding:16px 20px 10px; border-bottom:1px solid var(--rule); position:relative; }
+.sheet .x{ position:absolute; right:12px; top:12px; appearance:none; border:1px solid var(--rule-strong); background:transparent; width:36px; height:36px; cursor:pointer; font-size:20px; line-height:1; }
+.sheet .body{ padding:12px 20px 28px; overflow:auto; flex:1; font-size:16.5px; line-height:1.5; }
+.sheet h2{ font-family:var(--display); font-weight:normal; font-size:30px; line-height:1.1; margin:4px 40px 4px 0; }
+.sheet h3{ font-family:var(--sc); font-weight:normal; letter-spacing:.1em; font-size:13.5px; color:var(--ink-3); margin:18px 0 4px; border-top:1px solid var(--rule); padding-top:10px; }
+.sheet .kick{ font-family:var(--sc); letter-spacing:.1em; font-size:13px; color:var(--ink-3); }
+.sheet .sub{ font-style:italic; color:var(--ink-2); }
+.sheet dl{ display:grid; grid-template-columns:max-content 1fr; gap:3px 12px; margin:0; }
+.sheet dt{ font-family:var(--sc); letter-spacing:.06em; font-size:13.5px; color:var(--ink-3); padding-top:2px; }
+.sheet dd{ margin:0; }
+.src{ margin:8px 0; padding-left:10px; border-left:2px solid var(--rule-strong); font-size:15px; }
+.src a{ text-decoration-color:var(--brass); text-underline-offset:2px; }
+.src .role{ color:var(--ink-3); font-size:14px; }
+.ver{ font-size:14.5px; padding:6px 10px; border:1px solid var(--rule-strong); margin-top:6px; }
+.ver.k{ border-style:dashed; border-color:var(--brass); }
+.cas{ display:flex; gap:18px; }
+.cas div{ flex:1; } .cas b{ font-family:var(--display); font-weight:normal; font-size:26px; display:block; }
+.wp{ width:100%; border-collapse:collapse; font-size:14.5px; }
+.wp td{ border-top:1px solid var(--rule); padding:3px 4px; vertical-align:top; }
+.wp td:first-child{ white-space:nowrap; font-variant-numeric:tabular-nums; color:var(--ink-2); }
+.goto{ appearance:none; border:1px solid var(--brass); background:transparent; padding:5px 10px; cursor:pointer; font-family:var(--sc); letter-spacing:.06em; font-size:13.5px; margin-top:10px; }
+
+#index .search{ width:100%; padding:8px 10px; font:inherit; font-size:16px; border:1px solid var(--rule-strong); background:var(--paper); color:var(--ink); margin:8px 0; }
+#idxList{ list-style:none; margin:0; padding:0; }
+#idxList li{ border-top:1px solid var(--rule); }
+#idxList .yr{ font-family:var(--display); font-size:24px; border:0; margin-top:12px; }
+#idxList button{ appearance:none; border:0; background:none; width:100%; text-align:left; padding:6px 2px; cursor:pointer; display:grid; grid-template-columns:92px 1fr; gap:8px; }
+#idxList button:disabled{ cursor:default; opacity:.8; }
+#idxList .d{ font-variant-numeric:tabular-nums; color:var(--ink-3); font-size:14px; }
+#idxList .n{ font-size:15.5px; }
+#idxList .s{ display:block; font-size:13px; color:var(--ink-3); font-style:italic; }
+#idxList .mapped .n::before{ content:"◆ "; color:var(--brass); }
+
+#loading{ position:fixed; inset:0; display:grid; place-items:center; background:var(--scene); z-index:50; transition:opacity .6s; }
+#loading .lb{ text-align:center; color:var(--ink); }
+#loading .lt{ font-family:var(--display); font-size:34px; }
+#loading .ls{ font-family:var(--sc); letter-spacing:.14em; color:var(--ink-3); margin-top:8px; }
+#loading.done{ opacity:0; pointer-events:none; }
+#err{ position:fixed; left:50%; top:40%; transform:translate(-50%,-50%); max-width:520px; background:var(--panel-solid); border:1px solid var(--rule-strong); padding:20px; display:none; z-index:60; }
+
+#attract{ position:absolute; left:50%; top:calc(18px + env(safe-area-inset-top,0px)); transform:translateX(-50%); background:var(--ink); color:var(--panel-solid);
+  font-family:var(--sc); letter-spacing:.12em; padding:6px 14px; display:none; pointer-events:none; }
+#attract.show{ display:block; }
+
+/* ---------- responsive ---------- */
+@media (max-width: 900px){
+  :root{ --tl-h:150px; }
+  #cards{ left:12px; right:12px; width:auto; top:auto; bottom:calc(var(--tl-h) + 10px + env(safe-area-inset-bottom,0px)); flex-direction:column-reverse; }
+  #cards .card:nth-child(n+2){ display:none; }
+  .card .sm{ -webkit-line-clamp:2; }
+  #cartouche{ min-width:0; max-width:calc(100% - 140px); padding:8px 12px; }
+  #dateBig{ font-size:26px; }
+  #phase{ font-size:15px; }
+  #kicker{ font-size:11px; }
+  #legend{ display:none; }
+  #legend.mobile-open{ display:block; left:12px; right:12px; width:auto; bottom:calc(var(--tl-h) + 10px); z-index:9; background:var(--panel-solid); }
+  body:has(#legend.mobile-open) #cards{ visibility:hidden; }
+  #beyond{ display:none!important; }
+  #tools{ max-width:130px; flex-direction:column; align-items:flex-end; }
+  .tbtn{ padding:6px 9px; font-size:13px; }
+  #tlHint{ display:none; }
+  #tlTop{ padding:6px 10px 2px; gap:6px; }
+  #tlBody{ margin:0 10px 6px; }
+  #tlDate{ min-width:0; font-size:15px; }
+  .speed button{ padding:4px 6px; }
+}
+@media (prefers-reduced-motion: reduce){
+  .sheet{ transition:none; }
+}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="gl" role="img" aria-label="Three-dimensional globe showing the campaigns of Alexander the Great. Use the timeline controls below to move through time."></div>
+  <div id="overlay">
+    <div id="labels"></div>
+    <svg id="leaders" aria-hidden="true"></svg>
+
+    <div id="cartouche" aria-live="polite">
+      <div id="kicker">The Campaigns of Alexander · 336–323 BC</div>
+      <div id="dateBig">October 336 BC</div>
+      <div id="weekday">Julian calendar</div>
+      <div id="phase">Accession and the Balkan campaigns</div>
+      <div id="phase2"></div>
+    </div>
+
+    <div id="tools" role="toolbar" aria-label="Map tools">
+      <button class="tbtn" id="guideBtn" type="button">Return to guided view</button>
+      <button class="tbtn" id="modeBtn" type="button" aria-pressed="true" title="Guided: the camera follows the action. Explore: pan, zoom and tilt freely.">Guided</button>
+      <button class="tbtn" id="legendBtn" type="button" aria-expanded="false">Key</button>
+      <button class="tbtn" id="indexBtn" type="button">Chronicle</button>
+      <button class="tbtn" id="aboutBtn" type="button">Sources</button>
+    </div>
+
+    <div id="cards" aria-label="Dispatches: events in progress"></div>
+
+    <div id="beyond"><div class="bx"><h3>Meanwhile, elsewhere</h3><div id="beyondList"></div></div></div>
+
+    <details id="legend">
+      <summary>Key &amp; layers</summary>
+      <div class="lg" id="legendBody"></div>
+    </details>
+
+    <div id="attract">Touch the globe or timeline to explore</div>
+    <div id="credits"></div>
+
+    <section id="timeline" aria-label="Timeline">
+      <div id="tlTop">
+        <button id="playBtn" type="button" aria-label="Play"><svg viewBox="0 0 20 20" id="playIcon"><path d="M5 3 L17 10 L5 17 Z"/></svg></button>
+        <button class="stepbtn" id="backBtn" type="button" aria-label="Back one month">‹</button>
+        <button class="stepbtn" id="fwdBtn" type="button" aria-label="Forward one month">›</button>
+        <div class="speed" role="group" aria-label="Playback speed">
+          <button type="button" data-s="0.5" aria-pressed="false">½×</button>
+          <button type="button" data-s="1" aria-pressed="true">1×</button>
+          <button type="button" data-s="2" aria-pressed="false">2×</button>
+          <button type="button" data-s="4" aria-pressed="false">4×</button>
+        </div>
+        <div id="tlDate" aria-hidden="true"></div>
+        <div id="tlHint">Space: play/pause · ←/→: one week · Shift+←/→: one month · click a mark to open it</div>
+      </div>
+      <div id="tlBody">
+        <canvas id="tlCanvas"></canvas>
+        <input id="scrub" type="range" min="0" max="100" step="1" value="0" aria-label="Date">
+        <div id="tlTip"></div>
+      </div>
+    </section>
+
+    <aside class="sheet" id="drawer" aria-hidden="true" aria-labelledby="drTitle">
+      <header><div class="kick" id="drKick"></div><h2 id="drTitle"></h2><div class="sub" id="drSub"></div>
+        <button class="x" type="button" data-close aria-label="Close">×</button></header>
+      <div class="body" id="drBody"></div>
+    </aside>
+
+    <aside class="sheet" id="index" aria-hidden="true" aria-labelledby="ixTitle">
+      <header><div class="kick">Chronicle of the reign</div><h2 id="ixTitle">Every event on the map</h2>
+        <div class="sub">≈ marks a date or place taken from general reference rather than a retrieved source.</div>
+        <button class="x" type="button" data-close aria-label="Close">×</button>
+        <input class="search" id="idxSearch" type="search" placeholder="Search battles, places, people…" aria-label="Search the chronicle"></header>
+      <div class="body"><ul id="idxList"></ul></div>
+    </aside>
+
+    <aside class="sheet" id="about" aria-hidden="true" aria-labelledby="abTitle">
+      <header><div class="kick">About this exhibit</div><h2 id="abTitle">Sources &amp; method</h2>
+        <button class="x" type="button" data-close aria-label="Close">×</button></header>
+      <div class="body" id="aboutBody"></div>
+    </aside>
+  </div>
+</div>
+<div id="loading"><div class="lb"><div class="lt">Raising the globe…</div><div class="ls" id="loadStep">Loading</div></div></div>
+<div id="err" role="alert"></div>
+<div class="sr-only" id="live" aria-live="polite"></div>
+
+<script>
+// ============================================================================
+//  THE CAMPAIGNS OF ALEXANDER, 336–323 BC — exhibit data (engine-neutral)
+//  Dates are Julian-calendar, years BC. p = precision: d day, m month, s season, y year.
+//  q = verification: v matched in a retrieved source; k general reference (to verify).
+//  lq = location verification: v retrieved gazetteer/article; k modern site, general reference.
+// ============================================================================
+const SOURCES = {
+  LIV_CHR: { org: "Livius.org (Jona Lendering)", title: "Alexander the Great: Chronology", url: "https://www.livius.org/articles/person/alexander-the-great/alexander-the-great-5/", role: "Primary date spine; day-level dates where Babylonian records allow." },
+  LIV_ALX: { org: "Livius.org", title: "Alexander the Great (overview)", url: "https://www.livius.org/articles/person/alexander-the-great/", role: "Lunar eclipse omen before Gaugamela; death 11 June 323." },
+  LIV_ISS: { org: "Livius.org", title: "Issus (333 BCE)", url: "https://www.livius.org/articles/battle/issus/", role: "Battle dated c. 5–6 November 333 from the eclipse prediction in the Astronomical Diaries; Pinarus 15 km south of Issus." },
+  LIV_GAU: { org: "Livius.org", title: "Gaugamela (331 BCE)", url: "https://www.livius.org/articles/battle/gaugamela-331-bce/", role: "Battle of 1 October 331; Darius's base at Arbela 75 km from the field." },
+  WIKI_CHR: { org: "Wikipedia", title: "Chronology of the expedition of Alexander the Great into Asia", url: "https://en.wikipedia.org/wiki/Chronology_of_the_expedition_of_Alexander_the_Great_into_Asia", role: "Month-level itinerary with modern site identifications (after Heckel, Cawthorne, Romm)." },
+  WIKI_GRA: { org: "Wikipedia", title: "Battle of the Granicus", url: "https://en.wikipedia.org/wiki/Battle_of_the_Granicus", role: "May 334; battlefield coordinates on the Biga River." },
+  WIKI_PIN: { org: "Wikipedia", title: "Pinarus River", url: "https://www.wikipedia.org/wiki/Pinarus", role: "Identification of the Pinarus with the Payas River (Hammond, Devine); coordinates." },
+  PLE_GAU: { org: "Pleiades gazetteer of past places", title: "Gaugamela (place 874478)", url: "https://pleiades.stoa.org/places/874478", role: "Representative location 36.573 N, 43.494 E (±10 km), 'perhaps Tell Gomel'." },
+  WHE_GRA: { org: "World History Encyclopedia", title: "Timeline: Battle of the Granicus", url: "https://www.worldhistory.org/timeline/Battle_of_the_Granicus/", role: "Granicus in May 334; Alexander 21 July 356 – 11 June 323." },
+  BRIT: { org: "Encyclopaedia Britannica", title: "Alexander the Great: Timeline", url: "https://www.britannica.com/summary/Alexander-the-Great-Timeline", role: "General sequence of the campaigns." },
+  ARR_DAR: { org: "Arrian, Anabasis 3.21 (tr. via Livius)", title: "The death of Darius III", url: "https://www.livius.org/sources/content/arrian/anabasis/the-death-of-darius-iii/", role: "Primary account of the pursuit and death of Darius." },
+  ARR_SOG: { org: "Arrian, Anabasis 4.18–19", title: "Alexander captures the Sogdian Rock", url: "https://www.livius.org/sources/content/arrian/anabasis/alexander-captures-the-sogdian-rock/", role: "Primary account; Roxane's family taken on the Rock." },
+  ARR_HYP: { org: "Arrian, Anabasis 5.25–29", title: "Mutiny at the Hyphasis", url: "https://www.livius.org/sources/content/arrian/anabasis/mutiny-at-the-hyphasis/", role: "Primary account of the army's refusal to go further." },
+  ARR_GED: { org: "Arrian, Anabasis 6.22–26", title: "Alexander in the Gedrosian desert", url: "https://www.livius.org/sources/content/arrian/anabasis/alexander-in-the-gedrosian-desert/", role: "Primary account of the desert march." },
+  ARR_NEA: { org: "Arrian, Indica", title: "Nearchus' voyage home", url: "https://www.livius.org/sources/content/arrian/anabasis/nearchus-voyage-home/", role: "Primary account of the coastal voyage from the Indus to the Persian Gulf." },
+  ARR_OPI: { org: "Arrian, Anabasis 7.8–11", title: "Mutiny at Opis", url: "https://www.livius.org/sources/content/arrian/anabasis/mutiny-at-opis/", role: "Primary account of the Opis mutiny and reconciliation." },
+  ARR_SUS: { org: "Arrian, Anabasis 7.4", title: "The weddings in Susa", url: "https://www.livius.org/sources/content/arrian/anabasis/the-weddings-in-susa/", role: "Primary account of the mass marriages." },
+  ARR_DTH: { org: "Arrian, Anabasis 7.25–26", title: "The death of Alexander", url: "https://www.livius.org/sources/content/arrian/anabasis/the-death-of-alexander/", role: "The Royal Journal's day-by-day account of the final illness." },
+  ARR_CYR: { org: "Arrian, Anabasis 6.29", title: "Alexander and the tomb of Cyrus", url: "https://www.livius.org/sources/content/arrian/anabasis/alexander-and-the-tomb-of-cyrus/", role: "Visit to Pasargadae on the return from India." },
+  ARR_PRO: { org: "Arrian, Anabasis 4.10–12", title: "The introduction of proskynesis", url: "https://www.livius.org/sources/content/arrian/anabasis/the-introduction-of-proskynesis/", role: "The court quarrel over Persian obeisance; Callisthenes." },
+  ARR_SIW: { org: "Arrian, Anabasis 3.3–4", title: "Alexander visits Siwah", url: "https://www.livius.org/sources/content/arrian/anabasis/alexander-visits-siwah/", role: "Primary account of the desert journey to the oracle of Ammon." },
+  PLU_GRA: { org: "Plutarch, Alexander 16", title: "Battle on the Granicus", url: "https://www.livius.org/sources/content/plutarch/plutarchs-alexander/battle-on-the-granicus/", role: "Primary account; the month Daisios." },
+  PLU_ALX: { org: "Plutarch, Alexander 26", title: "The foundation of Alexandria", url: "https://www.livius.org/sources/content/plutarch/plutarchs-alexander/the-foundation-of-alexandria/", role: "Primary account of the foundation." },
+  PLU_GOR: { org: "Plutarch, Alexander 18", title: "Plutarch on the Gordian knot", url: "https://www.livius.org/sources/content/plutarch/plutarchs-alexander/plutarch-on-the-gordian-knot/", role: "The knot at Gordium." },
+  PLU_TAR: { org: "Plutarch, Alexander 19", title: "Alexander in Tarsus", url: "https://www.livius.org/sources/content/plutarch/plutarchs-alexander/alexander-in-tarsus/", role: "The illness after bathing in the Cydnus." },
+  DIO_THE: { org: "Diodorus 17.8–14", title: "The sack of Thebes", url: "https://www.livius.org/sources/content/diodorus/the-sack-of-thebes/", role: "Primary account of the destruction of Thebes." },
+  DIO_PER: { org: "Diodorus 17.70–72", title: "Alexander sacks Persepolis", url: "https://www.livius.org/sources/content/diodorus/alexander-sacks-persepolis/", role: "Primary (Vulgate) account of the burning of the palace." },
+  DIO_PHI: { org: "Diodorus 16.91–95", title: "The death of Philip", url: "https://www.livius.org/sources/content/diodorus/the-death-of-philip/", role: "Assassination of Philip II at Aegae." },
+  DIO_EXI: { org: "Diodorus 18.8", title: "Alexander's decree on the exiles", url: "https://www.livius.org/sources/content/diodorus/alexanders-decree-on-the-exiles/", role: "The Exiles Decree proclaimed at Olympia." },
+  CUR_BAT: { org: "Curtius Rufus 4.6", title: "Alexander kills Batis", url: "https://www.livius.org/sources/content/curtius-rufus/alexander-kills-batis/", role: "Vulgate account of the fall of Gaza." },
+  CUR_HK: { org: "Curtius Rufus 7.3–4", title: "Alexander in the Hindu Kush", url: "https://www.livius.org/sources/content/curtius-rufus/alexander-in-the-hindu-kush/", role: "The winter crossing of the Paropamisus." },
+  CUR_OXU: { org: "Curtius Rufus 7.5", title: "Alexander in the Bactrian desert", url: "https://www.livius.org/sources/content/curtius-rufus/alexander-in-the-bactrian-desert/", role: "March to the Oxus." },
+  CUR_BAB: { org: "Curtius Rufus 5.1", title: "Alexander enters Babylon", url: "https://www.livius.org/sources/content/curtius-rufus/alexander-the-great-enters-babylon/", role: "Vulgate account of the entry into Babylon." },
+  BAB_GAU: { org: "Babylonian Astronomical Diary (BM 36761), tr. via Livius", title: "A contemporary account of the battle of Gaugamela", url: "https://www.livius.org/sources/content/oriental-varia/a-contemporary-account-of-the-battle-of-gaugamela/", role: "The only contemporary record: lunar eclipse, battle on 24 Ululu (1 Oct 331), Alexander's entry into Babylon." },
+  BAB_DTH: { org: "Babylonian record, tr. via Livius", title: "A contemporary account of the death of Alexander", url: "https://www.livius.org/sources/content/oriental-varia/a-contemporary-account-of-the-death-of-alexander/", role: "Cuneiform notice of the king's death." }
+};
+
+// timeline lanes (regions of action)
+const LANES = [
+  { id: "GR", name: "Greece, Macedon & the Aegean" }, { id: "AN", name: "Anatolia" }, { id: "LE", name: "Levant & Egypt" },
+  { id: "ME", name: "Mesopotamia & Persis" }, { id: "IR", name: "Media, Parthia & Bactria" }, { id: "IN", name: "India & the Indus" },
+  { id: "CT", name: "Court & kingship" }
+];
+const PHASES = [
+  { from: "336-10-01", to: "334-04-30", title: "Accession and the Balkan campaigns" },
+  { from: "334-05-01", to: "333-10-31", title: "Asia Minor: Granicus and the coast" },
+  { from: "333-11-01", to: "331-05-31", title: "Issus, the Phoenician sieges and Egypt" },
+  { from: "331-06-01", to: "330-05-31", title: "Gaugamela and the Persian capitals" },
+  { from: "330-06-01", to: "329-03-31", title: "Pursuit of Darius; Alexander King of Asia" },
+  { from: "329-04-01", to: "327-06-30", title: "Bactria and Sogdiana: the guerrilla war" },
+  { from: "327-07-01", to: "325-07-31", title: "India: Swat, the Hydaspes and the rivers" },
+  { from: "325-08-01", to: "324-03-31", title: "The return: Gedrosia and Nearchus's voyage" },
+  { from: "324-04-01", to: "323-06-30", title: "Susa, Opis and Babylon" }
+];
+const SIDES = {
+  M: { name: "Macedonians and the Hellenic League", col: "#5B2C83" },
+  P: { name: "Achaemenid Persia", col: "#1C6B8A" },
+  X: { name: "Local kingdoms and peoples (Thebans, Sogdians, Scythians, Indians)", col: "#B0782A" }
+};
+const RES = { A: "Alexander victorious", B: "Setback for Alexander", I: "Indecisive", "-": "" };
+const KIND = { battle: "Pitched battle", siege: "Siege", foundation: "City founded", passage: "March or crossing", court: "Court and army", oracle: "Oracle, omen and cult", death: "Death", naval: "Fleet" };
+
+// ---------------------------------------------------------------- EVENTS
+// fields: id n d p [e pe] pl lat lon lq lane k r t sides a o s src q anchor note
+const EVENTS_DATA = [
+  { id: "philip", n: "Murder of Philip II; Alexander becomes king", d: "336-10-15", p: "m", pl: "Aegae (Vergina), Macedon", lat: 40.48, lon: 22.32, lq: "k", lane: "CT", k: "court", r: "-", t: 1, sides: ["M"],
+    a: "Alexander III, aged twenty", s: "Philip is stabbed by his bodyguard Pausanias at his daughter's wedding festival. Alexander is acclaimed by the army; rivals are removed within months.",
+    src: ["LIV_CHR", "DIO_PHI"], q: "v", anchor: "Livius: October 336. The exact day is not transmitted." },
+  { id: "advance", n: "Advance force under Parmenion in Asia", d: "336-04-15", p: "s", pl: "Abydos, Hellespont", lat: 40.20, lon: 26.40, lq: "k", lane: "AN", k: "passage", r: "-", t: 3, sides: ["M", "P"],
+    a: "Parmenion; Attalus", s: "Philip's vanguard crosses to Asia in spring 336 to secure the Greek cities of the coast. Memnon of Rhodes pushes it back after Philip's death.",
+    src: ["LIV_CHR"], q: "v", anchor: "Livius: spring 336." },
+  { id: "corinth", n: "The Hellenic League confirms Alexander", d: "336-11-15", p: "s", pl: "Corinth", lat: 37.91, lon: 22.88, lq: "k", lane: "GR", k: "court", r: "-", t: 3, sides: ["M"],
+    s: "Marching south, Alexander is recognised as hegemon of the League of Corinth and commander of the war against Persia that his father had planned.",
+    src: ["LIV_CHR"], q: "v", anchor: "Livius: November–December 336, 'Alexander gains support of the Greek towns'." },
+  { id: "balkan", n: "Balkan campaign: Thracians, Triballians and the Danube", d: "335-05-01", p: "s", e: "335-07-31", pe: "s", pl: "Haemus range and the lower Danube", lat: 43.70, lon: 25.30, lq: "k", lane: "GR", k: "battle", r: "A", t: 2, sides: ["M", "X"],
+    a: "Alexander", o: "Syrmus of the Triballians; the Getae", s: "Alexander forces the Shipka passes, defeats the Triballians on the Lyginus, crosses the Danube by night on stuffed tent-skins and scatters the Getae, then turns west against the Illyrians.",
+    src: ["LIV_CHR"], q: "v", anchor: "Livius: summer 335. The Danube crossing point is not identified.", loc: "area" },
+  { id: "pelion", n: "Illyrian campaign at Pelion", d: "335-08-01", p: "s", pl: "Pelion, Illyrian frontier", lat: 40.65, lon: 20.85, lq: "k", lane: "GR", k: "battle", r: "A", t: 3, sides: ["M", "X"],
+    a: "Alexander", o: "Cleitus of Illyria; Glaucias of the Taulantians", s: "Trapped between two Illyrian armies, Alexander extracts his force with a parade-ground manoeuvre and a night attack.",
+    src: ["LIV_CHR"], q: "k", anchor: "Sequence from Arrian 1.5–6; season inferred between the Danube and Thebes. The site of Pelion is disputed.", loc: "area" },
+  { id: "thebes", n: "Destruction of Thebes", d: "335-09-12", p: "d", pl: "Thebes, Boeotia", lat: 38.32, lon: 23.32, lq: "k", lane: "GR", k: "siege", r: "A", t: 1, sides: ["M", "X"],
+    a: "Alexander; Perdiccas", o: "The Theban democrats", s: "Believing rumours that Alexander was dead, Thebes rose. The city is stormed, some 6,000 killed, the survivors sold, and the city razed except for the temples and the house of Pindar.",
+    src: ["LIV_CHR", "DIO_THE"], q: "v", anchor: "Livius gives '12? September 335'; the day is a modern reconstruction.", note: "Casualty figure from Diodorus; ancient totals are not reliable." },
+  { id: "crossing", n: "The army crosses the Hellespont", d: "334-05-01", p: "m", pl: "Sestos to Abydos", lat: 40.22, lon: 26.40, lq: "k", lane: "AN", k: "passage", r: "-", t: 1, sides: ["M"],
+    a: "Alexander; Parmenion", s: "Some 160 ships ferry the army from Sestos while Alexander sacrifices to Protesilaus at Elaeus and lands first, casting his spear into Asian soil. He visits Troy and the tomb of Achilles.",
+    src: ["LIV_CHR", "WIKI_CHR"], q: "v", anchor: "Livius and the Wikipedia chronology: May 334. Departure from Amphipolis in April.", note: "Army size: Diodorus gives about 32,000 foot and 5,100 horse; other figures exist." },
+  { id: "granicus", n: "Battle of the Granicus", d: "334-05-20", p: "m", pl: "River Granicus (Biga Çayı), Hellespontine Phrygia", lat: 40.317, lon: 27.281, lq: "v", lane: "AN", k: "battle", r: "A", t: 1, sides: ["M", "P"],
+    a: "Alexander; Parmenion", o: "The satraps Arsites, Spithridates, Arsames; Memnon of Rhodes", s: "Against Parmenion's advice Alexander attacks across the river at once. The satraps' cavalry breaks; the Greek mercenaries left standing are cut down or enslaved.",
+    src: ["WIKI_GRA", "WHE_GRA", "LIV_CHR", "PLU_GRA"], q: "v", anchor: "Plutarch gives the Macedonian month Daisios. Wikipedia and the World History Encyclopedia say May 334; Livius 'early June'.", note: "Month disputed between late May and early June. Coordinates from the Wikipedia article." },
+  { id: "sardis", n: "Sardis surrenders", d: "334-06-15", p: "m", pl: "Sardis, Lydia", lat: 38.49, lon: 28.04, lq: "k", lane: "AN", k: "court", r: "A", t: 3, sides: ["M", "P"],
+    s: "Mithrenes hands over the Lydian capital and its treasury without a fight; Alexander restores Lydian law and leaves a garrison.",
+    src: ["WIKI_CHR"], q: "v", anchor: "Wikipedia chronology: June 334." },
+  { id: "miletus", n: "Siege of Miletus", d: "334-07-15", p: "m", pl: "Miletus, Ionia", lat: 37.53, lon: 27.28, lq: "k", lane: "AN", k: "siege", r: "A", t: 2, sides: ["M", "P"],
+    a: "Alexander; Nicanor (fleet)", s: "The Macedonian fleet blocks the harbour before the Persian fleet arrives; the city is stormed. Alexander then pays off most of his fleet and resolves to defeat Persia's navy from the land.",
+    src: ["LIV_CHR", "WIKI_CHR"], q: "v", anchor: "Both chronologies: July 334." },
+  { id: "halicarnassus", n: "Siege of Halicarnassus", d: "334-08-15", p: "m", e: "334-10-31", pe: "s", pl: "Halicarnassus (Bodrum), Caria", lat: 37.04, lon: 27.43, lq: "k", lane: "AN", k: "siege", r: "A", t: 2, sides: ["M", "P"],
+    a: "Alexander", o: "Memnon of Rhodes; Orontobates", s: "The strongest Persian position on the coast. After weeks of assaults Memnon fires the city and withdraws by sea; the two citadels hold out into the next year.",
+    src: ["LIV_CHR", "WIKI_CHR"], q: "v", anchor: "Livius: siege begins August 334; Wikipedia chronology: September. End of the siege is not dated in the sources retrieved." },
+  { id: "lycia", n: "Winter march through Lycia and Pamphylia", d: "334-12-15", p: "s", e: "333-02-28", pe: "s", pl: "Phaselis and Perge", lat: 36.52, lon: 30.55, lq: "k", lane: "AN", k: "passage", r: "-", t: 3, sides: ["M"],
+    s: "Alexander takes the coastal cities, passing the Climax shore at Phaselis where, the story went, the sea drew back for him, and turns inland through Pisidia to Phrygia.",
+    src: ["LIV_CHR", "WIKI_CHR"], q: "v", anchor: "Wikipedia chronology: Phaselis December 334, Perge January 333; Livius: winter 333/334.", loc: "area" },
+  { id: "gordium", n: "Gordium and the knot", d: "333-04-15", p: "m", e: "333-07-31", pe: "m", pl: "Gordium (Yassıhöyük), Phrygia", lat: 39.65, lon: 31.99, lq: "k", lane: "AN", k: "oracle", r: "-", t: 2, sides: ["M"],
+    s: "The army winters and regroups at the old Phrygian capital. Alexander undoes the knot on the wagon of Midas, by sword or by pulling the pin, and claims the rule of Asia it promised.",
+    src: ["LIV_CHR", "WIKI_CHR", "PLU_GOR"], q: "v", anchor: "Livius: at Gordium April–July 333; Wikipedia chronology: April 333." },
+  { id: "memnon", n: "Memnon's counter-offensive in the Aegean", d: "333-03-15", p: "s", e: "333-07-31", pe: "m", pl: "Chios and Lesbos", lat: 39.11, lon: 26.55, lq: "k", lane: "GR", k: "naval", r: "I", t: 2, sides: ["P", "M"],
+    o: "Memnon of Rhodes; Pharnabazus", s: "With the Persian fleet Memnon retakes Chios and most of Lesbos, threatening to carry the war into Greece. He dies at the siege of Mytilene in July; Pharnabazus continues the naval war until Issus.",
+    src: ["LIV_CHR"], q: "v", anchor: "Livius: naval offensive March–June 333; death of Memnon July 333." },
+  { id: "tarsus", n: "Alexander falls ill at Tarsus", d: "333-09-15", p: "m", pl: "Tarsus, Cilicia", lat: 36.92, lon: 34.90, lq: "k", lane: "AN", k: "court", r: "-", t: 3, sides: ["M"],
+    s: "After forcing the Cilician Gates Alexander bathes in the cold Cydnus and nearly dies. He drinks the physician Philip's draught while handing him Parmenion's letter accusing the doctor of treason.",
+    src: ["LIV_CHR", "WIKI_CHR", "PLU_TAR"], q: "v", anchor: "Both chronologies: September 333." },
+  { id: "issus", n: "Battle of Issus", d: "333-11-05", p: "d", pl: "River Pinarus (Payas), south of Issus", lat: 36.7525, lon: 36.1923, lq: "v", lane: "AN", k: "battle", r: "A", t: 1, sides: ["M", "P"],
+    a: "Alexander; Parmenion (left wing)", o: "Darius III", s: "Darius slips behind Alexander through the Amanic Gates and takes up a river line on the narrow coastal plain. Alexander's charge on the right breaks through to the royal chariot; Darius flees, leaving his mother, wife and children in the Macedonian camp.",
+    src: ["LIV_ISS", "LIV_CHR", "WIKI_PIN", "WIKI_CHR"], q: "v", anchor: "Livius reasons from an eclipse predicted for 27 October in the Astronomical Diaries to a battle on 5 or 6 November 333.", note: "The Pinarus is identified with the Payas River by Hammond and Devine; the Deli Çay was the older candidate. Coordinates from the Wikipedia Pinarus article." },
+  { id: "damascus", n: "Parmenion seizes the Persian baggage at Damascus", d: "333-11-20", p: "m", pl: "Damascus, Syria", lat: 33.51, lon: 36.30, lq: "k", lane: "LE", k: "court", r: "A", t: 3, sides: ["M", "P"],
+    a: "Parmenion", s: "Sent south after the battle, Parmenion captures the Great King's war chest and household, and the Greek envoys who had been at Darius's court.",
+    src: ["WIKI_CHR"], q: "k", anchor: "Sequence from Arrian 2.11 and Curtius 3.13; month inferred from Issus.", note: "Wikipedia chronology lists Damascus without a date." },
+  { id: "tyre", n: "Siege of Tyre", d: "332-01-15", p: "m", e: "332-07-31", pe: "m", pl: "Tyre, Phoenicia", lat: 33.27, lon: 35.19, lq: "k", lane: "LE", k: "siege", r: "A", t: 1, sides: ["M", "P"],
+    a: "Alexander; Hephaestion; Admetus †", o: "Azemilcus of Tyre", s: "Refused entry to the island temple of Melqart, Alexander builds a mole across the strait, brings up the Cypriot and Phoenician fleets that have deserted Persia, and storms the walls after seven months. The mole silted into the isthmus Tyre stands on today.",
+    src: ["LIV_CHR", "WIKI_CHR"], q: "v", anchor: "Both chronologies: January to July 332. Arrian gives the fall in Hekatombaion." },
+  { id: "gaza", n: "Siege of Gaza", d: "332-09-15", p: "m", e: "332-11-15", pe: "m", pl: "Gaza", lat: 31.50, lon: 34.46, lq: "k", lane: "LE", k: "siege", r: "A", t: 2, sides: ["M", "P"],
+    a: "Alexander (wounded)", o: "Batis, the eunuch commander", s: "The last fortress before Egypt holds for two months on its high mound; Alexander is hit by a catapult bolt. The garrison is killed and, in the Vulgate tradition, Batis is dragged behind a chariot.",
+    src: ["LIV_CHR", "WIKI_CHR", "CUR_BAT"], q: "v", anchor: "Livius: September–November 332; Wikipedia chronology: September." },
+  { id: "egypt", n: "Egypt received without a fight", d: "332-12-01", p: "m", pl: "Pelusium and Memphis", lat: 29.85, lon: 31.25, lq: "k", lane: "LE", k: "court", r: "A", t: 2, sides: ["M", "P"],
+    s: "The satrap Mazaces surrenders. Alexander sacrifices to Apis at Memphis and holds Greek games; Egyptian tradition treated him as pharaoh.",
+    src: ["LIV_CHR", "WIKI_CHR"], q: "v", anchor: "Wikipedia chronology: Pelusium December 332, Memphis January 331; Livius: enters Egypt November 332, Memphis January 331.", note: "Whether a formal pharaonic coronation took place is debated." },
+  { id: "alexandria", n: "Foundation of Alexandria", d: "331-04-07", p: "d", pl: "Rhacotis, on the Nile delta coast", lat: 31.20, lon: 29.92, lq: "k", lane: "LE", k: "foundation", r: "-", t: 1, sides: ["M"],
+    s: "On the strip between Lake Mareotis and the sea, opposite Pharos, Alexander marks out the city with barley meal when the chalk runs out. It becomes the greatest city of the Hellenistic world.",
+    src: ["LIV_CHR", "WIKI_CHR", "PLU_ALX"], q: "v", anchor: "Livius: 7 April 331 (the day comes from the Alexander Romance). The Wikipedia chronology places the foundation in January 331, before Siwa; Arrian's narrative also puts it before the oracle.", note: "Before or after the Siwa journey is disputed; this map follows Livius." },
+  { id: "siwa", n: "The oracle of Ammon at Siwa", d: "331-03-01", p: "m", pl: "Oasis of Siwa (Ammon), Libyan desert", lat: 29.20, lon: 25.52, lq: "k", lane: "LE", k: "oracle", r: "-", t: 1, sides: ["M"],
+    s: "Alexander marches west along the coast to Paraetonium and south across the desert, guided, the stories say, by ravens or snakes. The priest greets him as son of Ammon; what else he asked he never told.",
+    src: ["LIV_CHR", "WIKI_CHR", "ARR_SIW"], q: "v", anchor: "Livius: March 331; Wikipedia chronology: February 331." },
+  { id: "tyre331", n: "Return to Tyre; games and embassies", d: "331-06-01", p: "m", pl: "Tyre", lat: 33.27, lon: 35.19, lq: "k", lane: "LE", k: "court", r: "-", t: 3, sides: ["M"],
+    s: "Alexander sacrifices to Melqart and stages contests, hears Greek embassies, and reorganises the satrapies of Syria and Egypt before marching for the Euphrates.",
+    src: ["LIV_CHR", "LIV_GAU", "WIKI_CHR"], q: "v", anchor: "Livius: June 331; Wikipedia chronology: May 331." },
+  { id: "thapsacus", n: "Crossing of the Euphrates at Thapsacus", d: "331-07-20", p: "m", pl: "Thapsacus (Dibsi Faraj), Euphrates", lat: 35.88, lon: 38.34, lq: "k", lane: "ME", k: "passage", r: "-", t: 2, sides: ["M", "P"],
+    o: "Mazaeus (screening force)", s: "Two bridges are thrown across; Mazaeus's cavalry withdraws. Instead of the direct desert road to Babylon, Alexander swings north-east to the Tigris where fodder and water are better.",
+    src: ["LIV_CHR", "LIV_ALX", "WIKI_CHR"], q: "v", anchor: "Livius: crosses the Euphrates July 331; Wikipedia chronology: July 331." },
+  { id: "eclipse", n: "Lunar eclipse after the Tigris crossing", d: "331-09-20", p: "d", pl: "East bank of the Tigris", lat: 36.75, lon: 43.00, lq: "k", lane: "ME", k: "oracle", r: "-", t: 2, sides: ["M", "P"],
+    s: "Eleven days before the battle the moon is eclipsed. Alexander sacrifices to the Moon, Sun and Earth; the Babylonian astronomers read it as the fall of the western king's enemy, and the Diaries record it.",
+    src: ["BAB_GAU", "LIV_ALX", "LIV_GAU"], q: "v", anchor: "Fixed astronomically: the eclipse of 20 September 331 is recorded in the Astronomical Diary and mentioned by Arrian and Plutarch.", loc: "area" },
+  { id: "gaugamela", n: "Battle of Gaugamela", d: "331-10-01", p: "d", pl: "Plain of Gaugamela (Tell Gomel), east of the Tigris", lat: 36.573, lon: 43.494, lq: "v", lane: "ME", k: "battle", r: "A", t: 1, sides: ["M", "P"],
+    a: "Alexander; Parmenion (left); Craterus; Hephaestion (wounded)", o: "Darius III; Mazaeus; Bessus", s: "On ground Darius had levelled for his chariots and cavalry, Alexander drifts right, opens a gap in the Persian line and charges it at the head of the Companions. Darius flees again; the Persian left under Mazaeus fights on until word of the rout reaches it.",
+    src: ["BAB_GAU", "LIV_GAU", "LIV_CHR", "PLE_GAU", "WIKI_CHR"], q: "v", anchor: "1 October 331: the Astronomical Diary dates the battle to 24 Ululu, and Plutarch's Boedromion agrees.", note: "Pleiades places Gaugamela at 36.573 N, 43.494 E with ±10 km accuracy, 'perhaps Tell Gomel'." },
+  { id: "arbela", n: "Arbela; Darius escapes to Media", d: "331-10-03", p: "m", pl: "Arbela (Erbil)", lat: 36.19, lon: 44.01, lq: "k", lane: "ME", k: "passage", r: "-", t: 3, sides: ["M", "P"],
+    s: "Alexander rides through the night to Arbela, seventy-five kilometres from the field, and takes Darius's baggage and treasure, but the king is already on the road to Ecbatana.",
+    src: ["LIV_GAU", "WIKI_CHR"], q: "v", anchor: "Wikipedia chronology: October 331; Livius gives the distance from the battlefield." },
+  { id: "babylon", n: "Babylon opens its gates", d: "331-10-22", p: "d", pl: "Babylon", lat: 32.54, lon: 44.42, lq: "k", lane: "ME", k: "court", r: "A", t: 1, sides: ["M", "P"],
+    a: "Alexander", o: "Mazaeus (surrenders; reappointed satrap)", s: "Mazaeus surrenders the city. Alexander enters in procession, orders the temple of Marduk restored and keeps the Persian satrap in office, the first of many such appointments.",
+    src: ["LIV_CHR", "BAB_GAU", "CUR_BAB", "WIKI_CHR"], q: "v", anchor: "Livius: 22 October 331, from the Babylonian record." },
+  { id: "susa", n: "Susa and the royal treasury", d: "331-12-15", p: "d", pl: "Susa, Elam", lat: 32.19, lon: 48.25, lq: "k", lane: "ME", k: "court", r: "A", t: 2, sides: ["M", "P"],
+    o: "Abulites (surrenders)", s: "The winter capital yields some 50,000 talents of bullion. Alexander sits on Darius's throne, his feet not reaching the footstool, and sends the statues of the Tyrannicides back to Athens.",
+    src: ["LIV_CHR", "WIKI_CHR"], q: "v", anchor: "Livius: Abulites surrenders Susa 15 December 331; Alexander leaves 22 December.", note: "Treasury figures from Arrian and Curtius; ancient totals are not audited." },
+  { id: "uxians", n: "The Uxian passes forced", d: "331-12-28", p: "m", pl: "Uxian hills, road from Susa to Persis", lat: 31.55, lon: 49.60, lq: "k", lane: "ME", k: "battle", r: "A", t: 3, sides: ["M", "X"],
+    o: "The hill Uxians", s: "The mountain Uxians demand the toll they had taken from Persian kings; Alexander takes their villages by a night march and makes them pay tribute instead.",
+    src: ["LIV_CHR"], q: "k", anchor: "Between the departure from Susa (22 December, Livius) and the Persian Gates (20 January). Site approximate.", loc: "area" },
+  { id: "gates", n: "Battle of the Persian Gates", d: "330-01-20", p: "d", pl: "Persian Gates (Tang-e Meyran), north-east of Yasuj", lat: 30.75, lon: 51.70, lq: "k", lane: "ME", k: "battle", r: "A", t: 1, sides: ["M", "P"],
+    a: "Alexander; Craterus", o: "Ariobarzanes, satrap of Persis", s: "Ariobarzanes blocks the mountain road with a wall and rolls down boulders; the Macedonians fall back with losses. Guided by a prisoner, Alexander takes a hidden path over the mountains by night and falls on the Persian rear.",
+    src: ["LIV_CHR", "WIKI_CHR"], q: "v", anchor: "Livius: 20 January 330. Wikipedia chronology places the battle undated before Persepolis (January 330).", note: "The pass is identified with the Tang-e Meyran defile; other candidates have been proposed." },
+  { id: "persepolis", n: "Persepolis taken; the palace burned", d: "330-01-30", p: "d", e: "330-05-31", pe: "m", pl: "Persepolis, Persis", lat: 29.93, lon: 52.89, lq: "k", lane: "ME", k: "court", r: "A", t: 1, sides: ["M", "P"],
+    s: "Alexander reaches the ceremonial capital on 30 January and gives it to the soldiers to plunder. Before leaving in May he burns the palace of Xerxes, whether in a drunken revel at Thaïs's urging (the Vulgate) or as a deliberate act of vengeance (Arrian).",
+    src: ["LIV_CHR", "WIKI_CHR", "DIO_PER"], q: "v", anchor: "Livius: arrives 30 January 330; at Persepolis January–May. The burning is dated only by the departure." },
+  { id: "megalopolis", n: "Agis III of Sparta defeated at Megalopolis", d: "331-10-15", p: "s", pl: "Megalopolis, Arcadia", lat: 37.40, lon: 22.14, lq: "k", lane: "GR", k: "battle", r: "A", t: 2, sides: ["M", "X"],
+    a: "Antipater, regent of Macedon", o: "Agis III of Sparta †", s: "While Alexander was in Mesopotamia, Sparta raised a Peloponnesian revolt with Persian gold. Antipater's larger army crushes it; Agis dies fighting. Alexander called it 'a battle of mice'.",
+    src: ["LIV_GAU"], q: "k", anchor: "Livius mentions Agis's war under 331; the battle is usually placed in autumn 331 or spring 330. Season is a reconstruction.", loc: "town" },
+  { id: "ecbatana", n: "Ecbatana; Darius flees east; Parmenion left behind", d: "330-06-15", p: "m", pl: "Ecbatana (Hamadan), Media", lat: 34.80, lon: 48.51, lq: "k", lane: "IR", k: "passage", r: "-", t: 2, sides: ["M", "P"],
+    s: "Darius abandons the Median capital as Alexander approaches. Alexander dismisses the Greek allied troops, leaves Parmenion and the treasure at Ecbatana, and sets off in pursuit with a flying column.",
+    src: ["LIV_CHR", "WIKI_CHR"], q: "v", anchor: "Both chronologies: June 330." },
+  { id: "darius", n: "Death of Darius III", d: "330-07-17", p: "d", pl: "Near Choara (Thara, by Ahuan), Parthia", lat: 35.45, lon: 53.70, lq: "k", lane: "IR", k: "death", r: "-", t: 1, sides: ["P", "M"],
+    o: "Darius III; Bessus and Nabarzanes (his murderers)", s: "After forced marches through the Caspian Gates Alexander comes up with the fugitive column at dawn. Bessus and his officers stab the Great King and ride off; Alexander finds him dead or dying and sends the body to Persepolis for royal burial.",
+    src: ["LIV_CHR", "ARR_DAR", "WIKI_CHR"], q: "v", anchor: "Livius: c. 17 July 330; the Wikipedia chronology: July 330, at Thara near Ahuan.", note: "Bessus proclaims himself King Artaxerxes V in Bactria." },
+  { id: "hyrcania", n: "Hyrcania and the Caspian shore", d: "330-08-15", p: "m", e: "330-09-15", pe: "m", pl: "Zadracarta, Hyrcania", lat: 36.84, lon: 54.43, lq: "k", lane: "IR", k: "passage", r: "-", t: 3, sides: ["M", "X"],
+    o: "The Mardians; Nabarzanes (surrenders)", s: "Alexander receives the surrender of Darius's officers, sees the Caspian, and recovers Bucephalus, stolen by the Mardians. He begins to wear Persian dress at court.",
+    src: ["LIV_CHR", "WIKI_CHR"], q: "v", anchor: "Livius: Hyrcania, Parthia and Aria August–September 330." },
+  { id: "aria", n: "Revolt of Satibarzanes; Alexandria in Aria", d: "330-09-20", p: "m", pl: "Artacoana / Alexandria in Aria (Herat)", lat: 34.34, lon: 62.20, lq: "k", lane: "IR", k: "foundation", r: "A", t: 2, sides: ["M", "P"],
+    o: "Satibarzanes, satrap of Aria", s: "Confirmed as satrap, Satibarzanes murders his Macedonian escort and joins Bessus. Alexander turns back from the road to Bactria, retakes Aria and founds a city near Artacoana.",
+    src: ["LIV_CHR", "WIKI_CHR"], q: "v", anchor: "Wikipedia chronology: Artacoana September 330; Livius: Aria September 330." },
+  { id: "philotas", n: "The Philotas affair; murder of Parmenion", d: "330-11-01", p: "m", pl: "Phrada (Farah), Drangiana", lat: 32.37, lon: 62.11, lq: "k", lane: "CT", k: "court", r: "-", t: 1, sides: ["M"],
+    a: "Philotas †, commander of the Companions; Parmenion †", s: "Philotas is accused of concealing a plot, tortured and stoned by the army. Alexander sends riders on racing camels to Ecbatana, where Parmenion is killed before he can hear of his son's death.",
+    src: ["LIV_CHR", "WIKI_CHR"], q: "v", anchor: "Livius: November 330 (plot of Philotas in Drangiana; Parmenion assassinated). Wikipedia chronology: Phrada October 330." },
+  { id: "arachosia", n: "Winter in Arachosia; Alexandria (Kandahar)", d: "330-12-15", p: "m", e: "329-02-28", pe: "m", pl: "Alexandria in Arachosia (Kandahar)", lat: 31.62, lon: 65.71, lq: "k", lane: "IR", k: "foundation", r: "-", t: 2, sides: ["M"],
+    s: "The army winters among the Ariaspians and in Arachosia, where reinforcements from the west finally join. A city is founded at the site of Kandahar, whose name may preserve Alexander's.",
+    src: ["LIV_CHR", "WIKI_CHR"], q: "v", anchor: "Wikipedia chronology: December 330; Livius: armies unite in Arachosia February 329." },
+  { id: "caucasus", n: "Alexandria in the Caucasus founded", d: "329-04-15", p: "m", pl: "Kapisa (Begram), foot of the Hindu Kush", lat: 34.99, lon: 69.28, lq: "k", lane: "IR", k: "foundation", r: "-", t: 2, sides: ["M"],
+    s: "Below the mountains the Greeks called the Caucasus, Alexander settles veterans and locals in a new city guarding the road to Bactria.",
+    src: ["LIV_CHR", "WIKI_CHR"], q: "v", anchor: "Wikipedia chronology: April 329; Livius: advances to Gandara April 329." },
+  { id: "hindukush", n: "Crossing of the Hindu Kush", d: "329-05-20", p: "m", pl: "Khawak Pass, Paropamisus", lat: 35.67, lon: 69.87, lq: "k", lane: "IR", k: "passage", r: "-", t: 1, sides: ["M"],
+    s: "Seventeen days over the snowbound passes, the men eating raw mutton and the roots of silphium. Bessus has scorched the land beyond, but the Macedonians reach Drapsaca and Bactra.",
+    src: ["LIV_CHR", "WIKI_CHR", "CUR_HK"], q: "v", anchor: "Livius: crosses the Hindu Kush late May 329; Wikipedia chronology: Khawak Pass May 329.", note: "The Khawak is the usual identification; Curtius stresses the cold, which suggests an early-season crossing." },
+  { id: "oxus", n: "Crossing of the Oxus; Bessus betrayed", d: "329-06-01", p: "m", pl: "Oxus (Amu Darya), near Kelif", lat: 37.36, lon: 66.28, lq: "k", lane: "IR", k: "passage", r: "A", t: 1, sides: ["M", "P"],
+    o: "Bessus (Artaxerxes V) †; Spitamenes and Dataphernes (hand him over)", s: "The river is crossed on stuffed skins in five days. Beyond it Spitamenes surrenders Bessus, who is stripped, flogged and sent to Ecbatana for mutilation and death in the Persian manner.",
+    src: ["LIV_CHR", "WIKI_CHR", "CUR_OXU"], q: "v", anchor: "Livius: advances to the Oxus c. 1 June 329 and captures Bessus; Wikipedia chronology: May 329." },
+  { id: "cyropolis", n: "The Jaxartes cities stormed; Alexandria Eschate", d: "329-07-15", p: "m", pl: "Cyropolis and the Jaxartes (Khujand)", lat: 40.28, lon: 69.63, lq: "k", lane: "IR", k: "foundation", r: "A", t: 1, sides: ["M", "X"],
+    s: "Seven Sogdian towns on the Jaxartes rise and are taken in days; Alexander is struck on the neck at Cyropolis. On the river he founds Alexandria the Farthest, the north-eastern limit of his empire.",
+    src: ["LIV_CHR", "WIKI_CHR"], q: "v", anchor: "Livius: Alexandria Eschate founded July 329; Wikipedia chronology: July 329." },
+  { id: "jaxartes", n: "Battle of the Jaxartes", d: "329-08-15", p: "s", pl: "North bank of the Jaxartes (Syr Darya)", lat: 40.40, lon: 69.70, lq: "k", lane: "IR", k: "battle", r: "A", t: 2, sides: ["M", "X"],
+    o: "The Saca (Scythian) nomads", s: "Covered by catapults firing across the river, Alexander crosses and beats the steppe horsemen at their own game, with a trap of light troops and cavalry. Sick from bad water, he lets the pursuit go.",
+    src: ["LIV_CHR"], q: "v", anchor: "Livius lists the battle of the Jaxartes with the Sogdian revolt in summer 329; Wikipedia chronology: October 329.", note: "Season only; the ancient accounts give no date." },
+  { id: "polytimetus", n: "Disaster on the Polytimetus", d: "329-09-15", p: "s", pl: "River Polytimetus (Zeravshan), below Maracanda", lat: 39.75, lon: 66.50, lq: "k", lane: "IR", k: "battle", r: "B", t: 2, sides: ["X", "M"],
+    a: "Pharnuches, Andromachus †, Menedemus †, Caranus †", o: "Spitamenes with Massagetan Scythians", s: "The relief column sent against Spitamenes is lured into an ambush on the river and destroyed, the worst Macedonian defeat of the war. Alexander forbids the survivors to speak of it.",
+    src: ["LIV_CHR", "WIKI_CHR"], q: "k", anchor: "Sequence from Arrian 4.5–6 during the revolt of 329; Wikipedia chronology: Spitamenes' revolt October 329.", loc: "area" },
+  { id: "bactra329", n: "Winter quarters at Bactra", d: "329-11-15", p: "m", e: "328-03-31", pe: "s", pl: "Bactra (Balkh), Bactria", lat: 36.76, lon: 66.90, lq: "k", lane: "IR", k: "passage", r: "-", t: 3, sides: ["M"],
+    s: "Reinforcements arrive from Greece and Syria. Bessus is tried before a Persian court; Alexander plans the systematic reduction of Sogdiana.",
+    src: ["LIV_CHR", "WIKI_CHR"], q: "v", anchor: "Wikipedia chronology: Bactra November 329; Livius: winter 328 at Bactra." },
+  { id: "sogdia328", n: "The Sogdian campaigns in columns", d: "328-06-01", p: "s", e: "328-09-30", pe: "s", pl: "Sogdiana (around Maracanda)", lat: 39.65, lon: 66.96, lq: "k", lane: "IR", k: "battle", r: "I", t: 2, sides: ["M", "X"],
+    a: "Alexander; Hephaestion; Ptolemy; Perdiccas; Coenus; Craterus", o: "Spitamenes", s: "The army is split into five columns to sweep the valleys and fortify the plains. Spitamenes raids Bactria and is chased back into the desert.",
+    src: ["LIV_CHR", "WIKI_CHR"], q: "v", anchor: "Livius: campaigns in Sogdia and Bactria, summer 328; Wikipedia chronology: summer/autumn 328.", loc: "area" },
+  { id: "cleitus", n: "Alexander kills Cleitus the Black", d: "328-10-15", p: "s", pl: "Maracanda (Samarkand)", lat: 39.65, lon: 66.96, lq: "k", lane: "CT", k: "court", r: "-", t: 1, sides: ["M"],
+    a: "Cleitus †, who had saved Alexander's life at the Granicus", s: "At a drunken banquet Cleitus mocks the king's Persian ways and his claim to outdo Philip; Alexander runs him through with a guard's pike and then lies three days in his tent refusing food.",
+    src: ["LIV_CHR"], q: "v", anchor: "Livius: autumn 328, 'murder of Clitus'." },
+  { id: "spitamenes", n: "Spitamenes killed", d: "328-12-15", p: "m", pl: "Sogdian–Massagetan frontier", lat: 40.70, lon: 64.50, lq: "k", lane: "IR", k: "death", r: "A", t: 2, sides: ["X", "M"],
+    o: "Spitamenes †", s: "Beaten by Coenus, Spitamenes is killed by his Massagetan allies, who send his head to Alexander. The Sogdian resistance loses its leader.",
+    src: ["LIV_CHR"], q: "v", anchor: "Livius: December 328, 'capture of Spitamenes'. Arrian and Curtius differ on who killed him.", loc: "area" },
+  { id: "sogdianrock", n: "The Sogdian Rock; marriage to Roxane", d: "327-03-15", p: "s", pl: "Sogdian Rock (Rock of Ariamazes), Hissar range", lat: 38.30, lon: 67.20, lq: "k", lane: "IR", k: "siege", r: "A", t: 1, sides: ["M", "X"],
+    o: "Oxyartes (garrison); the Bactrian nobility", s: "Told the fortress could be taken only by men with wings, Alexander sends three hundred climbers up the cliff by night with iron pegs and ropes. Among the captives is Roxane, daughter of Oxyartes, whom he marries in the spring.",
+    src: ["LIV_CHR", "WIKI_CHR", "ARR_SOG"], q: "v", anchor: "Livius: capture of the Sogdian Rock spring 327, marriage to Roxane summer 327; Wikipedia chronology: March 327.", note: "The Rock is not securely located; the Hissar range is the usual region. The marriage is placed here for display; Livius puts it at Bactra in summer.", loc: "area" },
+  { id: "proskynesis", n: "Proskynesis refused; the pages' conspiracy", d: "327-07-15", p: "s", e: "327-08-31", pe: "s", pl: "Bactra (Balkh)", lat: 36.76, lon: 66.90, lq: "k", lane: "CT", k: "court", r: "-", t: 1, sides: ["M"],
+    a: "Callisthenes † (the court historian); Hermolaus †", s: "The attempt to make Macedonians bow before the king in the Persian manner fails when Callisthenes refuses. Weeks later a plot among the royal pages is uncovered; the pages are stoned and Callisthenes is arrested and dies in custody.",
+    src: ["LIV_CHR", "ARR_PRO"], q: "v", anchor: "Livius: proskynesis introduced summer 327; conspiracy of the pages and death of Callisthenes late summer 327." },
+  { id: "swat", n: "Campaign in Bajaur and Swat; siege of Massaga", d: "327-10-15", p: "s", e: "326-01-31", pe: "s", pl: "Massaga, Ora and Bazira, Swat valley", lat: 34.65, lon: 72.03, lq: "k", lane: "IN", k: "siege", r: "A", t: 2, sides: ["M", "X"],
+    o: "The Aspasians, Guraeans and Assacenians; the queen of Massaga", s: "While Hephaestion and Perdiccas take the main road through the Khyber to the Indus, Alexander fights up the mountain valleys. The mercenaries of Massaga are killed after surrendering; the hill towns fall one by one.",
+    src: ["LIV_CHR", "WIKI_CHR"], q: "v", anchor: "Wikipedia chronology: autumn 327 for the Aspasian, Massaga, Bazira and Ora operations; Livius: Swat campaign early 326.", loc: "area" },
+  { id: "aornos", n: "Siege of the rock of Aornos", d: "326-02-15", p: "s", pl: "Aornos (Pir-Sar), above the Indus", lat: 34.80, lon: 72.87, lq: "k", lane: "IN", k: "siege", r: "A", t: 1, sides: ["M", "X"],
+    a: "Alexander; Ptolemy", s: "A refuge Heracles was said to have failed to take. The Macedonians build a mound across the ravine under fire and storm the summit when the defenders try to slip away.",
+    src: ["LIV_CHR", "WIKI_CHR"], q: "v", anchor: "Livius: Aornus taken before April 326; Wikipedia chronology: autumn 327.", note: "Aurel Stein identified Aornos with Pir-Sar; the identification is accepted by many but not all. Winter 327/6 is the likeliest season.", loc: "area" },
+  { id: "indus", n: "Crossing of the Indus; Taxila", d: "326-04-15", p: "m", pl: "Indus bridge at Ohind (Hund); Taxila", lat: 33.74, lon: 72.83, lq: "k", lane: "IN", k: "passage", r: "-", t: 2, sides: ["M", "X"],
+    o: "Taxiles (Ambhi), who submits", s: "Hephaestion's bridge of boats carries the reunited army over the Indus. Taxiles receives Alexander with elephants and gifts and asks for help against his neighbour Porus.",
+    src: ["LIV_CHR", "WIKI_CHR"], q: "v", anchor: "Livius: armies unite near the Indus and advance to Taxila April 326; Wikipedia chronology: Hund winter 326, Taxila spring 326." },
+  { id: "hydaspes", n: "Battle of the Hydaspes", d: "326-05-15", p: "m", pl: "River Hydaspes (Jhelum), near Jhelum", lat: 32.93, lon: 73.72, lq: "k", lane: "IN", k: "battle", r: "A", t: 1, sides: ["M", "X"],
+    a: "Alexander; Craterus (fixing force); Coenus", o: "Porus (Puru), king between the Hydaspes and Acesines", s: "In the monsoon rains Alexander crosses upstream by night behind an island, leaving Craterus to hold Porus's attention. The elephants and chariots are beaten in a hard fight; Porus, wounded, asks to be treated 'as a king' and is confirmed in his kingdom. Bucephalus dies and is buried in the city named for him.",
+    src: ["LIV_CHR", "WIKI_CHR"], q: "v", anchor: "Livius: May 326. Arrian dates it to the month Mounychion (April–May). The Wikipedia chronology gives July 326.", note: "Month disputed (May in most modern accounts). The crossing site is debated; Jalalpur Sharif and Haranpur are the main candidates. Placed near Jhelum at area precision.", loc: "area" },
+  { id: "acesines", n: "Crossing of the Acesines; Sangala stormed", d: "326-06-26", p: "d", e: "326-07-20", pe: "m", pl: "Acesines (Chenab) and Sangala", lat: 32.30, lon: 74.30, lq: "k", lane: "IN", k: "battle", r: "A", t: 3, sides: ["M", "X"],
+    o: "The Cathaeans", s: "The army pushes east across the swollen rivers of the Punjab. Sangala, defended by a triple ring of wagons, is taken and razed.",
+    src: ["LIV_CHR", "WIKI_CHR"], q: "v", anchor: "Livius: crossing of the Acesines c. 26 June 326; Wikipedia chronology: August 326 for the Acesines and Sangala.", loc: "area" },
+  { id: "hyphasis", n: "Mutiny at the Hyphasis", d: "326-07-25", p: "m", pl: "River Hyphasis (Beas), eastern Punjab", lat: 31.40, lon: 75.20, lq: "k", lane: "IN", k: "court", r: "B", t: 1, sides: ["M"],
+    a: "Coenus, who speaks for the army", s: "Facing rumours of the Ganges kingdoms and their elephants, the army refuses to go further. After three days in his tent Alexander yields, builds twelve giant altars on the bank and turns back. It is the eastern limit of the expedition.",
+    src: ["LIV_CHR", "WIKI_CHR", "ARR_HYP"], q: "v", anchor: "Livius: late July 326; Wikipedia chronology: 31 August 326.", note: "The day in the Wikipedia table is not supported by the ancient sources; treated here as month precision.", loc: "area" },
+  { id: "fleet", n: "The fleet sails down the Hydaspes", d: "326-11-05", p: "m", pl: "Hydaspes at Nicaea and Bucephala", lat: 32.93, lon: 73.72, lq: "k", lane: "IN", k: "naval", r: "-", t: 1, sides: ["M"],
+    a: "Nearchus (admiral); Onesicritus (helmsman); Craterus and Hephaestion (on the banks)", s: "Some 800 to 2,000 vessels built over the autumn carry the army downriver, the two land columns marching on either bank. Coenus has died of illness before the departure.",
+    src: ["LIV_CHR", "WIKI_CHR"], q: "v", anchor: "Both chronologies: November 326. Arrian dates the departure a few days before the setting of the Pleiades." },
+  { id: "malli", n: "The Mallian campaign; Alexander gravely wounded", d: "325-01-15", p: "m", pl: "Mallian town (near Multan), lower Punjab", lat: 30.20, lon: 71.47, lq: "k", lane: "IN", k: "siege", r: "A", t: 1, sides: ["M", "X"],
+    a: "Alexander (wounded); Peucestas and Leonnatus (shield him)", o: "The Malli and Oxydracae", s: "Storming a Mallian citadel alone ahead of his men, Alexander is shot through the chest by an arrow and nearly dies. The army, believing him dead, is shown the king alive on a stretcher. The Malli towns are massacred.",
+    src: ["LIV_CHR", "WIKI_CHR"], q: "v", anchor: "Livius: January 325; Wikipedia chronology: November–December 326 (siege of Multan).", note: "The town's identification with Multan is traditional but unproven.", loc: "area" },
+  { id: "patala", n: "Patala: the Indus delta", d: "325-07-15", p: "m", pl: "Patala, head of the Indus delta", lat: 25.39, lon: 68.37, lq: "k", lane: "IN", k: "passage", r: "-", t: 2, sides: ["M"],
+    s: "Alexander fortifies Patala as a harbour, explores both arms of the delta and sails out to sacrifice to Poseidon in the Ocean. The kingdoms of Musicanus and Sambus have been crushed on the way south.",
+    src: ["LIV_CHR", "WIKI_CHR"], q: "v", anchor: "Livius: Peithon's and other forces arrive at Patala c. 15 July 325. The Wikipedia chronology has Patala in December 326.", note: "Patala's site is unknown; Hyderabad or Bahmanabad are candidates.", loc: "area" },
+  { id: "gedrosia", n: "The march through Gedrosia", d: "325-09-15", p: "m", e: "325-11-15", pe: "m", pl: "Gedrosian desert (Makran)", lat: 26.00, lon: 63.05, lq: "k", lane: "IN", k: "passage", r: "B", t: 1, sides: ["M"],
+    s: "Sixty days of heat, thirst and sand along the Makran, the supply dumps for the fleet never made. Ancient writers say more men died here than in all his battles; the true losses are unknown. The survivors reach Pura in Gedrosia.",
+    src: ["LIV_CHR", "WIKI_CHR", "ARR_GED"], q: "v", anchor: "Livius: Alexander starts for Carmania late August 325 and is in Gedrosia thereafter; Wikipedia chronology: autumn 325, Pura in November.", loc: "area" },
+  { id: "nearchus", n: "Nearchus's fleet sails from the Indus", d: "325-09-15", p: "d", pl: "Mouth of the Indus", lat: 24.80, lon: 67.30, lq: "k", lane: "IN", k: "naval", r: "-", t: 1, sides: ["M"],
+    a: "Nearchus", s: "With the monsoon turning, the fleet coasts west past the Fish-Eaters' shore, taking soundings and naming harbours, and reaches the Strait of Hormuz in about eighty days.",
+    src: ["LIV_CHR", "WIKI_CHR", "ARR_NEA"], q: "v", anchor: "Livius: Nearchus starts 15 September 325 (Arrian's 20 Boedromion, converted); Wikipedia chronology: September–December 325.", note: "The conversion of Arrian's date varies by a few days between authors." },
+  { id: "carmania", n: "Carmania: the armies and fleet reunite", d: "325-12-15", p: "m", e: "324-01-31", pe: "m", pl: "Alexandria in Carmania (Golashkerd)", lat: 27.62, lon: 57.95, lq: "k", lane: "ME", k: "court", r: "-", t: 2, sides: ["M"],
+    a: "Craterus; Nearchus", s: "Craterus arrives from Arachosia with the elephants and heavy troops; Nearchus walks up from the coast, so ragged that Alexander does not recognise him. The king purges satraps who had abused their provinces in his absence.",
+    src: ["LIV_CHR", "WIKI_CHR"], q: "v", anchor: "Livius: meets Craterus December 325 and Nearchus January 324; Wikipedia chronology: reunion December 325 at Hormuz.", loc: "area" },
+  { id: "pasargadae", n: "Pasargadae: the tomb of Cyrus", d: "324-02-15", p: "m", pl: "Pasargadae, Persis", lat: 30.20, lon: 53.17, lq: "k", lane: "ME", k: "oracle", r: "-", t: 2, sides: ["M"],
+    s: "Alexander finds the tomb of Cyrus the Great plundered and has Aristobulus restore it. The Indian sage Calanus, ill, burns himself on a pyre before the army.",
+    src: ["LIV_CHR", "WIKI_CHR", "ARR_CYR"], q: "v", anchor: "Livius: Pasargadae and the death of Calanus, February 324; Wikipedia chronology: January 324." },
+  { id: "susawed", n: "The Susa weddings", d: "324-03-15", p: "m", pl: "Susa", lat: 32.19, lon: 48.25, lq: "k", lane: "CT", k: "court", r: "-", t: 1, sides: ["M", "P"],
+    s: "In one five-day ceremony in the Persian rite Alexander marries Stateira, Darius's daughter, and Parysatis; Hephaestion marries her sister; some ninety Companions marry Persian noblewomen. The soldiers' debts are paid from the treasury.",
+    src: ["LIV_CHR", "WIKI_CHR", "ARR_SUS"], q: "v", anchor: "Both chronologies: March 324." },
+  { id: "exiles", n: "The Exiles Decree proclaimed at Olympia", d: "324-08-01", p: "m", pl: "Olympia, Elis", lat: 37.64, lon: 21.63, lq: "k", lane: "GR", k: "court", r: "-", t: 2, sides: ["M"],
+    a: "Nicanor of Stagira, Alexander's envoy", s: "Read to the crowd at the Olympic games: every Greek city must take back its exiles. Athens and Aetolia are alarmed; the decree is one cause of the war that follows Alexander's death.",
+    src: ["LIV_CHR", "DIO_EXI"], q: "v", anchor: "Livius: summer 324. The Olympic festival fell in August." },
+  { id: "opis", n: "Mutiny at Opis", d: "324-08-15", p: "m", pl: "Opis, on the Tigris", lat: 33.53, lon: 44.52, lq: "k", lane: "CT", k: "court", r: "-", t: 1, sides: ["M", "P"],
+    a: "Craterus (leads the veterans home)", s: "When Alexander discharges his older veterans the Macedonians erupt, jeering that he can conquer with his 'father' Ammon. He has the ringleaders executed, gives Persian nobles Macedonian commands, and the army begs forgiveness. A feast of reconciliation follows.",
+    src: ["LIV_CHR", "WIKI_CHR", "ARR_OPI"], q: "v", anchor: "Livius: August 324. The Wikipedia chronology places the mutiny in spring 324.", note: "Opis lay on the Tigris near the Diyala confluence; the site is approximate.", loc: "area" },
+  { id: "hephaestion", n: "Death of Hephaestion", d: "324-10-25", p: "m", pl: "Ecbatana (Hamadan)", lat: 34.80, lon: 48.51, lq: "k", lane: "CT", k: "death", r: "-", t: 1, sides: ["M"],
+    a: "Hephaestion †, chiliarch and the king's closest friend", s: "Hephaestion dies of fever after games at Ecbatana. Alexander's grief is extravagant: the doctor is executed, the sacred fires put out, a vast pyre planned at Babylon and hero-cult sought from Ammon.",
+    src: ["LIV_CHR", "WIKI_CHR"], q: "v", anchor: "Livius: late October 324; Wikipedia chronology: October 324." },
+  { id: "cossaeans", n: "Winter campaign against the Cossaeans", d: "324-12-15", p: "s", e: "323-02-28", pe: "s", pl: "Cossaean hills (Luristan)", lat: 33.50, lon: 48.20, lq: "k", lane: "IR", k: "battle", r: "A", t: 3, sides: ["M", "X"],
+    o: "The Cossaean hill tribes", s: "Forty days of winter warfare against the tribesmen who had taken tolls from Persian kings on the road from Ecbatana to Babylon; Plutarch calls it an offering to Hephaestion's ghost.",
+    src: ["LIV_CHR", "WIKI_CHR"], q: "v", anchor: "Livius: winter 323; Wikipedia chronology: winter 323.", loc: "area" },
+  { id: "babylon323", n: "Return to Babylon; the Arabian expedition prepared", d: "323-04-15", p: "m", pl: "Babylon", lat: 32.54, lon: 44.42, lq: "k", lane: "ME", k: "court", r: "-", t: 2, sides: ["M"],
+    s: "Chaldaean priests warn him not to enter the city from the east. Embassies arrive from the west; a harbour is dug and a fleet built for the circumnavigation of Arabia.",
+    src: ["LIV_CHR", "LIV_ALX", "WIKI_CHR"], q: "v", anchor: "Livius: April–May 323 in Babylon; preparations for Arabia in May." },
+  { id: "death", n: "Death of Alexander", d: "323-06-11", p: "d", pl: "Babylon, the palace of Nebuchadnezzar", lat: 32.54, lon: 44.42, lq: "k", lane: "CT", k: "death", r: "-", t: 1, sides: ["M"],
+    s: "Feverish after a drinking party, he sickens for ten days; the soldiers file past his bed. He dies in the evening, a month short of thirty-three, having answered, in one tradition, that the kingdom should go 'to the strongest'.",
+    src: ["LIV_CHR", "LIV_ALX", "WHE_GRA", "ARR_DTH", "BAB_DTH", "WIKI_CHR"], q: "v", anchor: "11 June 323 by the Babylonian record (29 Ayyaru); Plutarch's 28 Daisios gives 10 June. The Wikipedia chronology says 10 or 11 June." }
+];
+
+// ---------------------------------------------------------------- MOVEMENTS
+// pts: [lon, lat, date|null, q ('v' matched in source / 'k' reconstruction), mode ('land'|'sea'|'river'|null=inherit), label]
+// Undated points shape the route only; positions between dates are interpolated by distance.
+const MOVEMENTS = [
+  { id: "m_alex", n: "Alexander and the main army", side: "M", mode: "land", tier: 1, cmd: "Alexander III", src: ["LIV_CHR", "WIKI_CHR"],
+    s: "The royal army from the Balkan campaign of 335 to Babylon in 323: some 32,000 km over twelve years, by the reconstruction of the Livius and Wikipedia chronologies. Dated waypoints are marked; the line between them is drawn along the likeliest ancient road, not a surveyed track.",
+    pts: [
+      [22.52, 40.76, "335-04-15", "k", null, "Pella"], [23.85, 40.82, null, null, null, "Amphipolis"], [24.28, 41.01, null, null, null, "Philippi"], [25.32, 42.75, "335-05-15", "k", null, "Haemus (Shipka) passes"],
+      [25.10, 43.40, "335-05-25", "k", null, "Lyginus: Triballians beaten"], [25.40, 43.75, "335-06-01", "k", null, "Danube crossed"], [25.10, 43.40, null], [24.20, 42.40, null], [22.30, 41.60, null],
+      [20.85, 40.65, "335-08-01", "k", null, "Pelion"], [21.75, 40.35, null], [22.60, 39.60, null], [22.90, 38.80, null], [23.32, 38.32, "335-09-12", "v", null, "Thebes destroyed"],
+      [22.90, 38.80, null], [22.60, 39.60, null], [22.52, 40.76, "335-11-15", "k", null, "Pella: festivals at Dion and Aegae"],
+      [23.85, 40.82, "334-04-15", "v", null, "Amphipolis: the expedition departs"], [24.98, 40.94, null, null, null, "Abdera"], [26.10, 40.70, null], [26.41, 40.24, "334-05-01", "v", null, "Sestos"],
+      [26.40, 40.20, "334-05-05", "k", "sea", "Abydos: landing in Asia"], [26.24, 39.96, "334-05-08", "k", "land", "Troy"], [26.60, 40.15, null], [27.281, 40.317, "334-05-20", "v", null, "Granicus"],
+      [27.70, 39.90, null], [28.04, 38.49, "334-06-15", "v", null, "Sardis"], [27.34, 37.94, "334-06-25", "v", null, "Ephesus"], [27.28, 37.53, "334-07-15", "v", null, "Miletus"],
+      [27.43, 37.04, "334-08-15", "v", null, "Halicarnassus"], [28.40, 36.70, null], [29.32, 36.36, "334-11-15", "k", null, "Xanthus, Lycia"], [30.10, 36.40, null], [30.55, 36.52, "334-12-15", "v", null, "Phaselis"],
+      [30.85, 36.96, "333-01-15", "v", null, "Perge"], [31.39, 36.77, "333-01-25", "k", null, "Side"], [30.85, 36.96, null], [30.46, 36.98, "333-02-05", "k", null, "Termessus"], [30.52, 37.68, "333-02-15", "k", null, "Sagalassus"],
+      [30.17, 38.06, "333-03-01", "k", null, "Celaenae"], [31.10, 38.90, null], [31.99, 39.65, "333-04-15", "v", null, "Gordium"], [31.99, 39.65, "333-07-25", "v", null, "Gordium: departure"],
+      [32.86, 39.93, "333-08-05", "k", null, "Ancyra"], [33.80, 38.60, null], [34.82, 37.28, "333-09-05", "k", null, "Cilician Gates"], [34.90, 36.92, "333-09-15", "v", null, "Tarsus"],
+      [34.55, 36.74, "333-10-10", "v", null, "Soli"], [34.90, 36.92, "333-10-25", "k", null, "Tarsus"], [35.60, 36.95, null], [36.20, 36.85, "333-11-01", "k", null, "Issus"], [36.17, 36.59, "333-11-03", "k", null, "Myriandrus"],
+      [36.19, 36.75, "333-11-05", "v", null, "Battle of Issus"], [36.17, 36.59, "333-11-08", "k", null, "Myriandrus"], [36.00, 35.90, null], [35.90, 34.84, "333-12-15", "v", null, "Marathus (Arwad)"],
+      [35.65, 34.12, "332-01-05", "v", null, "Byblos"], [35.37, 33.56, "332-01-10", "v", null, "Sidon"], [35.19, 33.27, "332-01-15", "v", null, "Tyre: siege begins"], [35.19, 33.27, "332-07-31", "v", null, "Tyre falls"],
+      [34.90, 32.40, null], [34.46, 31.50, "332-09-15", "v", null, "Gaza: siege"], [34.46, 31.50, "332-11-15", "v", null, "Gaza falls"], [33.50, 31.15, null], [32.55, 31.04, "332-12-01", "v", null, "Pelusium"],
+      [31.31, 30.13, "332-12-20", "k", null, "Heliopolis"], [31.25, 29.85, "331-01-05", "v", null, "Memphis"], [30.90, 30.45, null], [29.92, 31.20, "331-01-25", "k", null, "Rhacotis"],
+      [27.24, 31.35, "331-02-15", "k", null, "Paraetonium"], [26.30, 30.30, null], [25.52, 29.20, "331-03-01", "v", null, "Siwa: the oracle of Ammon"], [28.00, 29.60, null], [31.25, 29.85, "331-03-25", "k", null, "Memphis"],
+      [30.90, 30.45, null], [29.92, 31.20, "331-04-07", "v", null, "Alexandria founded"], [30.90, 30.45, null], [31.25, 29.85, "331-04-20", "k", null, "Memphis"], [32.55, 31.04, "331-05-05", "k", null, "Pelusium"],
+      [34.46, 31.50, null], [35.19, 33.27, "331-06-01", "v", null, "Tyre"], [36.30, 33.51, "331-06-25", "k", null, "Damascus"], [36.60, 34.80, null], [37.16, 36.20, "331-07-10", "k", null, "Beroea (Aleppo)"],
+      [38.34, 35.88, "331-07-20", "v", null, "Thapsacus: Euphrates crossed"], [39.03, 36.87, "331-08-10", "v", null, "Harran"], [41.22, 37.07, "331-08-30", "k", null, "Nisibis"], [43.00, 36.75, "331-09-18", "k", null, "Tigris crossed"],
+      [43.494, 36.573, "331-10-01", "v", null, "Gaugamela"], [44.01, 36.19, "331-10-03", "v", null, "Arbela"], [44.10, 35.00, null], [44.42, 32.54, "331-10-22", "v", null, "Babylon"], [44.42, 32.54, "331-11-25", "k", null, "Babylon: departure"],
+      [46.20, 32.30, null], [48.25, 32.19, "331-12-15", "v", null, "Susa"], [48.25, 32.19, "331-12-22", "v", null, "Susa: departure"], [49.60, 31.55, "331-12-28", "k", null, "Uxian hills"], [50.80, 31.10, null],
+      [51.70, 30.75, "330-01-20", "v", null, "Persian Gates"], [52.60, 30.20, null], [52.89, 29.93, "330-01-30", "v", null, "Persepolis"], [52.89, 29.93, "330-05-20", "k", null, "Persepolis: the palace burned; departure"],
+      [53.17, 30.20, "330-05-25", "k", null, "Pasargadae"], [53.20, 30.63, "330-05-28", "v", null, "Deh Bid pass"], [52.40, 31.60, null], [51.68, 32.65, "330-06-05", "k", null, "Gabae (Isfahan)"], [50.00, 33.80, null],
+      [48.51, 34.80, "330-06-15", "v", null, "Ecbatana"], [50.00, 35.30, null], [51.43, 35.59, "330-07-05", "v", null, "Rhagae"], [52.10, 35.30, "330-07-10", "v", null, "Caspian Gates"], [53.70, 35.45, "330-07-17", "v", null, "Choara: Darius found dead"],
+      [54.06, 35.95, "330-07-25", "v", null, "Hecatompylos"], [54.43, 36.84, "330-08-15", "v", null, "Zadracarta"], [56.00, 36.70, null], [57.60, 36.55, null], [59.53, 36.48, "330-09-05", "v", null, "Susia (Tus)"],
+      [61.20, 35.60, null], [62.20, 34.34, "330-09-20", "v", null, "Artacoana (Herat)"], [62.30, 33.40, null], [62.11, 32.37, "330-11-01", "v", null, "Phrada (Farah)"], [61.60, 30.90, "330-12-01", "k", null, "Ariaspians (Sistan)"],
+      [63.80, 30.80, null], [65.71, 31.62, "330-12-15", "v", null, "Alexandria in Arachosia (Kandahar)"], [65.71, 31.62, "329-02-28", "v", null, "Arachosia: armies united; departure"], [67.30, 32.60, null],
+      [68.42, 33.55, "329-03-20", "k", null, "Ghazni"], [69.17, 34.53, "329-04-05", "v", null, "Kabura (Kabul)"], [69.28, 34.99, "329-04-15", "v", null, "Alexandria in the Caucasus"], [69.60, 35.40, null],
+      [69.87, 35.67, "329-05-20", "v", null, "Khawak Pass"], [69.30, 36.30, null], [68.87, 36.73, "329-05-28", "v", null, "Drapsaca (Kunduz)"], [67.80, 36.70, null], [66.90, 36.76, "329-05-30", "k", null, "Bactra"],
+      [66.28, 37.36, "329-06-05", "k", null, "Oxus crossed"], [66.60, 38.20, null], [66.83, 39.05, "329-06-15", "v", null, "Nautaca"], [66.96, 39.65, "329-06-25", "v", null, "Maracanda"], [68.00, 40.00, null],
+      [69.00, 39.91, "329-07-10", "k", null, "Cyropolis"], [69.63, 40.28, "329-07-15", "v", null, "Alexandria Eschate"], [69.70, 40.40, "329-08-15", "k", null, "Jaxartes: battle"], [69.63, 40.28, "329-09-01", "k", null, "Alexandria Eschate"],
+      [68.00, 40.00, null], [66.96, 39.65, "329-10-15", "k", null, "Maracanda"], [66.60, 38.20, null], [66.90, 36.76, "329-11-15", "v", null, "Bactra: winter quarters"], [66.90, 36.76, "328-05-15", "k", null, "Bactra: departure"],
+      [66.28, 37.36, null], [66.60, 38.20, null], [66.96, 39.65, "328-07-15", "k", null, "Maracanda"], [67.80, 40.20, null], [66.96, 39.65, "328-10-15", "k", null, "Maracanda: Cleitus killed"],
+      [66.83, 39.05, "328-12-15", "v", null, "Nautaca: winter quarters"], [67.20, 38.30, "327-03-15", "v", null, "Sogdian Rock"], [66.90, 37.30, null], [66.90, 36.76, "327-06-15", "v", null, "Bactra"],
+      [68.20, 36.20, null], [69.87, 35.67, null, null, null, "Hindu Kush recrossed"], [69.28, 34.99, "327-08-15", "v", null, "Alexandria in the Caucasus"], [70.20, 34.60, "327-09-10", "k", null, "Nicaea (Laghman)"],
+      [70.90, 34.70, null], [71.50, 34.65, "327-10-15", "v", null, "Arigaeum, Bajaur"], [72.03, 34.65, "327-11-15", "v", null, "Massaga"], [72.21, 34.68, null, null, null, "Bazira"], [72.30, 34.72, "327-12-15", "k", null, "Ora"],
+      [72.60, 34.90, null], [72.87, 34.80, "326-02-15", "v", null, "Aornos"], [72.50, 34.30, null], [72.44, 34.02, "326-04-10", "v", null, "Ohind: Indus crossed"], [72.83, 33.74, "326-04-25", "v", null, "Taxila"],
+      [73.40, 33.20, null], [73.72, 32.93, "326-05-15", "v", null, "Hydaspes: battle with Porus"], [74.30, 32.30, "326-06-26", "v", null, "Acesines crossed"], [74.40, 31.85, "326-07-10", "k", null, "Sangala"],
+      [75.20, 31.40, "326-07-25", "v", null, "Hyphasis: the army refuses"], [74.40, 31.85, null], [74.30, 32.30, null], [73.72, 32.93, "326-09-15", "v", null, "Hydaspes: fleet built"],
+      [73.72, 32.93, "326-11-05", "v", "river", "The fleet sails"], [73.00, 32.20, null, null, "river"], [72.15, 31.15, "326-12-10", "k", "river", "Confluence of Hydaspes and Acesines"], [71.47, 30.20, "325-01-15", "v", "river", "Mallian town: Alexander wounded"],
+      [71.08, 29.24, "325-02-15", "v", "river", "Confluence with the Indus"], [69.80, 28.40, null, null, "river"], [68.90, 27.66, "325-04-15", "v", "river", "Alor: kingdom of Musicanus"], [67.86, 26.42, "325-05-15", "k", "river", "Sindimana (Sehwan)"],
+      [68.37, 25.39, "325-07-01", "k", "river", "Patala"], [67.80, 24.60, "325-07-20", "k", "river", "The Ocean: sacrifice to Poseidon"], [68.37, 25.39, "325-08-10", "k", "river", "Patala"],
+      [67.60, 25.20, "325-08-25", "v", "land", "Departure for Carmania"], [66.70, 25.05, "325-09-05", "v", null, "Arabius (Hab) crossed"], [66.31, 26.23, "325-09-15", "v", null, "Rhambacia (Bela)"], [65.30, 25.80, null],
+      [64.60, 25.60, "325-10-01", "k", null, "Gedrosia: the coast road"], [63.05, 26.00, "325-10-20", "k", null, "Gedrosian desert"], [61.60, 26.60, null], [60.45, 27.20, "325-11-15", "v", null, "Pura (Bampur)"],
+      [59.20, 27.50, null], [57.95, 27.62, "325-12-15", "v", null, "Alexandria in Carmania"], [57.95, 27.62, "324-01-25", "k", null, "Carmania: departure"], [56.30, 29.00, null], [54.40, 29.60, null],
+      [53.17, 30.20, "324-02-15", "v", null, "Pasargadae"], [52.89, 29.93, "324-02-25", "v", null, "Persepolis"], [51.00, 31.00, null], [49.30, 31.80, null], [48.25, 32.19, "324-03-15", "v", null, "Susa: the weddings"],
+      [48.70, 30.60, "324-05-15", "k", "river", "Down the Pasitigris to the Gulf"], [47.20, 31.20, null, null, "river"], [46.10, 32.10, null, null, "river"], [44.52, 33.53, "324-08-15", "v", "land", "Opis: mutiny"],
+      [46.20, 34.30, null], [48.51, 34.80, "324-10-15", "v", null, "Ecbatana: death of Hephaestion"], [48.20, 33.50, "324-12-15", "v", null, "Cossaean hills"], [46.50, 33.20, null],
+      [44.42, 32.54, "323-04-15", "v", null, "Babylon"], [44.42, 32.54, "323-06-11", "v", null, "Babylon: Alexander dies"]
+    ] },
+  { id: "m_hephaestion", n: "Hephaestion and Perdiccas by the Khyber", side: "M", mode: "land", tier: 2, cmd: "Hephaestion; Perdiccas", src: ["LIV_CHR", "WIKI_CHR"],
+    s: "Half the army takes the direct road down the Kabul river and through the Khyber to the Indus, takes Peucelaotis, and builds the bridge of boats at Ohind for the reunion in spring 326.",
+    pts: [[69.28, 34.99, "327-08-15", "v", null, "Alexandria in the Caucasus"], [69.90, 34.50, null], [70.45, 34.45, null], [71.10, 34.07, "327-09-20", "v", null, "Khyber Pass"], [71.73, 34.15, "327-10-15", "v", null, "Peucelaotis (Charsadda)"], [72.44, 34.02, "327-12-15", "k", null, "Ohind: bridge over the Indus"]] },
+  { id: "m_craterus325", n: "Craterus's column through Arachosia", side: "M", mode: "land", tier: 2, cmd: "Craterus", src: ["LIV_CHR", "WIKI_CHR"],
+    s: "The elephants, the heavy baggage and the unfit veterans go home the inland way, by the Bolan pass, Arachosia and Drangiana, to meet the king in Carmania.",
+    pts: [[68.90, 27.66, "325-06-15", "v", null, "Leaves the Indus"], [67.90, 28.60, null], [67.05, 29.85, "325-07-20", "k", null, "Bolan pass"], [67.00, 30.20, "325-08-05", "k", null, "Quetta valley"], [66.20, 31.00, null], [65.71, 31.62, "325-09-15", "k", null, "Alexandria in Arachosia"], [63.60, 31.30, null], [61.60, 31.00, "325-11-01", "k", null, "Lake Hamun, Drangiana"], [60.00, 29.60, null], [58.60, 28.40, null], [57.95, 27.62, "325-12-15", "v", null, "Carmania: meets Alexander"]] },
+  { id: "m_nearchus", n: "Nearchus's voyage from the Indus to Susa", side: "M", mode: "sea", tier: 1, cmd: "Nearchus; Onesicritus", src: ["LIV_CHR", "WIKI_CHR", "ARR_NEA"],
+    s: "The fleet coasts west from the Indus mouth along the shore of the Fish-Eaters to the Strait of Hormuz, winters in Carmania, then continues up the Persian Gulf to the Tigris and Susa. Arrian's Indica preserves Nearchus's own log.",
+    pts: [[67.30, 24.80, "325-09-15", "v", null, "Mouth of the Indus"], [66.95, 24.70, null], [66.55, 25.30, "325-10-01", "k", null, "Morontobara (Sonmiani)"], [65.50, 25.15, null], [64.60, 25.10, "325-10-15", "k", null, "Ormara"], [63.45, 25.15, "325-10-28", "k", null, "Pasni"], [62.30, 25.00, "325-11-05", "k", null, "Gwadar"], [60.60, 25.20, null], [58.50, 25.30, null], [57.75, 25.55, "325-11-25", "k", null, "Jask"], [56.90, 26.30, null], [56.60, 26.80, null], [57.05, 27.10, "325-12-10", "k", null, "Harmozia (Anamis river)"], [57.05, 27.10, "324-01-25", "k", null, "Harmozia: departure"], [56.30, 26.70, null], [55.80, 26.75, "324-02-01", "k", null, "Oaracta (Qeshm)"], [53.50, 27.20, null], [51.50, 28.30, null], [50.80, 28.90, "324-02-20", "k", null, "Mesambria (Bushehr)"], [49.70, 29.70, null], [48.90, 30.00, null], [48.70, 30.30, "324-03-05", "k", "river", "Mouth of the Pasitigris"], [48.25, 32.19, "324-03-15", "v", "river", "Susa"]] },
+  { id: "m_darius333", n: "Darius III to Issus and back to Babylon", side: "P", mode: "land", tier: 1, cmd: "Darius III", src: ["LIV_CHR", "LIV_ISS"],
+    s: "The Great King marches from Babylon with his household and treasury, waits on the Syrian plain at Sochoi, then swings north through the Amanic Gates to fall on Alexander's rear at Issus. After the defeat he flees over the Euphrates.",
+    pts: [[44.42, 32.54, "333-07-25", "v", null, "Babylon: Darius departs"], [42.00, 34.50, null], [40.10, 35.40, null], [38.34, 35.88, "333-09-01", "k", null, "Thapsacus"], [37.00, 36.30, null], [36.40, 36.40, "333-10-10", "k", null, "Sochoi, Syrian plain"], [36.50, 37.15, "333-11-02", "k", null, "Amanic Gates"], [36.20, 36.85, "333-11-04", "k", null, "Issus"], [36.19, 36.75, "333-11-05", "v", null, "Battle of Issus"], [36.50, 37.10, null], [37.30, 36.60, null], [38.34, 35.88, "333-11-20", "k", null, "Thapsacus"], [40.10, 35.40, null], [42.00, 34.50, null], [44.42, 32.54, "333-12-15", "k", null, "Babylon"]] },
+  { id: "m_darius331", n: "Darius III to Gaugamela and his flight", side: "P", mode: "land", tier: 1, cmd: "Darius III", src: ["LIV_CHR", "LIV_GAU", "ARR_DAR"],
+    s: "From Babylon Darius assembles the levies of the eastern satrapies at Arbela and levels the plain of Gaugamela. After the battle he escapes to Ecbatana, and in June 330 flees east through the Caspian Gates, where his own officers kill him.",
+    pts: [[44.42, 32.54, "331-08-01", "k", null, "Babylon"], [44.30, 34.40, null], [44.01, 36.19, "331-09-15", "k", null, "Arbela"], [43.494, 36.573, "331-10-01", "v", null, "Gaugamela"], [44.01, 36.19, "331-10-02", "v", null, "Arbela"], [46.00, 35.60, null], [48.51, 34.80, "331-11-01", "k", null, "Ecbatana"], [48.51, 34.80, "330-06-01", "v", null, "Ecbatana: Darius flees"], [50.00, 35.30, null], [51.43, 35.59, "330-06-25", "k", null, "Rhagae"], [52.10, 35.30, "330-07-05", "k", null, "Caspian Gates"], [53.70, 35.45, "330-07-17", "v", null, "Choara: Darius killed"]] },
+  { id: "m_parmenion333", n: "Parmenion to Damascus", side: "M", mode: "land", tier: 3, cmd: "Parmenion", src: ["WIKI_CHR"],
+    s: "Detached after Issus to seize the Persian baggage and treasury sent ahead to Damascus.",
+    pts: [[36.19, 36.75, "333-11-07", "k", null, "Issus"], [36.30, 36.20, null], [36.35, 35.00, null], [36.30, 33.51, "333-11-20", "k", null, "Damascus"]] },
+  { id: "m_memnon", n: "Memnon's fleet in the Aegean", side: "P", mode: "sea", tier: 2, cmd: "Memnon of Rhodes; then Pharnabazus", src: ["LIV_CHR"],
+    s: "The Persian fleet under Memnon takes Chios and the cities of Lesbos in spring 333; Memnon dies before Mytilene in July and Pharnabazus continues until the news of Issus breaks the fleet up.",
+    pts: [[27.43, 37.04, "333-03-15", "k", null, "Halicarnassus"], [26.90, 37.60, null], [26.14, 38.37, "333-04-15", "k", null, "Chios"], [26.20, 38.90, null], [26.55, 39.11, "333-06-15", "k", null, "Mytilene: siege; Memnon dies"], [26.55, 39.11, "333-07-31", "v", null, "Mytilene"]] },
+  { id: "m_craterus324", n: "Craterus leads the veterans home", side: "M", mode: "land", tier: 2, cmd: "Craterus; Polyperchon", src: ["LIV_CHR"],
+    s: "Ten thousand discharged veterans set out from Opis for Macedon under Craterus, who was to replace Antipater as regent. They had reached Cilicia when the king died.",
+    pts: [[44.52, 33.53, "324-09-01", "k", null, "Opis"], [43.00, 34.90, null], [41.20, 36.30, null], [38.34, 35.88, "324-11-15", "k", null, "Thapsacus"], [36.90, 36.60, null], [35.80, 36.95, null], [34.90, 36.92, "323-04-01", "k", null, "Cilicia (Tarsus)"]] }
+];
+
+// ---------------------------------------------------------------- PLACES (ancient names; rank 1 always, 2 mid zoom, 3 close)
+const PLACES = [
+  ["Pella", 22.52, 40.76, 1], ["Athens", 23.73, 37.98, 1], ["Sparta", 22.43, 37.07, 3], ["Corinth", 22.88, 37.91, 3], ["Thebes", 23.32, 38.32, 2], ["Amphipolis", 23.85, 40.82, 3], ["Byzantium", 28.98, 41.01, 2],
+  ["Sardis", 28.04, 38.49, 1], ["Ephesus", 27.34, 37.94, 2], ["Miletus", 27.28, 37.53, 2], ["Halicarnassus", 27.43, 37.04, 2], ["Gordium", 31.99, 39.65, 2], ["Ancyra", 32.86, 39.93, 3], ["Tarsus", 34.90, 36.92, 2],
+  ["Issus", 36.20, 36.85, 3], ["Damascus", 36.30, 33.51, 2], ["Sidon", 35.37, 33.56, 3], ["Tyre", 35.19, 33.27, 1], ["Jerusalem", 35.22, 31.78, 3], ["Gaza", 34.46, 31.50, 2], ["Pelusium", 32.55, 31.04, 3], ["Memphis", 31.25, 29.85, 1],
+  ["Alexandria", 29.92, 31.20, 1], ["Siwa (Ammon)", 25.52, 29.20, 2], ["Cyrene", 21.86, 32.82, 3], ["Thapsacus", 38.34, 35.88, 3], ["Nineveh", 43.15, 36.36, 2], ["Arbela", 44.01, 36.19, 2], ["Babylon", 44.42, 32.54, 1],
+  ["Opis", 44.52, 33.53, 3], ["Susa", 48.25, 32.19, 1], ["Persepolis", 52.89, 29.93, 1], ["Pasargadae", 53.17, 30.20, 2], ["Ecbatana", 48.51, 34.80, 1], ["Rhagae", 51.43, 35.59, 3], ["Hecatompylos", 54.06, 35.95, 3],
+  ["Zadracarta", 54.43, 36.84, 3], ["Alexandria in Aria", 62.20, 34.34, 2], ["Phrada", 62.11, 32.37, 3], ["Alexandria in Arachosia", 65.71, 31.62, 2], ["Alexandria in the Caucasus", 69.28, 34.99, 2], ["Bactra", 66.90, 36.76, 1],
+  ["Maracanda", 66.96, 39.65, 1], ["Alexandria Eschate", 69.63, 40.28, 2], ["Nautaca", 66.83, 39.05, 3], ["Taxila", 72.83, 33.74, 1], ["Peucelaotis", 71.73, 34.15, 3], ["Bucephala", 73.60, 32.95, 3], ["Patala", 68.37, 25.39, 2],
+  ["Pura", 60.45, 27.20, 3], ["Harmozia", 57.05, 27.10, 3], ["Sinope", 35.15, 42.03, 3], ["Rhodes", 28.22, 36.44, 3], ["Cyprus (Salamis)", 33.90, 35.18, 3], ["Carthage", 10.32, 36.85, 3], ["Rome", 12.48, 41.89, 3], ["Syracuse", 15.29, 37.07, 3]
+];
+// satrapies and regions, c. 334 BC (approximate centres; boundaries are not shown)
+const REGIONS = [
+  ["MACEDONIA", 22.0, 41.35, 1], ["THRACE", 25.5, 42.2, 2], ["ILLYRIA", 19.8, 41.6, 3], ["HELLAS", 21.6, 38.9, 1], ["EPIRUS", 20.7, 39.6, 3],
+  ["HELLESPONTINE PHRYGIA", 28.3, 40.4, 3], ["LYDIA", 29.0, 39.1, 2], ["CARIA", 28.2, 37.3, 3], ["LYCIA", 29.7, 36.6, 3], ["PAMPHYLIA", 31.2, 37.1, 3], ["PHRYGIA", 31.0, 38.9, 2], ["CAPPADOCIA", 35.5, 38.9, 2],
+  ["CILICIA", 34.6, 37.2, 3], ["SYRIA", 37.5, 35.2, 2], ["PHOENICIA", 35.5, 33.9, 3], ["ARMENIA", 43.5, 39.5, 2], ["MESOPOTAMIA", 40.5, 35.8, 2], ["ASSYRIA", 43.2, 35.8, 3], ["BABYLONIA", 45.6, 31.3, 1],
+  ["EGYPT", 30.8, 27.8, 1], ["LIBYA", 24.0, 30.2, 3], ["ARABIA", 43.0, 28.0, 1], ["SUSIANA", 48.6, 31.4, 3], ["PERSIS", 54.2, 28.9, 1], ["MEDIA", 47.2, 36.0, 1], ["CARMANIA", 57.0, 29.2, 2], ["GEDROSIA", 62.0, 27.0, 2],
+  ["PARTHIA", 55.5, 35.4, 2], ["HYRCANIA", 53.6, 37.4, 3], ["ARIA", 62.0, 35.3, 2], ["DRANGIANA", 62.0, 31.2, 3], ["ARACHOSIA", 66.5, 32.5, 2], ["BACTRIA", 67.6, 35.9, 1], ["SOGDIANA", 65.6, 40.4, 1], ["SCYTHIA (SACAE)", 66.0, 42.5, 2],
+  ["MARGIANA", 61.8, 37.8, 3], ["PAROPAMISADAE", 69.3, 35.6, 3], ["GANDHARA", 71.8, 34.4, 2], ["KINGDOM OF PORUS", 73.9, 32.4, 3], ["SIND", 68.8, 26.6, 3], ["INDIA", 77.0, 28.0, 1], ["CHORASMIA", 60.5, 41.8, 3]
+];
+const SEAS = [
+  ["AEGEAN SEA", 25.2, 38.3, 2], ["THE GREAT SEA", 20.0, 34.2, 1], ["PONTUS EUXINUS", 34.0, 43.2, 1], ["HYRCANIAN (CASPIAN) SEA", 51.0, 40.6, 1], ["PERSIAN GULF", 52.0, 26.6, 1], ["ERYTHRAEAN SEA", 62.0, 21.8, 1], ["PROPONTIS", 28.0, 40.7, 3]
+];
+
+</script>
+<script>
+"use strict";
+// ============================================================================
+//  The Campaigns of Alexander — CesiumJS exhibit. Part 1: time & data
+// ============================================================================
+const $ = (s, r = document) => r.querySelector(s);
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+const REDUCED = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const MOBILE = window.matchMedia && window.matchMedia("(max-width: 900px)").matches;
+const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const RAD = Math.PI / 180;
+
+// ---------------------------------------------------------------- Julian-calendar time model (years BC)
+// Dates in the data are "YYY-MM-DD" in years BC, Julian calendar (the convention of ancient historians).
+function jdnJulian(yAstro, m, d) { const a = Math.floor((14 - m) / 12), y = yAstro + 4800 - a, mm = m + 12 * a - 3; return d + Math.floor((153 * mm + 2) / 5) + 365 * y + Math.floor(y / 4) - 32083; }
+function julianFromJDN(J) { const c = J + 32082, d = Math.floor((4 * c + 3) / 1461), e = c - Math.floor(1461 * d / 4), m = Math.floor((5 * e + 2) / 153); return { y: d - 4800 + Math.floor(m / 10), m: m + 3 - 12 * Math.floor(m / 10), d: e - Math.floor((153 * m + 2) / 5) + 1 }; }
+function parseBC(s) { const [y, m, d] = s.split("-").map(Number); return { y, m, d }; }
+const JDN0 = jdnJulian(1 - 336, 3, 1);                  // 1 March 336 BC
+const JDN1 = jdnJulian(1 - 323, 7, 15);                 // 15 July 323 BC
+const NDAYS = JDN1 - JDN0;
+function dayOf(s) { const { y, m, d } = parseBC(s); return jdnJulian(1 - y, m, d) - JDN0; }
+function dateOf(t) { const j = julianFromJDN(JDN0 + Math.floor(t)); return { y: 1 - j.y, m: j.m, d: j.d }; }   // y in BC
+const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+const MON3 = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const seasonOf = m => m === 12 || m <= 2 ? "Winter" : m <= 5 ? "Spring" : m <= 8 ? "Summer" : "Autumn";
+function fmtLong(t) { const d = dateOf(t); return d.d + " " + MONTHS[d.m - 1] + " " + d.y + " BC"; }
+function fmtShort(t) { const d = dateOf(t); return d.d + " " + MON3[d.m - 1] + " " + d.y + " BC"; }
+function fmtPrec(s, p, short) {   // a dated field with its precision
+  const d = parseBC(s), M = short ? MON3 : MONTHS;
+  if (p === "d") return d.d + " " + M[d.m - 1] + " " + d.y + " BC";
+  if (p === "m") return M[d.m - 1] + " " + d.y + " BC";
+  if (p === "s") return seasonOf(d.m) + " " + d.y + " BC";
+  return d.y + " BC";
+}
+function fmtRange(e, short) {
+  const a = fmtPrec(e.d, e.p, short);
+  if (!e.e) return a;
+  const b = fmtPrec(e.e, e.pe || e.p, short);
+  if (a === b) return a;
+  const da = parseBC(e.d), db = parseBC(e.e), M = short ? MON3 : MONTHS;
+  if (e.p === "m" && (e.pe || e.p) === "m" && da.y === db.y) return M[da.m - 1] + " – " + M[db.m - 1] + " " + da.y + " BC";
+  if (e.p === "d" && (e.pe || e.p) === "m" && da.y === db.y) return da.d + " " + M[da.m - 1] + " – " + M[db.m - 1] + " " + da.y + " BC";
+  return a + " – " + b;
+}
+const PREC_NAME = { d: "Dated to the day", m: "Dated to the month", s: "Dated to the season", y: "Dated to the year" };
+
+// ---------------------------------------------------------------- events
+const COMBAT = new Set(["battle", "siege"]);
+const EVENTS = EVENTS_DATA.map(e => {
+  const o = Object.assign({}, e);
+  o.t0 = dayOf(e.d);
+  // display span: a month-precision date occupies the month, a season the season, for the timeline mark
+  const d = parseBC(e.d);
+  const monthStart = jdnJulian(1 - d.y, d.m, 1) - JDN0;
+  const spanEnd = e.e ? dayOf(e.e) + 1 : e.p === "d" ? o.t0 + 1 : e.p === "m" ? monthStart + 30 : e.p === "s" ? o.t0 + 45 : o.t0 + 180;
+  if (!e.e && e.p === "m") o.t0 = monthStart;
+  o.t1 = Math.max(o.t0 + 1, spanEnd);
+  o.live0 = e.p === "d" ? o.t0 : e.p === "m" ? monthStart : e.p === "s" ? o.t0 - 35 : o.t0 - 120;   // when the marker comes alive
+  o.live1 = e.e ? dayOf(e.e) + 1 : e.p === "d" ? o.t0 + 1 : e.p === "m" ? monthStart + 30 : e.p === "s" ? o.t0 + 40 : o.t0 + 150;
+  o.sig = e.q === "v" ? "" : "≈";
+  return o;
+}).sort((a, b) => a.t0 - b.t0 || a.t - b.t);
+const EV_BY_ID = Object.fromEntries(EVENTS.map(e => [e.id, e]));
+const LANE_NAME = Object.fromEntries(LANES.map(l => [l.id, l.name]));
+
+// ---------------------------------------------------------------- movements: timing
+function segKm(a, b) { const dx = (b[0] - a[0]) * Math.cos((a[1] + b[1]) / 2 * RAD), dy = b[1] - a[1]; return Math.hypot(dx, dy) * 111.2; }
+const MOVES = MOVEMENTS.map(m => {
+  const pts = m.pts.map(p => ({ lon: p[0], lat: p[1], date: p[2] || null, q: p[3] || null, mode: p[4] || null, label: p[5] || null }));
+  // mode inherits from the previous explicit mode
+  let cur = m.mode; pts.forEach(p => { if (p.mode) cur = p.mode; else p.mode = cur; });
+  const cum = [0];
+  for (let i = 1; i < pts.length; i++) cum.push(cum[i - 1] + segKm([pts[i - 1].lon, pts[i - 1].lat], [pts[i].lon, pts[i].lat]));
+  const di = pts.map((p, i) => p.date ? i : -1).filter(i => i >= 0);
+  const T = new Array(pts.length).fill(null);
+  let k = 0;
+  while (k < di.length) {
+    let j = k; while (j + 1 < di.length && pts[di[j + 1]].date === pts[di[k]].date) j++;
+    const base = dayOf(pts[di[k]].date);
+    if (j === k) T[di[k]] = base + 0.5;
+    else { const d0 = cum[di[k]], d1 = cum[di[j]], span = Math.max(1e-6, d1 - d0); for (let q = k; q <= j; q++) T[di[q]] = base + 0.12 + 0.76 * (d1 > d0 ? (cum[di[q]] - d0) / span : (q - k) / (j - k)); }
+    k = j + 1;
+  }
+  for (let a = 0; a < di.length - 1; a++) { const i0 = di[a], i1 = di[a + 1], d0 = cum[i0], d1 = cum[i1]; for (let i = i0 + 1; i < i1; i++) T[i] = T[i0] + (T[i1] - T[i0]) * ((cum[i] - d0) / Math.max(1e-6, d1 - d0)); }
+  const segApprox = [];
+  for (let i = 1; i < pts.length; i++) { let a = i - 1; while (a > 0 && !pts[a].date) a--; let b = i; while (b < pts.length - 1 && !pts[b].date) b++; segApprox.push(pts[a].q !== "v" || pts[b].q !== "v"); }
+  return Object.assign({}, m, { P: pts, T, cum, segApprox, tStart: T[0], tEnd: T[T.length - 1], km: cum[cum.length - 1] });
+});
+function movePos(m, t) {
+  const T = m.T, P = m.P;
+  if (t <= T[0]) return { lon: P[0].lon, lat: P[0].lat, i: 0, f: 0, mode: P[0].mode };
+  if (t >= T[T.length - 1]) { const n = P.length - 1; return { lon: P[n].lon, lat: P[n].lat, i: n - 1, f: 1, mode: P[n].mode }; }
+  let i = 0; while (i < T.length - 2 && T[i + 1] < t) i++;
+  const f = (t - T[i]) / Math.max(1e-9, T[i + 1] - T[i]);
+  return { lon: lerp(P[i].lon, P[i + 1].lon, f), lat: lerp(P[i].lat, P[i + 1].lat, f), i, f, mode: P[i + 1].mode };
+}
+function moveHeading(m, t) { const a = movePos(m, t - 1), b = movePos(m, t + 1); const dx = (b.lon - a.lon) * Math.cos(a.lat * RAD), dy = b.lat - a.lat; return Math.hypot(dx, dy) < 1e-6 ? null : Math.atan2(dx, dy); }
+
+// ---------------------------------------------------------------- emblems
+function drawEmblem(ctx, side, w, h) {
+  ctx.save();
+  if (side === "M") {     // the sixteen-ray star of the Argead house (the Vergina Sun), gold on purple
+    ctx.fillStyle = "#5B2C83"; ctx.fillRect(0, 0, w, h); ctx.fillStyle = "#E8C25A";
+    const cx = w / 2, cy = h / 2, R = Math.min(w, h) * 0.42;
+    ctx.beginPath();
+    for (let i = 0; i < 32; i++) { const a = i * Math.PI / 16, r = i % 2 ? R * 0.42 : R; ctx.lineTo(cx + Math.cos(a) * r, cy + Math.sin(a) * r); }
+    ctx.closePath(); ctx.fill(); ctx.fillStyle = "#5B2C83"; ctx.beginPath(); ctx.arc(cx, cy, R * 0.18, 0, 7); ctx.fill();
+    ctx.fillStyle = "#E8C25A"; ctx.beginPath(); ctx.arc(cx, cy, R * 0.1, 0, 7); ctx.fill();
+  } else if (side === "P") {  // a winged disc, the Achaemenid royal emblem simplified, gold on blue
+    ctx.fillStyle = "#1C6B8A"; ctx.fillRect(0, 0, w, h); ctx.fillStyle = "#E8C25A"; ctx.strokeStyle = "#E8C25A"; ctx.lineWidth = Math.max(1, h * 0.05);
+    const cx = w / 2, cy = h * 0.5; ctx.beginPath(); ctx.arc(cx, cy, h * 0.16, 0, 7); ctx.fill();
+    [-1, 1].forEach(s => { ctx.beginPath(); ctx.moveTo(cx + s * h * 0.14, cy - h * 0.06); ctx.quadraticCurveTo(cx + s * w * 0.32, cy - h * 0.34, cx + s * w * 0.46, cy - h * 0.12); ctx.quadraticCurveTo(cx + s * w * 0.3, cy - h * 0.02, cx + s * h * 0.14, cy + h * 0.08); ctx.closePath(); ctx.fill(); });
+    ctx.beginPath(); ctx.moveTo(cx - h * 0.1, cy + h * 0.14); ctx.lineTo(cx, cy + h * 0.38); ctx.lineTo(cx + h * 0.1, cy + h * 0.14); ctx.closePath(); ctx.fill();
+  } else {                     // local powers: ochre with a plain roundel
+    ctx.fillStyle = "#B0782A"; ctx.fillRect(0, 0, w, h); ctx.fillStyle = "#F3EAD3"; ctx.beginPath(); ctx.arc(w / 2, h / 2, Math.min(w, h) * 0.22, 0, 7); ctx.fill();
+  }
+  ctx.strokeStyle = "rgba(0,0,0,.45)"; ctx.lineWidth = 1; ctx.strokeRect(0.5, 0.5, w - 1, h - 1);
+  ctx.restore();
+}
+const EMBLEM_URL = {};
+function emblemURL(side) { if (EMBLEM_URL[side]) return EMBLEM_URL[side]; const c = document.createElement("canvas"); c.width = 60; c.height = 38; drawEmblem(c.getContext("2d"), side, 60, 38); return (EMBLEM_URL[side] = c.toDataURL()); }
+const EMBLEM_NAME = { M: "Sixteen-ray star of the Argead kings (the 'Vergina Sun'), a display convention", P: "Winged disc of the Achaemenid kings, a display convention", X: "Local kingdoms and peoples" };
+
+// ============================================================================
+//  Part 2: the globe (CesiumJS)
+// ============================================================================
+const SC = {};
+const C = Cesium;
+const SIDE_COL = { M: "#7A3FB0", P: "#2C8FB5", X: "#C98A2E" };
+const RESCOL = { A: "#5B2C83", B: "#9E2B25", I: "#5B5246", "-": "#B8912F" };
+const ST = { t: dayOf("336-10-15"), playing: false, speed: 1, rate: 1, guided: true, hold: true, showPast: true, showTraces: true, showPlaces: true, showRegions: true,
+  layers: { route: true, columns: true, fleets: true, battle: true, siege: true, foundation: true, court: true, oracle: true, passage: true, death: true, naval: true },
+  lastDay: -1, lastInteract: performance.now(), attract: false, fly: null, openId: null, time: 0, terrainReady: false };
+let W_PX = 1, H_PX = 1;
+
+function jd(t) { return new C.JulianDate(JDN0 + Math.floor(t), (t - Math.floor(t)) * 86400); }
+
+async function initGlobe() {
+  const token = (window.ION_TOKEN || "").trim();
+  const useIon = token.length > 20;
+  if (useIon) C.Ion.defaultAccessToken = token; else C.Ion.defaultAccessToken = "";
+  const opts = { baseLayerPicker: false, geocoder: false, timeline: false, animation: false, sceneModePicker: false, navigationHelpButton: false, homeButton: false,
+    infoBox: false, selectionIndicator: false, fullscreenButton: false, shouldAnimate: false, requestRenderMode: false, scene3DOnly: true, skyBox: false, creditContainer: "credits" };
+  if (useIon) {
+    opts.terrain = C.Terrain.fromWorldTerrain({ requestVertexNormals: true });
+    opts.baseLayer = C.ImageryLayer.fromProviderAsync(C.IonImageryProvider.fromAssetId(3954));   // Sentinel-2 cloudless (ion)
+  } else {
+    opts.baseLayer = C.ImageryLayer.fromProviderAsync(C.TileMapServiceImageryProvider.fromUrl(C.buildModuleUrl("Assets/Textures/NaturalEarthII")));
+  }
+  const viewer = new C.Viewer("gl", opts);
+  SC.viewer = viewer; SC.scene = viewer.scene; SC.camera = viewer.camera; SC.useIon = useIon;
+  const scene = viewer.scene;
+  scene.globe.enableLighting = false; scene.globe.depthTestAgainstTerrain = false;
+  scene.globe.baseColor = C.Color.fromCssColorString("#C9BFA9");
+  scene.skyAtmosphere.show = true; scene.fog.enabled = true; scene.fog.density = 0.00012;
+  scene.screenSpaceCameraController.minimumZoomDistance = 2500; scene.screenSpaceCameraController.maximumZoomDistance = 1.6e7;
+  scene.screenSpaceCameraController.enableCollisionDetection = true;
+  scene.postProcessStages.fxaa.enabled = true;
+  viewer.resolutionScale = Math.min(window.devicePixelRatio || 1, MOBILE ? 1.5 : 2) / (window.devicePixelRatio || 1);
+  // muted, sepia-leaning imagery so the modern land cover reads as background, not as the subject
+  const base = viewer.imageryLayers.get(0);
+  base.saturation = useIon ? 0.35 : 0.45; base.brightness = 1.06; base.contrast = 1.05; base.gamma = 1.05;
+  const tint = document.createElement("canvas"); tint.width = tint.height = 4; const tx = tint.getContext("2d"); tx.fillStyle = "#C9A66B"; tx.fillRect(0, 0, 4, 4);
+  const tintLayer = new C.ImageryLayer(new C.SingleTileImageryProvider({ url: tint.toDataURL(), tileWidth: 4, tileHeight: 4 }));
+  tintLayer.alpha = 0.16; viewer.imageryLayers.add(tintLayer);
+  // opening view: the whole theatre from the Adriatic to the Indus
+  viewer.camera.setView({ destination: C.Cartesian3.fromDegrees(47, 24, 6.4e6), orientation: { heading: 0, pitch: -C.Math.PI_OVER_TWO * 0.92, roll: 0 } });
+  const ds = new C.CustomDataSource("exhibit"); await viewer.dataSources.add(ds); SC.ds = ds;
+  initLabels(); initMarkers(); initRoutes(); initColumns();
+  if (useIon) sampleRouteHeights(); else ST.terrainReady = true;
+  // user interaction → explore mode
+  const cv = viewer.canvas;
+  ["pointerdown", "wheel", "touchstart"].forEach(ev => cv.addEventListener(ev, () => { if (ST.guided) setGuided(false); ST.fly = null; poke(); }, { passive: true }));
+  cv.addEventListener("click", ev => { const hit = pickMarker(ev.clientX, ev.clientY); if (hit) openEvent(hit.id); });
+  cv.addEventListener("mousemove", ev => { cv.style.cursor = pickMarker(ev.clientX, ev.clientY) ? "pointer" : ""; });
+  return viewer;
+}
+
+// ------------------------------------------------------------------ labels (ancient places, regions, seas)
+function initLabels() {
+  const ds = SC.ds;
+  const far = new C.DistanceDisplayCondition(0, 1.2e7);
+  SC.placeEnts = PLACES.map(([n, lon, lat, rank]) => ds.entities.add({
+    position: C.Cartesian3.fromDegrees(lon, lat),
+    point: { pixelSize: rank === 1 ? 5 : 4, color: C.Color.fromCssColorString("#F3EAD3"), outlineColor: C.Color.fromCssColorString("#2b2219"), outlineWidth: 1.5, heightReference: C.HeightReference.CLAMP_TO_GROUND, disableDepthTestDistance: Number.POSITIVE_INFINITY,
+      distanceDisplayCondition: new C.DistanceDisplayCondition(0, rank === 1 ? 1.2e7 : rank === 2 ? 3.2e6 : 1.4e6) },
+    label: { text: n, font: (rank === 1 ? "15px" : "13px") + ' "IM Fell English", Georgia, serif', fillColor: C.Color.fromCssColorString("#2b2219"), outlineColor: C.Color.fromCssColorString("#F3EAD3"), outlineWidth: 4, style: C.LabelStyle.FILL_AND_OUTLINE,
+      pixelOffset: new C.Cartesian2(8, 0), horizontalOrigin: C.HorizontalOrigin.LEFT, verticalOrigin: C.VerticalOrigin.CENTER, heightReference: C.HeightReference.CLAMP_TO_GROUND, disableDepthTestDistance: Number.POSITIVE_INFINITY,
+      distanceDisplayCondition: new C.DistanceDisplayCondition(0, rank === 1 ? 1.2e7 : rank === 2 ? 3.2e6 : 1.4e6) }
+  }));
+  const spaced = s => [...s].join("\u2009");
+  SC.regionEnts = REGIONS.map(([n, lon, lat, rank]) => ds.entities.add({
+    position: C.Cartesian3.fromDegrees(lon, lat),
+    label: { text: spaced(n), font: (rank === 1 ? "17px" : rank === 2 ? "14px" : "12px") + ' "IM Fell English SC", Georgia, serif', fillColor: C.Color.fromCssColorString("#4a3220").withAlpha(0.85), outlineColor: C.Color.fromCssColorString("#EFE5CC").withAlpha(0.6), outlineWidth: 3,
+      style: C.LabelStyle.FILL_AND_OUTLINE, horizontalOrigin: C.HorizontalOrigin.CENTER, heightReference: C.HeightReference.CLAMP_TO_GROUND, disableDepthTestDistance: Number.POSITIVE_INFINITY,
+      distanceDisplayCondition: new C.DistanceDisplayCondition(rank === 1 ? 0 : rank === 2 ? 0 : 0, rank === 1 ? 1.5e7 : rank === 2 ? 6e6 : 2.5e6), scaleByDistance: new C.NearFarScalar(4e5, 1.4, 8e6, 0.9) }
+  }));
+  SC.seaEnts = SEAS.map(([n, lon, lat, rank]) => ds.entities.add({
+    position: C.Cartesian3.fromDegrees(lon, lat),
+    label: { text: spaced(n), font: 'italic ' + (rank === 1 ? "16px" : "13px") + ' "IM Fell English", Georgia, serif', fillColor: C.Color.fromCssColorString("#1e2c2e").withAlpha(0.8), outlineColor: C.Color.fromCssColorString("#A7B3A7").withAlpha(0.5), outlineWidth: 3,
+      style: C.LabelStyle.FILL_AND_OUTLINE, horizontalOrigin: C.HorizontalOrigin.CENTER, disableDepthTestDistance: Number.POSITIVE_INFINITY, distanceDisplayCondition: new C.DistanceDisplayCondition(0, rank === 1 ? 1.5e7 : 4e6) }
+  }));
+}
+
+// ------------------------------------------------------------------ event markers (billboards drawn on canvas)
+const ICON_CACHE = {};
+function iconCanvas(kind, res, size = 128) {
+  const key = kind + res + size; if (ICON_CACHE[key]) return ICON_CACHE[key];
+  const c = document.createElement("canvas"); c.width = c.height = size; const x = c.getContext("2d"), r = size / 2;
+  const gilt = kind === "oracle" || kind === "court" || kind === "foundation" || kind === "death";
+  x.beginPath(); x.arc(r, r, r * 0.9, 0, 7); x.fillStyle = kind === "death" ? "#2b2219" : gilt ? "#C9A24A" : "#F3EAD3"; x.fill();
+  x.lineWidth = size * 0.1; x.strokeStyle = kind === "death" ? "#C9A24A" : gilt ? "#7A5A1E" : RESCOL[res] || "#5B5246"; x.stroke();
+  x.lineWidth = size * 0.02; x.strokeStyle = "#231C15"; x.beginPath(); x.arc(r, r, r * 0.95, 0, 7); x.stroke();
+  x.save(); x.translate(r, r); x.strokeStyle = kind === "death" ? "#F3EAD3" : "#231C15"; x.fillStyle = x.strokeStyle; x.lineCap = "round"; x.lineJoin = "round";
+  const L = r * 0.5, lw = size * 0.065;
+  if (kind === "battle") { x.lineWidth = lw; [-1, 1].forEach(sgn => { x.save(); x.rotate(sgn * Math.PI / 4); x.beginPath(); x.moveTo(0, -L); x.lineTo(0, L * 0.7); x.stroke(); x.beginPath(); x.moveTo(-L * 0.3, L * 0.45); x.lineTo(L * 0.3, L * 0.45); x.stroke(); x.restore(); }); }
+  else if (kind === "siege") { x.lineWidth = lw * 0.8; x.beginPath(); x.rect(-L * 0.9, -L * 0.5, L * 1.8, L * 1.3); x.stroke(); for (let i = -1; i <= 1; i++) { x.fillRect(i * L * 0.6 - L * 0.18, -L * 0.95, L * 0.36, L * 0.45); } }
+  else if (kind === "foundation") { x.lineWidth = lw * 0.8; x.beginPath(); x.moveTo(-L, L * 0.8); x.lineTo(-L, -L * 0.2); x.lineTo(-L * 0.35, -L * 0.2); x.lineTo(-L * 0.35, -L * 0.9); x.lineTo(L * 0.35, -L * 0.9); x.lineTo(L * 0.35, -L * 0.2); x.lineTo(L, -L * 0.2); x.lineTo(L, L * 0.8); x.closePath(); x.stroke(); }
+  else if (kind === "passage") { x.lineWidth = lw; x.beginPath(); x.moveTo(-L * 0.9, L * 0.3); x.quadraticCurveTo(-L * 0.1, -L * 0.7, L * 0.6, -L * 0.3); x.stroke(); x.beginPath(); x.moveTo(L * 0.9, -L * 0.25); x.lineTo(L * 0.3, -L * 0.7); x.lineTo(L * 0.4, -L * 0.05); x.closePath(); x.fill(); }
+  else if (kind === "court") { x.lineWidth = lw * 0.8; x.beginPath(); x.moveTo(-L * 0.9, L * 0.7); x.lineTo(-L * 0.9, -L * 0.3); x.lineTo(-L * 0.45, L * 0.1); x.lineTo(0, -L * 0.8); x.lineTo(L * 0.45, L * 0.1); x.lineTo(L * 0.9, -L * 0.3); x.lineTo(L * 0.9, L * 0.7); x.closePath(); x.fill(); }
+  else if (kind === "oracle") { x.fillStyle = "#3a2a12"; x.beginPath(); x.arc(0, 0, L * 0.45, 0, 7); x.fill(); x.lineWidth = lw * 0.7; x.strokeStyle = "#3a2a12"; for (let i = 0; i < 8; i++) { const a = i * Math.PI / 4; x.beginPath(); x.moveTo(Math.cos(a) * L * 0.6, Math.sin(a) * L * 0.6); x.lineTo(Math.cos(a) * L, Math.sin(a) * L); x.stroke(); } }
+  else if (kind === "death") { x.lineWidth = lw * 0.9; x.beginPath(); x.moveTo(0, -L); x.lineTo(0, L); x.moveTo(-L * 0.6, -L * 0.35); x.lineTo(L * 0.6, -L * 0.35); x.stroke(); }
+  else if (kind === "naval") { x.lineWidth = lw * 0.9; x.beginPath(); x.moveTo(0, -L * 0.75); x.lineTo(0, L * 0.85); x.stroke(); x.beginPath(); x.arc(0, -L * 0.85, L * 0.17, 0, 7); x.stroke(); x.beginPath(); x.moveTo(-L * 0.45, -L * 0.4); x.lineTo(L * 0.45, -L * 0.4); x.stroke(); x.beginPath(); x.arc(0, L * 0.15, L * 0.72, Math.PI * 0.18, Math.PI * 0.82); x.stroke(); }
+  x.restore();
+  return (ICON_CACHE[key] = c);
+}
+function ringCanvas() {
+  if (ICON_CACHE.ring) return ICON_CACHE.ring;
+  const c = document.createElement("canvas"); c.width = c.height = 128; const x = c.getContext("2d"); x.lineWidth = 6; x.strokeStyle = "#ffffff"; x.beginPath(); x.arc(64, 64, 58, 0, 7); x.stroke();
+  return (ICON_CACHE.ring = c);
+}
+function initMarkers() {
+  SC.markers = EVENTS.map((e, i) => {
+    const pos = C.Cartesian3.fromDegrees(e.lon, e.lat);
+    const mk = { e, pos, base: e.t === 1 ? 30 : e.t === 2 ? 24 : 18, phase: i * 0.37, state: "hidden" };
+    mk.bb = SC.ds.entities.add({ position: pos, show: false,
+      billboard: { image: iconCanvas(e.k, e.r), width: mk.base, height: mk.base, heightReference: C.HeightReference.CLAMP_TO_GROUND, disableDepthTestDistance: Number.POSITIVE_INFINITY, verticalOrigin: C.VerticalOrigin.CENTER,
+        scale: new C.CallbackProperty(() => mk.scale || 1, false), color: new C.CallbackProperty(() => mk.dim ? C.Color.WHITE.withAlpha(0.6) : C.Color.WHITE, false) } });
+    mk.ring = SC.ds.entities.add({ position: pos, show: false,
+      billboard: { image: ringCanvas(), width: 128, height: 128, heightReference: C.HeightReference.CLAMP_TO_GROUND, disableDepthTestDistance: Number.POSITIVE_INFINITY, verticalOrigin: C.VerticalOrigin.CENTER,
+        scale: new C.CallbackProperty(() => mk.ringScale || 0.3, false), color: new C.CallbackProperty(() => C.Color.fromCssColorString(RESCOL[e.r] || "#B8912F").withAlpha(mk.ringAlpha || 0), false) } });
+    if (e.k === "siege" && e.t1 - e.t0 > 5) {
+      mk.siege = SC.ds.entities.add({ position: pos, show: false, ellipse: { semiMajorAxis: 9000, semiMinorAxis: 9000, material: C.Color.fromCssColorString("#5B2C83").withAlpha(0.2), classificationType: C.ClassificationType.TERRAIN } });
+    }
+    return mk;
+  });
+}
+
+// ------------------------------------------------------------------ routes: dense polylines with terrain heights (sampled when ion terrain is on)
+function initRoutes() {
+  SC.routes = MOVES.map(m => {
+    // densify each segment into ~10 km steps (land) / 40 km (sea), keeping per-point time and approx flag
+    const pts = []; // {lon, lat, t, approx, mode}
+    for (let i = 1; i < m.P.length; i++) {
+      const a = m.P[i - 1], b = m.P[i], mode = b.mode, km = segKm([a.lon, a.lat], [b.lon, b.lat]);
+      const steps = Math.max(1, Math.ceil(km / (mode === "land" ? 10 : 40)));
+      for (let s = (i === 1 ? 0 : 1); s <= steps; s++) { const f = s / steps; pts.push({ lon: lerp(a.lon, b.lon, f), lat: lerp(a.lat, b.lat, f), t: lerp(m.T[i - 1], m.T[i], f), approx: m.segApprox[i - 1], mode, h: 0 }); }
+    }
+    const carts = pts.map(p => C.Cartesian3.fromDegrees(p.lon, p.lat, p.h + 30));
+    const col = C.Color.fromCssColorString(SIDE_COL[m.side]);
+    const r = { m, pts, carts, ents: [] };
+    // one polyline per run of equal approx flag; positions revealed by time
+    let runStart = 0;
+    for (let i = 1; i <= pts.length; i++) {
+      if (i === pts.length || pts[i].approx !== pts[runStart].approx) {
+        const s0 = runStart, s1 = i - 1, approx = pts[s0].approx;
+        const positions = new C.CallbackProperty(() => {
+          const t = ST.t; if (t < pts[s0].t) return [];
+          const out = [];
+          for (let k = s0; k <= s1 && pts[k].t <= t; k++) out.push(r.carts[k]);
+          if (out.length < 1) return [];
+          // interpolated head
+          const last = s0 + out.length - 1;
+          if (last < s1 && pts[last + 1].t > t) { const f = (t - pts[last].t) / Math.max(1e-6, pts[last + 1].t - pts[last].t); out.push(C.Cartesian3.lerp(r.carts[last], r.carts[last + 1], f, new C.Cartesian3())); }
+          return out.length >= 2 ? out : [];
+        }, false);
+        const alpha = new C.CallbackProperty(() => { const past = ST.t - m.tEnd; const a = past <= 0 ? 0.95 : ST.showTraces ? lerp(0.95, 0.3, clamp(past / 240, 0, 1)) : lerp(0.95, 0, clamp(past / 60, 0, 1)); return a; }, false);
+        const width = m.tier === 1 ? 5 : 4;
+        r.ents.push(SC.ds.entities.add({ show: false, polyline: { positions, width: width + 3, material: new C.ColorMaterialProperty(new C.CallbackProperty(() => C.Color.fromCssColorString("#F3EAD3").withAlpha(alpha.getValue() * 0.55), false)), arcType: C.ArcType.GEODESIC, depthFailMaterial: C.Color.fromCssColorString("#F3EAD3").withAlpha(0.15) } }));
+        r.ents.push(SC.ds.entities.add({ show: false, polyline: { positions, width,
+          material: approx ? new C.PolylineDashMaterialProperty({ color: new C.CallbackProperty(() => col.withAlpha(alpha.getValue()), false), dashLength: 14 }) : new C.ColorMaterialProperty(new C.CallbackProperty(() => col.withAlpha(alpha.getValue()), false)),
+          arcType: C.ArcType.GEODESIC, depthFailMaterial: new C.PolylineDashMaterialProperty({ color: col.withAlpha(0.3), dashLength: 8 }) } }));
+        runStart = i;
+      }
+    }
+    return r;
+  });
+}
+async function sampleRouteHeights() {
+  try {
+    const tp = SC.viewer.terrainProvider;
+    for (const r of SC.routes) {
+      const cg = r.pts.map(p => C.Cartographic.fromDegrees(p.lon, p.lat));
+      for (let i = 0; i < cg.length; i += 300) { await C.sampleTerrainMostDetailed(tp, cg.slice(i, i + 300)); }
+      cg.forEach((c, i) => { r.pts[i].h = r.pts[i].mode === "land" ? Math.max(0, c.height || 0) : 0; r.carts[i] = C.Cartesian3.fromDegrees(r.pts[i].lon, r.pts[i].lat, r.pts[i].h + 40); });
+    }
+  } catch (err) { console.warn("terrain sampling failed; routes drawn at sea level", err); }
+  ST.terrainReady = true;
+}
+
+// ------------------------------------------------------------------ marching columns and fleets (head markers)
+function counterCanvas(side, sea) {
+  const key = "cnt" + side + (sea ? "s" : "l"); if (ICON_CACHE[key]) return ICON_CACHE[key];
+  const c = document.createElement("canvas"); c.width = 96; c.height = 96; const x = c.getContext("2d");
+  if (sea) {   // a hull with a single sail
+    x.fillStyle = "#3b2a1a"; x.beginPath(); x.moveTo(12, 66); x.lineTo(84, 66); x.quadraticCurveTo(72, 84, 48, 84); x.quadraticCurveTo(24, 84, 12, 66); x.closePath(); x.fill();
+    x.fillStyle = "#EFE6D0"; x.beginPath(); x.moveTo(48, 14); x.quadraticCurveTo(78, 40, 50, 62); x.lineTo(48, 62); x.closePath(); x.fill();
+    x.strokeStyle = "#3b2a1a"; x.lineWidth = 3; x.beginPath(); x.moveTo(48, 10); x.lineTo(48, 66); x.stroke();
+    x.fillStyle = SIDE_COL[side]; x.fillRect(12, 60, 72, 7);
+  } else {     // an army block bearing its emblem, seen from above
+    x.fillStyle = "rgba(0,0,0,.28)"; x.beginPath(); x.ellipse(48, 74, 34, 12, 0, 0, 7); x.fill();
+    x.save(); x.translate(14, 24); drawEmblem(x, side, 68, 44); x.restore();
+    x.strokeStyle = "#231C15"; x.lineWidth = 3; x.strokeRect(14, 24, 68, 44);
+  }
+  return (ICON_CACHE[key] = c);
+}
+function initColumns() {
+  SC.cols = MOVES.map(m => {
+    const c = { m, active: false, lon: 0, lat: 0, phase: Math.random() * 6 };
+    c.pos = new C.CallbackProperty(() => C.Cartesian3.fromDegrees(c.lon, c.lat), false);
+    c.land = SC.ds.entities.add({ position: c.pos, show: false, billboard: { image: counterCanvas(m.side, false), width: 34, height: 34, heightReference: C.HeightReference.CLAMP_TO_GROUND, disableDepthTestDistance: Number.POSITIVE_INFINITY, verticalOrigin: C.VerticalOrigin.CENTER, rotation: new C.CallbackProperty(() => c.rot || 0, false), alignedAxis: C.Cartesian3.UNIT_Z } });
+    c.ship = SC.ds.entities.add({ position: c.pos, show: false, billboard: { image: counterCanvas(m.side, true), width: 32, height: 32, heightReference: C.HeightReference.CLAMP_TO_GROUND, disableDepthTestDistance: Number.POSITIVE_INFINITY, verticalOrigin: C.VerticalOrigin.CENTER } });
+    return c;
+  });
+}
+
+// ------------------------------------------------------------------ per-frame globe update
+function updateGlobe(t, dt) {
+  const layerOn = e => ST.layers[e.k] !== false;
+  const camH = SC.scene.camera.positionCartographic.height;
+  const pulse = ST.time * 0.7;
+  SC.markers.forEach((mk, i) => {
+    const e = mk.e;
+    const live = t >= e.live0 && t <= e.live1, recent = t > e.live1 && t <= e.live1 + (e.t === 1 ? 40 : 20), past = t > e.live1 + (e.t === 1 ? 40 : 20);
+    const keepPast = ST.showPast && (COMBAT.has(e.k) || e.k === "foundation" || e.k === "death");
+    const vis = layerOn(e) && t >= e.live0 && (live || recent || keepPast);
+    mk.bb.show = vis; mk.state = vis ? (live ? "live" : recent ? "recent" : "past") : "hidden";
+    if (!vis) { mk.ring.show = false; if (mk.siege) mk.siege.show = false; return; }
+    mk.scale = live ? 1.2 : recent ? 1 : 0.62; mk.dim = past;
+    const pulsing = live && COMBAT.has(e.k) && !REDUCED;
+    mk.ring.show = pulsing;
+    if (pulsing) { const ph = (pulse + i * 0.37) % 1; mk.ringScale = 0.25 + ph * 0.55; mk.ringAlpha = (1 - ph) * 0.8; }
+    if (mk.siege) mk.siege.show = live;
+  });
+  SC.routes.forEach(r => {
+    const m = r.m, on = m.id === "m_alex" ? ST.layers.route : m.mode === "sea" ? ST.layers.fleets : ST.layers.columns;
+    const vis = on && t >= m.tStart - 0.5 && (ST.showTraces || t <= m.tEnd + 60);
+    r.ents.forEach(en => en.show = vis);
+  });
+  SC.cols.forEach(c => {
+    const m = c.m, on = m.id === "m_alex" ? ST.layers.route : m.mode === "sea" ? ST.layers.fleets : ST.layers.columns;
+    const active = on && t >= m.tStart && t <= m.tEnd + 3;
+    c.active = active;
+    if (!active) { c.land.show = c.ship.show = false; return; }
+    const p = movePos(m, t), sea = p.mode !== "land";
+    c.lon = p.lon; c.lat = p.lat; c.sea = sea;
+    c.land.show = !sea; c.ship.show = sea;
+    const hd = moveHeading(m, t); if (hd != null) c.rot = -hd;
+    let i0 = p.i; while (i0 > 0 && !m.P[i0].date) i0--; let i1 = Math.min(m.P.length - 1, p.i + 1); while (i1 < m.P.length - 1 && !m.P[i1].date) i1++;
+    c.approx = m.P[i0].q !== "v" || m.P[i1].q !== "v";
+  });
+  SC.placeEnts.forEach(en => en.show = ST.showPlaces);
+  SC.regionEnts.forEach(en => en.show = ST.showRegions);
+  return camH;
+}
+
+// ------------------------------------------------------------------ screen projection & picking
+const _win = new C.Cartesian2();
+function project(cart) {
+  const p = C.SceneTransforms.worldToWindowCoordinates ? C.SceneTransforms.worldToWindowCoordinates(SC.scene, cart, _win) : C.SceneTransforms.wgs84ToWindowCoordinates(SC.scene, cart, _win);
+  if (!p) return null;
+  // hide points on the far side of the globe
+  const occluder = new C.EllipsoidalOccluder(C.Ellipsoid.WGS84, SC.camera.positionWC);
+  if (!occluder.isPointVisible(cart)) return null;
+  return [p.x, p.y];
+}
+function groundPos(lon, lat) {
+  const h = SC.scene.globe.getHeight(C.Cartographic.fromDegrees(lon, lat));
+  return C.Cartesian3.fromDegrees(lon, lat, h || 0);
+}
+function pickMarker(cx, cy) {
+  let best = null, bd = 16;
+  SC.markers.forEach(mk => { if (!mk.bb.show) return; const p = project(groundPos(mk.e.lon, mk.e.lat)); if (!p) return; const d = Math.hypot(p[0] - cx, p[1] - cy); if (d < bd) { bd = d; best = mk.e; } });
+  return best;
+}
+
+// ============================================================================
+//  Part 3: interface, timeline, camera direction and the main loop
+// ============================================================================
+const SHORT = { m_alex: "Alexander", m_hephaestion: "Hephaestion & Perdiccas", m_craterus325: "Craterus", m_nearchus: "Nearchus (fleet)", m_darius333: "Darius III", m_darius331: "Darius III", m_parmenion333: "Parmenion", m_memnon: "Memnon (fleet)", m_craterus324: "Craterus (veterans)" };
+const LANE_SHORT = { GR: "Greece & the Aegean", AN: "Anatolia", LE: "Levant & Egypt", ME: "Mesopotamia & Persis", IR: "Iran & Bactria", IN: "India", CT: "Court & kingship" };
+
+async function boot() {
+  const step = s => { $("#loadStep").textContent = s; };
+  try {
+    if (!window.Cesium) throw new Error("The globe library (CesiumJS) did not load.");
+    step("Waiting for type");
+    if (document.fonts && document.fonts.load) await Promise.race([Promise.all(['16px "IM Fell English SC"', '16px "IM Fell English"', '16px "EB Garamond"'].map(f => document.fonts.load(f))), new Promise(r => setTimeout(r, 3000))]).catch(() => {});
+    step("Raising the globe");
+    await initGlobe();
+    buildUI();
+    readHash();
+    onResize();
+    window.addEventListener("resize", onResize);
+    requestAnimationFrame(loop);
+    setTimeout(() => $("#loading").classList.add("done"), 200); setTimeout(() => { $("#loading").style.display = "none"; }, 1000);
+  } catch (err) {
+    console.error(err);
+    $("#loading").classList.add("done"); $("#loading").style.display = "none";
+    const box = $("#err"); box.style.display = "block";
+    box.innerHTML = "<h2 style='font-family:var(--display);font-weight:normal;margin:0 0 8px'>The globe could not be drawn</h2><p>" + esc(err.message) + "</p><p>The Chronicle and Sources panels still work.</p>";
+    try { buildUI(); } catch (e) {}
+  }
+}
+function onResize() { W_PX = window.innerWidth; H_PX = window.innerHeight; layoutTimeline(); }
+
+// ------------------------------------------------------------------ UI wiring
+function buildUI() {
+  document.querySelectorAll(".speed button").forEach(b => b.addEventListener("click", () => { ST.speed = +b.dataset.s; document.querySelectorAll(".speed button").forEach(x => x.setAttribute("aria-pressed", x === b)); poke(); }));
+  $("#playBtn").addEventListener("click", () => { setPlaying(!ST.playing); poke(); });
+  $("#backBtn").addEventListener("click", () => { release(); setT(ST.t - 30); poke(); announce(); });
+  $("#fwdBtn").addEventListener("click", () => { release(); setT(ST.t + 30); poke(); announce(); });
+  const scrub = $("#scrub"); scrub.max = NDAYS;
+  scrub.addEventListener("input", () => { setT(+scrub.value + 0.5); release(); poke(); });
+  scrub.addEventListener("change", announce);
+  $("#modeBtn").addEventListener("click", () => { setGuided(!ST.guided); poke(); });
+  $("#guideBtn").addEventListener("click", () => { setGuided(true); poke(); });
+  $("#legendBtn").addEventListener("click", () => {
+    const lg = $("#legend");
+    if (MOBILE) { lg.classList.toggle("mobile-open"); lg.open = true; $("#legendBtn").setAttribute("aria-expanded", lg.classList.contains("mobile-open")); }
+    else { lg.open = !lg.open; $("#legendBtn").setAttribute("aria-expanded", lg.open); }
+    poke();
+  });
+  $("#indexBtn").addEventListener("click", () => openSheet("#index"));
+  $("#aboutBtn").addEventListener("click", () => openSheet("#about"));
+  document.querySelectorAll("[data-close]").forEach(b => b.addEventListener("click", () => closeSheets()));
+  buildLegend(); buildIndex(); buildAbout(); initTimeline();
+  ["pointerdown", "keydown", "wheel", "touchstart"].forEach(t => window.addEventListener(t, poke, { passive: true }));
+  window.addEventListener("keydown", onKey);
+  window.addEventListener("hashchange", readHash);
+}
+function poke() { ST.lastInteract = performance.now(); if (ST.attract) { ST.attract = false; $("#attract").classList.remove("show"); } }
+function release() { ST.hold = false; }
+function setPlaying(p) {
+  ST.playing = p; if (p) release();
+  if (p && ST.t >= NDAYS - 1) setT(0);
+  $("#playBtn").setAttribute("aria-label", p ? "Pause" : "Play");
+  $("#playIcon").innerHTML = p ? '<path d="M5 3h3.5v14H5zM11.5 3H15v14h-3.5z"/>' : '<path d="M5 3 L17 10 L5 17 Z"/>';
+  if (!p) { writeHash(); announce(); }
+}
+function setGuided(g) {
+  ST.guided = g; ST.fly = null;
+  $("#modeBtn").setAttribute("aria-pressed", g); $("#modeBtn").textContent = g ? "Guided" : "Explore";
+  $("#guideBtn").classList.toggle("show", !g);
+  if (g) { ST.desiredAt = 0; ST.cam = null; }
+}
+function setT(t) { ST.t = clamp(t, 0, NDAYS); }
+function onKey(ev) {
+  const tag = (ev.target.tagName || "").toLowerCase();
+  if (ev.key === "Escape") { closeSheets(); return; }
+  if (tag === "input" && ev.target.type === "search") return;
+  if (tag === "input" && ev.target.id === "scrub" && (ev.key === "ArrowLeft" || ev.key === "ArrowRight")) ev.preventDefault();
+  if (ev.key === " " && tag !== "button") { ev.preventDefault(); setPlaying(!ST.playing); }
+  else if (ev.key === "ArrowRight") { release(); setT(Math.floor(ST.t) + (ev.shiftKey ? 30 : 7) + 0.5); announce(); }
+  else if (ev.key === "ArrowLeft") { release(); setT(Math.floor(ST.t) - (ev.shiftKey ? 30 : 7) + 0.5); announce(); }
+  else if (ev.key === "Home") { setT(0.5); announce(); }
+  else if (ev.key === "End") { setT(NDAYS - 0.5); announce(); }
+  else if (ev.key === "g" || ev.key === "G") setGuided(!ST.guided);
+}
+let annTimer = 0;
+function announce() {
+  clearTimeout(annTimer);
+  annTimer = setTimeout(() => { const live = EVENTS.filter(e => ST.t >= e.live0 && ST.t <= e.live1).slice(0, 3).map(e => e.n); $("#live").textContent = fmtLong(ST.t) + ". " + (live.length ? "Under way: " + live.join("; ") + "." : ""); }, 350);
+}
+function readHash() {
+  const h = new URLSearchParams(location.hash.slice(1));
+  if (h.get("t") || h.get("e")) release();
+  if (h.get("t") && /^\d{3}-\d{2}-\d{2}$/.test(h.get("t"))) setT(dayOf(h.get("t")) + 0.5);
+  if (h.get("e") && EV_BY_ID[h.get("e")]) { setT(EV_BY_ID[h.get("e")].t0 + 0.5); openEvent(h.get("e")); }
+}
+function writeHash() {
+  const d = dateOf(ST.t), iso = d.y + "-" + String(d.m).padStart(2, "0") + "-" + String(d.d).padStart(2, "0");
+  try { history.replaceState(null, "", "#t=" + iso + (ST.openId ? "&e=" + ST.openId : "")); } catch (e) {}
+}
+
+// ------------------------------------------------------------------ legend & layers
+function iconURL(kind, res) { return iconCanvas(kind, res, 64).toDataURL(); }
+function buildLegend() {
+  const line = (col, dashed, casing = "#f3ead3") => `<svg width="46" height="12" aria-hidden="true"><line x1="2" y1="6" x2="44" y2="6" stroke="${casing}" stroke-width="6" stroke-linecap="round"/><line x1="2" y1="6" x2="44" y2="6" stroke="${col}" stroke-width="3" ${dashed ? 'stroke-dasharray="6 5"' : ""}/></svg>`;
+  const ic = (k, r, label) => `<div class="lrow"><img src="${iconURL(k, r)}" width="22" height="22" alt="">${label}</div>`;
+  const em = (s, label) => `<div class="lrow"><img class="flagimg" src="${emblemURL(s)}" alt="">${label}</div>`;
+  const tg = (id, label, on) => `<label class="toggle"><input type="checkbox" id="${id}" ${on ? "checked" : ""}> ${label}</label>`;
+  $("#legendBody").innerHTML = `
+    <div class="lh" style="border:0;margin-top:2px">Forces on the move</div>
+    <div class="lrow">${line(SIDE_COL.M)} Alexander's army and Macedonian columns</div>
+    <div class="lrow">${line(SIDE_COL.P)} Darius and the Persians</div>
+    <div class="lrow">${line("#5B5246", true)} Route or timing reconstructed (≈)</div>
+    <div class="lnote">Blocks mark armies, hulls mark fleets. Positions between dated waypoints are interpolated by distance along a likely ancient road.</div>
+    <div class="lh">Events (ring colour = outcome)</div>
+    ${ic("battle", "A", "Pitched battle — Alexander victorious")}${ic("battle", "B", "Setback for Alexander")}${ic("siege", "A", "Siege")}${ic("foundation", "-", "City founded")}
+    ${ic("passage", "-", "March or crossing")}${ic("court", "-", "Court and army")}${ic("oracle", "-", "Oracle, omen and cult")}${ic("death", "-", "Death")}${ic("naval", "-", "Fleet")}
+    <div class="lh">Emblems (display convention)</div>
+    ${em("M", "Macedon: the sixteen-ray star of the Argead kings")}${em("P", "Persia: the Achaemenid winged disc")}${em("X", "Local kingdoms and peoples")}
+    <div class="lnote">Ancient armies carried no national flags; these emblems only identify the side.</div>
+    <div class="lh">How well is the date known?</div>
+    <div class="lnote">Each event states its precision: to the day (astronomically fixed or from a dated record), the month, the season or the year. ≈ marks a date or place taken from general reference rather than a retrieved source.</div>
+    <div class="lh">Layers</div>
+    ${tg("lyRoute", "Alexander's route", true)}${tg("lyCols", "Other columns", true)}${tg("lyFleets", "Fleets", true)}
+    ${tg("lyBattle", "Battles and sieges", true)}${tg("lyFound", "Cities founded", true)}${tg("lyCourt", "Court, cult and deaths", true)}${tg("lyPass", "Marches and crossings", true)}
+    ${tg("lyPast", "Earlier events stay on the globe", true)}${tg("lyTraces", "Keep faded route traces", true)}${tg("lyPlaces", "Ancient place names", true)}${tg("lyRegions", "Satrapies and regions", true)}
+    <div class="lnote">${SC.useIon ? "Terrain and imagery: Cesium World Terrain and Sentinel-2 via Cesium ion." : "No Cesium ion token set: flat globe with Natural Earth II imagery. Add a token in the page header for real terrain."} Satellite imagery shows today's coasts and rivers; Tyre, for instance, was an island until Alexander's mole.</div>`;
+  const bind = (id, fn) => $(id).addEventListener("change", e => fn(e.target.checked));
+  bind("#lyRoute", v => ST.layers.route = v); bind("#lyCols", v => ST.layers.columns = v); bind("#lyFleets", v => ST.layers.fleets = v);
+  bind("#lyBattle", v => { ST.layers.battle = v; ST.layers.siege = v; }); bind("#lyFound", v => ST.layers.foundation = v);
+  bind("#lyCourt", v => { ST.layers.court = v; ST.layers.oracle = v; ST.layers.death = v; }); bind("#lyPass", v => { ST.layers.passage = v; ST.layers.naval = v; });
+  bind("#lyPast", v => ST.showPast = v); bind("#lyTraces", v => ST.showTraces = v); bind("#lyPlaces", v => ST.showPlaces = v); bind("#lyRegions", v => ST.showRegions = v);
+  $("#legend").open = !!MOBILE;
+}
+
+// ------------------------------------------------------------------ sheets
+function openSheet(sel) { closeSheets(sel); const s = $(sel); s.classList.add("open"); s.setAttribute("aria-hidden", "false"); const f = s.querySelector("input.search") || s.querySelector("[data-close]"); setTimeout(() => f && f.focus(), 60); poke(); }
+function closeSheets(except) {
+  document.querySelectorAll(".sheet.open").forEach(s => { if ("#" + s.id !== except) { s.classList.remove("open"); s.setAttribute("aria-hidden", "true"); } });
+  if (except !== "#drawer") { ST.openId = null; if (!ST.playing) writeHash(); }
+}
+function srcHTML(keys) {
+  if (!keys || !keys.length) return `<div class="src">No source retrieved for this item; general reference only.</div>`;
+  return keys.map(k => { const s = SOURCES[k]; if (!s) return ""; return `<div class="src"><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)}</a> — ${esc(s.org)}<div class="role">${esc(s.role)}</div></div>`; }).join("");
+}
+function openEvent(id) {
+  const e = EV_BY_ID[id]; if (!e) return;
+  ST.openId = id;
+  $("#drKick").textContent = (KIND[e.k] || e.k) + " · " + (LANE_NAME[e.lane] || "");
+  $("#drTitle").textContent = e.n;
+  $("#drSub").innerHTML = esc(fmtRange(e)) + " · " + esc(e.pl);
+  const ems = (e.sides || []).map(s => `<img class="flagimg" src="${emblemURL(s)}" alt="${esc(SIDES[s].name)}" title="${esc(EMBLEM_NAME[s])}">`).join(" ");
+  const res = e.r !== "-" ? `<span class="badge ${e.r}">${esc(RES[e.r])}</span>` : "";
+  let h = `<p style="margin-top:4px">${ems} ${res} <span class="prec">${esc(PREC_NAME[e.p])}</span></p><p>${esc(e.s)}</p>`;
+  if (e.a || e.o) h += `<h3>Commanders and principals</h3><dl>${e.a ? `<dt>Macedonian</dt><dd>${esc(e.a)}</dd>` : ""}${e.o ? `<dt>Opposing</dt><dd>${esc(e.o)}</dd>` : ""}</dl>`;
+  h += `<h3>How the date is known</h3><p>${esc(e.anchor || "")}</p>`;
+  if (e.note) h += `<h3>Notes and disagreements</h3><p>${esc(e.note)}</p>`;
+  h += `<h3>Verification</h3>` + (e.q === "v" ? `<div class="ver">✓ Date matched in the source(s) below.</div>` : `<div class="ver k">≈ Date from general reference or reconstruction; flagged for curatorial verification.</div>`);
+  h += `<dl style="margin-top:8px"><dt>Placement</dt><dd>${e.lat.toFixed(3)}° N, ${e.lon.toFixed(3)}° E — ${e.lq === "v" ? "coordinates from a retrieved gazetteer or article" : "modern site, general reference"}${e.loc === "area" ? "; general area only" : ""}</dd></dl>`;
+  h += `<h3>Sources</h3>${srcHTML(e.src)}`;
+  h += `<div><button class="goto" id="showOnMap">Show on the globe</button></div>`;
+  $("#drBody").innerHTML = h;
+  $("#showOnMap").addEventListener("click", () => { setGuided(false); flyTo(e.lon, e.lat, e.t === 1 ? 220000 : 140000); if (MOBILE) closeSheets(); });
+  openSheet("#drawer");
+  if (!ST.playing) writeHash();
+}
+function openMove(id) {
+  const m = MOVES.find(x => x.id === id); if (!m) return;
+  $("#drKick").textContent = "Movement · " + SIDES[m.side].name.split(" (")[0];
+  $("#drTitle").textContent = m.n;
+  $("#drSub").textContent = fmtShort(m.tStart) + " – " + fmtShort(m.tEnd) + (m.cmd ? " · " + m.cmd : "") + " · about " + Math.round(m.km / 100) * 100 + " km";
+  let h = `<p>${esc(m.s)}</p><h3>Dated waypoints</h3><table class="wp">`;
+  m.P.forEach(p => { if (p.date || p.label) h += `<tr><td>${p.date ? (p.q === "k" ? "≈ " : "") + esc(fmtPrec(p.date, "d", true)) : "<span style='opacity:.6'>route</span>"}</td><td>${esc(p.label || "")}${p.mode !== "land" ? ` <span style="opacity:.6;font-style:italic">(${p.mode === "sea" ? "by sea" : "by river"})</span>` : ""}</td></tr>`; });
+  h += `</table><div class="lnote" style="margin-top:6px">≈ marks a date reconstructed from the sequence of events and ancient march rates. Undated waypoints only shape the route.</div>`;
+  h += `<h3>Sources</h3>${srcHTML(m.src)}<button class="goto" id="playMove">Follow this movement</button>`;
+  $("#drBody").innerHTML = h;
+  $("#playMove").addEventListener("click", () => { setT(m.tStart); setGuided(true); setPlaying(true); if (MOBILE) closeSheets(); });
+  openSheet("#drawer");
+}
+function buildIndex() {
+  const items = EVENTS.map(e => ({ d: e.d, t: e.t0, n: e.n, sub: e.pl + " · " + (LANE_SHORT[e.lane] || ""), id: e.id, q: e.q, label: fmtRange(e, true) }));
+  MOVES.forEach(m => items.push({ d: m.P[0].date, t: m.tStart, n: m.n, sub: "Movement · " + (m.cmd || ""), mv: m.id, q: "v", label: fmtShort(m.tStart) }));
+  items.sort((a, b) => a.t - b.t);
+  const ul = $("#idxList"); let yr = null, html = "";
+  items.forEach(it => {
+    const y = it.d.split("-")[0] + " BC";
+    if (y !== yr) { yr = y; html += `<li class="yr" data-yr>${y}</li>`; }
+    html += `<li class="mapped" data-s="${esc((it.n + " " + it.sub).toLowerCase())}"><button type="button" ${it.id ? `data-id="${it.id}"` : `data-mv="${it.mv}"`}><span class="d">${esc(it.label)}</span><span class="n">${esc(it.n)}${it.q === "k" ? " <span class='approx'>≈</span>" : ""}<span class="s">${esc(it.sub)}</span></span></button></li>`;
+  });
+  ul.innerHTML = html;
+  ul.addEventListener("click", ev => { const b = ev.target.closest("button"); if (!b) return; if (b.dataset.id) { const e = EV_BY_ID[b.dataset.id]; release(); setT(e.t0 + 0.5); setPlaying(false); openEvent(e.id); } else if (b.dataset.mv) openMove(b.dataset.mv); });
+  $("#idxSearch").addEventListener("input", ev => { const q = ev.target.value.trim().toLowerCase(); ul.querySelectorAll("li[data-s]").forEach(li => { li.style.display = !q || li.dataset.s.includes(q) ? "" : "none"; }); ul.querySelectorAll("li[data-yr]").forEach(li => { li.style.display = q ? "none" : ""; }); });
+}
+function buildAbout() {
+  const nv = EVENTS.filter(e => e.q === "v").length, nk = EVENTS.length - nv;
+  const byPrec = ["d", "m", "s", "y"].map(p => `${EVENTS.filter(e => e.p === p).length} to the ${({ d: "day", m: "month", s: "season", y: "year" })[p]}`).join(", ");
+  const disc = EVENTS.filter(e => e.note).map(e => `<li><b>${esc(e.n)}</b> (${esc(fmtRange(e, true))}): ${esc(e.note)}</li>`).join("");
+  $("#aboutBody").innerHTML = `
+    <p>This exhibit follows Alexander from his accession in October 336 BC to his death at Babylon in June 323: <b>${EVENTS.length}</b> events and <b>${MOVES.length}</b> movements of armies and fleets, on a globe with modern terrain.</p>
+    <h3>A historian's warning</h3>
+    <p>No account of Alexander survives from his own lifetime. Arrian, writing under Hadrian, followed the memoirs of Ptolemy and Aristobulus; Diodorus, Curtius and Justin descend from Cleitarchus's more colourful history, the so-called Vulgate; Plutarch drew on both. They disagree on motives, numbers and sometimes on the order of events. The only contemporary dated records are Babylonian: the Astronomical Diary that notes the eclipse, the battle at Gaugamela and the king's entry into Babylon, and the notice of his death. Every route on this globe is therefore a modern reconstruction, drawn along the likeliest ancient roads.</p>
+    <h3>Dates and calendars</h3>
+    <p>Dates are given in the Julian calendar, the convention of ancient historians (the proleptic Gregorian equivalents fall three days earlier). Ancient authors dated by Attic or Macedonian months, which shifted against the seasons; conversions differ by weeks between scholars. Of the events shown, ${byPrec}. Where the retrieved chronologies disagree, the exhibit follows Livius and records the alternative in the notes.</p>
+    <div class="ver">✓ ${nv} events: date matched in a retrieved source (Livius chronology, the Wikipedia expedition chronology or a primary text).</div>
+    <div class="ver k">≈ ${nk} events and every waypoint marked ≈: reconstructed from the sequence of events and march rates; for curatorial verification.</div>
+    <h3>Places</h3>
+    <p>Battlefields are placed from Pleiades (Gaugamela) and battle articles (Granicus, Pinarus); other events sit at the modern site of the ancient city. Several sites remain disputed: the Pinarus, the Persian Gates, the Sogdian Rock, Aornos, the Hydaspes crossing, the Mallian town, Patala, Opis. These are marked 'general area only'. The imagery shows today's coasts and river courses, which have shifted since antiquity: Tyre was an island, and the head of the Persian Gulf lay further north.</p>
+    <h3>Where the sources disagree</h3><ul>${disc}</ul>
+    <h3>Sources</h3>${srcHTML(Object.keys(SOURCES))}
+    <h3>Using the exhibit</h3>
+    <p>Press Play to run the campaigns; the camera follows the action and slows for major events. Drag to pan, scroll or pinch to zoom, right-drag or two-finger drag to tilt and rotate. Keyboard: Space plays or pauses, arrow keys step a week (Shift: a month), G toggles guided view, Esc closes panels. The address bar holds a link to the current date.</p>`;
+}
+
+// ------------------------------------------------------------------ timeline
+const TL = { lw: 128, lanes: LANES.map(l => l.id), static: null, hits: [] };
+function initTimeline() {
+  const scrub = $("#scrub"), tip = $("#tlTip"); let down = null;
+  scrub.addEventListener("pointerdown", ev => { down = { x: ev.clientX, y: ev.clientY }; });
+  scrub.addEventListener("pointerup", ev => { if (down && Math.hypot(ev.clientX - down.x, ev.clientY - down.y) < 4) { const h = tlHit(ev.clientX, ev.clientY); if (h) { setT(h.t0 + 0.5); setPlaying(false); openEvent(h.id); } } down = null; });
+  scrub.addEventListener("mousemove", ev => { const h = tlHit(ev.clientX, ev.clientY), r = $("#tlBody").getBoundingClientRect(); tip.style.display = "block"; tip.style.left = (ev.clientX - r.left) + "px"; tip.textContent = h ? fmtRange(h, true) + " — " + h.n : fmtShort(tlTimeAt(ev.clientX)); });
+  scrub.addEventListener("mouseleave", () => { tip.style.display = "none"; });
+}
+function tlTimeAt(cx) { const r = $("#tlBody").getBoundingClientRect(); return clamp((cx - r.left - TL.lw) / (r.width - TL.lw), 0, 1) * NDAYS; }
+function tlHit(cx, cy) {
+  const r = $("#tlBody").getBoundingClientRect(), x = cx - r.left, y = cy - r.top; let best = null, bd = 6;
+  TL.hits.forEach(h => { if (y >= h.y0 - 1 && y <= h.y1 + 1) { const d = x < h.x0 ? h.x0 - x : x > h.x1 ? x - h.x1 : 0; if (d < bd || (d === 0 && best && h.e.t < best.t)) { bd = d; best = h.e; } } });
+  return best;
+}
+function cssVar(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+function layoutTimeline() {
+  const body = $("#tlBody"), cv = $("#tlCanvas"); if (!body) return;
+  const r = body.getBoundingClientRect(), dpr = Math.min(window.devicePixelRatio || 1, 2);
+  TL.lw = r.width < 700 ? 0 : 132; document.documentElement.style.setProperty("--lane-w", TL.lw + "px");
+  cv.width = Math.max(1, Math.round(r.width * dpr)); cv.height = Math.max(1, Math.round(r.height * dpr));
+  const st = document.createElement("canvas"); st.width = cv.width; st.height = cv.height;
+  const x = st.getContext("2d"); x.scale(dpr, dpr);
+  const W = r.width, H = r.height, lw = TL.lw, axisH = 16, laneTop = 4, laneH = (H - axisH - laneTop) / TL.lanes.length;
+  const tx = t => lw + t / NDAYS * (W - lw);
+  const ink = cssVar("--ink"), ink3 = cssVar("--ink-3"), rule = cssVar("--rule");
+  PHASES.forEach((p, i) => { if (i % 2) { x.fillStyle = rule; x.globalAlpha = 0.35; x.fillRect(tx(dayOf(p.from)), laneTop, tx(dayOf(p.to) + 1) - tx(dayOf(p.from)), H - axisH - laneTop); x.globalAlpha = 1; } });
+  x.font = Math.min(12.5, laneH * 0.95).toFixed(1) + "px " + cssVar("--body"); x.textBaseline = "middle";
+  TL.lanes.forEach((id, i) => { const y = laneTop + i * laneH; x.strokeStyle = rule; x.lineWidth = 1; x.beginPath(); x.moveTo(lw, y + laneH); x.lineTo(W, y + laneH); x.stroke(); if (lw) { x.fillStyle = ink3; x.fillText(LANE_SHORT[id], 0, y + laneH / 2); } });
+  x.fillStyle = ink; x.font = "13px " + cssVar("--display"); x.textBaseline = "alphabetic";
+  for (let yv = 336; yv >= 323; yv--) for (let mo = 1; mo <= 12; mo++) {
+    const t = jdnJulian(1 - yv, mo, 1) - JDN0; if (t < 0 || t > NDAYS) continue;
+    const X = tx(t); x.strokeStyle = mo !== 1 ? rule : cssVar("--rule-strong"); x.beginPath(); x.moveTo(X, mo !== 1 ? H - axisH : laneTop); x.lineTo(X, H - axisH + (mo !== 1 ? 3 : 6)); x.stroke();
+    if (mo === 1) x.fillText(yv + " BC", X + 3, H - 3);
+  }
+  TL.hits = [];
+  const colOf = e => e.k === "court" || e.k === "oracle" || e.k === "foundation" || e.k === "death" || e.r === "-" ? cssVar("--pol-ui") : e.r === "A" ? cssVar("--mac-ui") : e.r === "B" ? "#B4453C" : ink3;
+  EVENTS.slice().sort((a, b) => b.t - a.t).forEach(e => {
+    const li = TL.lanes.indexOf(e.lane); if (li < 0) return;
+    const h = laneH * (e.t === 1 ? 0.84 : e.t === 2 ? 0.62 : 0.4), y0 = laneTop + li * laneH + (laneH - h) / 2;
+    const x0 = tx(e.t0), x1 = Math.max(x0 + (e.t === 1 ? 3 : 2), tx(e.t1));
+    x.fillStyle = colOf(e); x.globalAlpha = e.q === "k" ? 0.55 : e.p === "d" ? 1 : 0.8;
+    if (e.p !== "d" && !e.e) { x.fillRect(x0, y0 + h * 0.3, x1 - x0, h * 0.4); }                 // imprecise: a lighter bar over the possible span
+    else if (e.t1 - e.t0 > 45) { x.globalAlpha *= 0.7; x.fillRect(x0, y0 + h / 2 - 1, x1 - x0, 2); x.fillRect(x0, y0, 2.5, h); x.fillRect(x1 - 1.5, y0 + h * 0.2, 1.5, h * 0.6); }
+    else x.fillRect(x0, y0, x1 - x0, h);
+    x.globalAlpha = 1;
+    TL.hits.push({ e, x0, x1, y0, y1: y0 + h });
+  });
+  TL.static = st; TL.geom = { W, H, lw, tx, laneTop, axisH };
+  drawTimelineCursor();
+}
+function drawTimelineCursor() {
+  const cv = $("#tlCanvas"); if (!TL.static || !cv) return;
+  const x = cv.getContext("2d"), dpr = cv.width / TL.geom.W;
+  x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, cv.width, cv.height); x.drawImage(TL.static, 0, 0);
+  x.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const X = TL.geom.tx(ST.t), H = TL.geom.H, brass = cssVar("--brass");
+  x.fillStyle = "rgba(0,0,0,.06)"; x.fillRect(TL.geom.lw, 0, X - TL.geom.lw, H - TL.geom.axisH);
+  x.strokeStyle = brass; x.lineWidth = 2; x.beginPath(); x.moveTo(X, 0); x.lineTo(X, H); x.stroke();
+  x.fillStyle = brass; x.beginPath(); x.moveTo(X - 6, H); x.lineTo(X + 6, H); x.lineTo(X, H - 8); x.closePath(); x.fill();
+  x.beginPath(); x.moveTo(X - 6, 0); x.lineTo(X + 6, 0); x.lineTo(X, 8); x.closePath(); x.fill();
+}
+
+// ------------------------------------------------------------------ dispatch cards
+const CARDS = new Map();
+function cardWindow(e) { const tail = e.t === 1 ? 60 : e.t === 2 ? 40 : 25; return [e.live0 - 2, e.live1 + tail, tail]; }
+function cardShows(e, t) { const [a, b, tail] = cardWindow(e); if (t < a || t > b) return false; if (e.live1 - e.live0 > 60) return t <= e.live0 + tail || t >= e.live1 - 5; return true; }
+function updateCards(t) {
+  const tlH = parseFloat(cssVar("--tl-h")) || 206;
+  const maxN = MOBILE ? 1 : clamp(Math.floor((H_PX - tlH - 90) / 175), 1, 4);
+  const cands = [];
+  EVENTS.forEach(e => {
+    if (ST.layers[e.k] === false) return;
+    const [, , tail] = cardWindow(e); if (!cardShows(e, t)) return;
+    const live = t >= e.live0 && t <= e.live1;
+    cands.push({ e, score: (live ? 12 : 0) + (4 - e.t) * 4 - Math.max(0, t - e.live1) / 6, fading: t > e.live1 + tail * 0.6 });
+  });
+  cands.sort((p, q) => q.score - p.score);
+  const pick = cands.slice(0, maxN).sort((p, q) => q.e.t0 - p.e.t0 || p.e.t - q.e.t);
+  const box = $("#cards"), keep = new Set(pick.map(p => p.e.id));
+  for (const [id, el] of CARDS) if (!keep.has(id)) { el.remove(); CARDS.delete(id); }
+  pick.forEach((p, i) => {
+    let el = CARDS.get(p.e.id);
+    if (!el) { el = makeCard(p.e); CARDS.set(p.e.id, el); el.dataset.born = ST.time; }
+    el.classList.toggle("fading", p.fading);
+    const k = REDUCED ? 1 : clamp((ST.time - +el.dataset.born) / 0.45, 0, 1), ease = 1 - Math.pow(1 - k, 3);
+    el.style.opacity = (ease * (p.fading ? 0.55 : 1)).toFixed(3); el.style.transform = k < 1 ? `translateX(${((1 - ease) * 24).toFixed(1)}px)` : "";
+    if (box.children[i] !== el) box.insertBefore(el, box.children[i] || null);
+  });
+}
+function makeCard(e) {
+  const el = document.createElement("button"); el.type = "button"; el.className = "card"; el.dataset.id = e.id;
+  el.style.setProperty("--c", e.r === "-" ? "#B8912F" : RESCOL[e.r]);
+  const ems = (e.sides || []).map(s => `<img class="flagimg" src="${emblemURL(s)}" alt="">`).join("");
+  const res = e.r !== "-" ? `<span class="badge ${e.r}">${esc(RES[e.r])}</span>` : `<span class="badge P">${esc(KIND[e.k])}</span>`;
+  el.innerHTML = `<div class="meta"><span>${esc(fmtRange(e, true))}</span><span>${esc(LANE_SHORT[e.lane])}</span></div>
+    <div class="ttl">${esc(e.n)}</div><div class="pl">${esc(e.pl)}</div><div class="sm">${esc(e.s)}</div>
+    <div class="foot">${ems}${res}<span class="prec">${e.p === "d" ? "to the day" : e.p === "m" ? "to the month" : e.p === "s" ? "to the season" : "to the year"}</span>${e.q === "k" ? '<span class="approx">≈ to verify</span>' : ""}</div>`;
+  el.setAttribute("aria-label", e.n + ", " + fmtRange(e) + ". Open details.");
+  el.addEventListener("click", () => { openEvent(e.id); if (!ST.guided) flyTo(e.lon, e.lat, 300000); });
+  return el;
+}
+
+// ------------------------------------------------------------------ overlay: column labels and leader lines
+const LABEL_EL = new Map();
+function labelEl(key, cls) { let el = LABEL_EL.get(key); if (!el) { el = document.createElement("div"); el.className = cls; $("#labels").appendChild(el); LABEL_EL.set(key, el); } return el; }
+function updateOverlay() {
+  const rects = [], placed = new Set();
+  const free = (x, y, w, h) => { for (const r of rects) if (x < r[0] + r[2] && x + w > r[0] && y < r[1] + r[3] && y + h > r[1]) return false; rects.push([x, y, w, h]); return true; };
+  const cols = SC.cols.filter(c => c.active).sort((a, b) => a.m.tier - b.m.tier).slice(0, MOBILE ? 5 : 10);
+  cols.forEach(c => {
+    const p = project(groundPos(c.lon, c.lat)); if (!p) return;
+    const el = labelEl("c:" + c.m.id, "col");
+    const txt = esc(SHORT[c.m.id] || c.m.n) + (c.approx ? '<span class="ap">≈</span>' : "");
+    if (el.dataset.txt !== txt) { el.dataset.txt = txt; el.style.setProperty("--c", c.m.side === "P" ? "#6FB3CF" : c.m.side === "X" ? "#D9A441" : "#B48BD9"); el.innerHTML = txt; }
+    const w = el.offsetWidth || 90;
+    if (p[0] < -50 || p[0] > W_PX + 50 || p[1] < 0 || p[1] > H_PX) return;
+    if (!free(p[0] - w / 2, p[1] - 44, w, 20)) return;
+    el.style.transform = `translate(${p[0].toFixed(1)}px,${(p[1] - 20).toFixed(1)}px) translate(-50%,-100%)`; el.style.left = "0"; el.style.top = "0"; el.style.display = "block";
+    placed.add("c:" + c.m.id);
+  });
+  for (const [k, el] of LABEL_EL) if (!placed.has(k)) el.style.display = "none";
+  let svg = "";
+  const covered = !!document.querySelector(".sheet.open") || (MOBILE && $("#legend").classList.contains("mobile-open"));
+  if (!covered) for (const [id, el] of CARDS) {
+    const e = EV_BY_ID[id]; const p = project(groundPos(e.lon, e.lat)); if (!p) continue;
+    const r = el.getBoundingClientRect(); if (!r.width || getComputedStyle(el).display === "none") continue;
+    if (p[0] < 0 || p[0] > W_PX || p[1] < 0 || p[1] > H_PX) continue;
+    const col = e.r === "-" ? "#B8912F" : RESCOL[e.r];
+    if (MOBILE) { const ax = clamp(p[0], r.left + 20, r.right - 20); svg += `<path d="M${ax},${r.top} L${p[0]},${p[1] + 14}" stroke="${col}" stroke-width="1.6" fill="none" opacity=".85"/>`; }
+    else { if (p[0] > r.left - 20) continue; const ax = r.left, ay = r.top + Math.min(26, r.height / 2), ex = ax - 22; svg += `<path d="M${ax},${ay} L${ex},${ay} L${p[0] + 12},${p[1]}" stroke="${col}" stroke-width="1.6" fill="none" opacity="${el.classList.contains("fading") ? 0.45 : 0.9}"/>`; }
+    svg += `<circle cx="${p[0]}" cy="${p[1]}" r="15" stroke="${col}" stroke-width="1.4" fill="none" opacity=".8"/>`;
+  }
+  $("#leaders").innerHTML = svg;
+}
+
+// ------------------------------------------------------------------ camera direction
+function flyTo(lon, lat, range) {
+  ST.fly = null;
+  SC.camera.flyTo({ destination: C.Cartesian3.fromDegrees(lon, lat - range / 111000 * 0.55, range * 0.85), orientation: { heading: 0, pitch: -0.95, roll: 0 }, duration: REDUCED ? 0 : 1.8 });
+}
+function guidedDesired(t) {
+  const pts = [];
+  EVENTS.forEach(e => {
+    if (ST.layers[e.k] === false) return;
+    const a = e.live0 - 3, b = e.live1 + (e.t === 1 ? 20 : 8);
+    if (t < a || t > b) return;
+    const long = e.live1 - e.live0 > 60, quiet = long && t > e.live0 + 10 && t < e.live1 - 5;
+    const vague = e.p === "s" || e.p === "y";
+    pts.push([e.lon, e.lat, quiet || vague ? 1 : e.t === 1 ? 3 : e.t === 2 ? 2 : 1]);
+  });
+  SC.cols.forEach(c => { if (c.active) pts.push([c.lon, c.lat, c.m.tier === 1 ? 3 : c.m.tier === 2 ? 2 : 1]); });
+  if (!pts.length) return null;
+  const wmax = Math.max(...pts.map(p => p[2])), use = pts.filter(p => p[2] >= Math.min(2, wmax));
+  let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
+  use.forEach(([x, y]) => { x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); });
+  const cx = (x0 + x1) / 2, cy = (y0 + y1) / 2;
+  const wKm = (x1 - x0) * 111 * Math.cos(cy * RAD) + 260, hKm = (y1 - y0) * 111 + 220;
+  const tlH = parseFloat(cssVar("--tl-h")) || 206, cardsW = MOBILE ? 0 : 370;
+  const usableW = Math.max(0.4, (W_PX - cardsW - 40) / W_PX), usableH = Math.max(0.4, (H_PX - tlH - 80) / H_PX);
+  const fov = SC.camera.frustum.fov, asp = W_PX / H_PX, tanH = Math.tan(fov / 2), tanV = tanH / Math.max(asp, 1);
+  const range = clamp(Math.max(wKm * 1000 / (2 * tanH * usableW), hKm * 1000 * 1.3 / (2 * tanV * usableH)), SC.useIon ? 140000 : 350000, 6.5e6);
+  const vw = 2 * range * tanH * (asp > 1 ? 1 : asp), vh = 2 * range * tanV;
+  const lon = cx + (cardsW / 2) / W_PX * vw / (111000 * Math.cos(cy * RAD)), lat = cy - (tlH / 2) / H_PX * vh / 111000 * 0.9;
+  return { lon, lat, range };
+}
+function updateCamera(dt) {
+  if (!ST.guided || ST.hold) return;
+  ST.desiredAt = (ST.desiredAt || 0) - dt;
+  if (ST.desiredAt <= 0) { const d = guidedDesired(ST.t); if (d) ST.desired = d; ST.desiredAt = 0.3; }
+  const d = ST.desired; if (!d) return;
+  if (!ST.cam) { const c = SC.camera.positionCartographic; ST.cam = { lon: C.Math.toDegrees(c.longitude), lat: C.Math.toDegrees(c.latitude), range: c.height }; }
+  const k = REDUCED ? 1 : 1 - Math.exp(-dt * 0.9), kd = REDUCED ? 1 : 1 - Math.exp(-dt * 0.7);
+  ST.cam.lon = lerp(ST.cam.lon, d.lon, k); ST.cam.lat = lerp(ST.cam.lat, d.lat, k); ST.cam.range = Math.exp(lerp(Math.log(ST.cam.range), Math.log(d.range), kd));
+  const pitch = -(0.55 + 0.35 * clamp((ST.cam.range - 3e5) / 3e6, 0, 1));
+  const az = REDUCED ? 0 : Math.sin(ST.time * 0.045) * 0.06;
+  const h = SC.scene.globe.getHeight(C.Cartographic.fromDegrees(ST.cam.lon, ST.cam.lat)) || 0;
+  SC.camera.lookAt(C.Cartesian3.fromDegrees(ST.cam.lon, ST.cam.lat, h), new C.HeadingPitchRange(az, pitch, ST.cam.range));
+  SC.camera.lookAtTransform(C.Matrix4.IDENTITY);
+}
+
+// ------------------------------------------------------------------ text per day
+function phaseAt(t) { const p = PHASES.find(p => t >= dayOf(p.from) && t < dayOf(p.to) + 1); return p ? p.title : ""; }
+function updateDayText(t) {
+  const day = Math.floor(t); if (day === ST.lastDay) return; ST.lastDay = day;
+  $("#dateBig").textContent = fmtLong(t); $("#phase").textContent = phaseAt(t);
+  $("#tlDate").textContent = fmtShort(t);
+  $("#scrub").value = day; $("#scrub").setAttribute("aria-valuetext", fmtLong(t));
+}
+
+// ------------------------------------------------------------------ main loop
+let lastTS = performance.now(), cardTimer = 0;
+function loop(ts) {
+  const dt = Math.min(0.1, (ts - lastTS) / 1000); lastTS = ts; ST.time += dt;
+  if (ST.playing) {
+    let t1 = false, t2 = false;
+    for (const e of EVENTS) { if (ST.t >= e.live0 - 0.5 && ST.t <= Math.min(e.live1, e.live0 + 12) + 0.5) { if (e.t === 1) t1 = true; else if (e.t === 2) t2 = true; } }
+    const moving = SC.cols && SC.cols.some(c => c.active && c.m.tier <= 2);
+    const target = t1 ? 0.25 : t2 ? 0.45 : moving ? 0.9 : 1.8;
+    ST.rate += (target - ST.rate) * Math.min(1, dt * 2.5);
+    setT(ST.t + dt * 12 * ST.speed * ST.rate);
+    if (ST.t >= NDAYS) { setPlaying(false); if (ST.attract) setTimeout(() => { setT(0); setPlaying(true); }, 6000); }
+  }
+  if (!ST.playing && !ST.attract && performance.now() - ST.lastInteract > 150000 && !document.querySelector(".sheet.open")) { ST.attract = true; $("#attract").classList.add("show"); setT(0); setGuided(true); setPlaying(true); }
+  updateDayText(ST.t); drawTimelineCursor();
+  cardTimer -= dt; if (cardTimer <= 0) { updateCards(ST.t); cardTimer = 0.12; }
+  if (SC.viewer) { updateCamera(dt); updateGlobe(ST.t, dt); updateOverlay(); }
+  requestAnimationFrame(loop);
+}
+boot();
+
+
+</script>
+</body>
+</html>
