@@ -1,0 +1,1752 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>By Endurance We Conquer — Shackleton and the Endurance, 1914–1917</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<script>
+  // ---- CONFIGURATION ------------------------------------------------------
+  // Paste a Cesium ion access token (https://ion.cesium.com/tokens) to enable
+  // Cesium World Terrain and satellite imagery. Create a token limited to
+  // "assets:read" for the assets you use, not your default token.
+  // Leave empty to run without ion: a flat globe with Natural Earth II imagery.
+  window.ION_TOKEN = "";
+  window.CESIUM_BASE_URL = "https://cesium.com/downloads/cesiumjs/releases/1.145/Build/Cesium/";
+  // ---- RECORDED MUSIC (optional) --------------------------------------------------------------
+  // Put audio files in a folder named "audio" next to this page. Moods this story reports:
+  // voyage, ice, peril, grief, triumph. Suggestions in audio/README.md.
+  window.AUDIO_CONFIG = {
+    base: "audio/", fallback: false,
+    tracks: [
+      // { file: "example.mp3", title: "…", by: "…", license: "…", moods: ["ice", "voyage"] }
+    ],
+    sfx: { ambience: [] }
+  };
+</script>
+<script src="https://cesium.com/downloads/cesiumjs/releases/1.145/Build/Cesium/Cesium.js"></script>
+<link rel="stylesheet" href="https://cesium.com/downloads/cesiumjs/releases/1.145/Build/Cesium/Widgets/widgets.css">
+<style>:root{
+  --ink:#231C15; --ink-2:#4A3F33; --ink-3:#6E614F; --paper:#F1E8D4; --paper-2:#E6D9BC;
+  --panel:rgba(243,235,217,.94); --panel-solid:#F3EBD9; --rule:rgba(35,28,21,.28); --rule-strong:rgba(35,28,21,.55);
+  --brass:#A8843F; --brass-2:#8A6A2C; --gilt:#B8912F;
+  --mac:#5B2C83; --per:#1C6B8A; --loc:#B0782A; --neutral:#5B5246;
+  --mac-ui:#5B2C83; --per-ui:#1C6B8A; --pol-ui:#8A6A2C;
+  --scene:#C9BFA9; --shadow:0 10px 30px rgba(35,28,21,.28);
+  --focus:#B8912F;
+  --display:"IM Fell English", "IM FELL English", Georgia, "Times New Roman", serif;
+  --sc:"IM Fell English SC", "IM FELL English SC", Georgia, serif;
+  --body:"EB Garamond", Garamond, Georgia, "Times New Roman", serif;
+  --tl-h:206px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ink:#EDE3CC; --ink-2:#CDBF9F; --ink-3:#A39478; --paper:#2A231B; --paper-2:#231D16;
+    --panel:rgba(27,22,17,.93); --panel-solid:#1E1914; --rule:rgba(237,227,204,.2); --rule-strong:rgba(237,227,204,.45);
+    --brass:#C9A55A; --brass-2:#A8843F; --mac-ui:#B48BD9; --per-ui:#6FB3CF; --pol-ui:#C9A55A;
+    --scene:#15120E; --shadow:0 12px 34px rgba(0,0,0,.55);
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#EDE3CC; --ink-2:#CDBF9F; --ink-3:#A39478; --paper:#2A231B; --paper-2:#231D16;
+  --panel:rgba(27,22,17,.93); --panel-solid:#1E1914; --rule:rgba(237,227,204,.2); --rule-strong:rgba(237,227,204,.45);
+  --brass:#C9A55A; --brass-2:#A8843F; --mac-ui:#B48BD9; --per-ui:#6FB3CF; --pol-ui:#C9A55A;
+  --scene:#15120E; --shadow:0 12px 34px rgba(0,0,0,.55);
+}
+:root{ box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px); }
+html{ scroll-padding-top:env(safe-area-inset-top,0px); height:100%; }
+*,*::before,*::after{ box-sizing:inherit; }
+html,body{ margin:0; height:100%; }
+body{ background:var(--scene); color:var(--ink); font-family:var(--body); font-size:16px; overflow:hidden; -webkit-font-smoothing:antialiased; }
+button{ font:inherit; color:inherit; }
+a{ color:inherit; }
+:focus-visible{ outline:2px solid var(--focus); outline-offset:2px; }
+.sr-only{ position:absolute!important; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+
+#stage{ position:fixed; inset:0; }
+#gl{ position:absolute; inset:0; width:100%; height:100%; }
+#gl .cesium-viewer, #gl .cesium-viewer-cesiumWidgetContainer, #gl .cesium-widget, #gl .cesium-widget canvas{ width:100%; height:100%; }
+#gl .cesium-widget-credits{ display:none!important; }
+#credits{ position:absolute; right:10px; bottom:calc(var(--tl-h) + 4px); font-size:11px; color:var(--ink-3); opacity:.75; pointer-events:auto; max-width:50vw; text-align:right; }
+#credits a{ color:inherit; }
+#overlay{ position:absolute; inset:0; pointer-events:none; }
+#leaders{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; overflow:visible; }
+#labels{ position:absolute; inset:0; pointer-events:none; overflow:hidden; }
+
+/* ---------- map labels (towns, columns) ---------- */
+.town{ position:absolute; transform:translate(6px,-50%); font-family:var(--display); font-size:13px; color:#2b2219; white-space:nowrap;
+  text-shadow:0 0 3px #efe5cc,0 0 3px #efe5cc,0 0 2px #efe5cc; letter-spacing:.02em; }
+.prec{ font-family:var(--sc); font-size:12px; letter-spacing:.08em; color:var(--ink-3); }
+.town::before{ content:""; position:absolute; left:-9px; top:50%; width:5px; height:5px; margin-top:-2.5px; border:1px solid #2b2219; background:#efe5cc; border-radius:50%; }
+.town.r1{ font-size:15px; font-family:var(--sc); letter-spacing:.06em; }
+.col{ position:absolute; transform:translate(-50%,-150%); font-family:var(--sc); font-size:12.5px; letter-spacing:.05em; white-space:nowrap; padding:1px 6px 2px;
+  border-radius:2px; color:#F4ECD9; background:rgba(35,28,21,.82); border-left:3px solid var(--c,#555); box-shadow:0 2px 6px rgba(0,0,0,.25); }
+.col .ap{ opacity:.75; font-family:var(--body); font-style:italic; letter-spacing:0; margin-left:4px; }
+
+/* ---------- top-left cartouche ---------- */
+#cartouche{ position:absolute; left:max(16px, env(safe-area-inset-left,0px)); top:calc(14px + env(safe-area-inset-top,0px)); pointer-events:auto;
+  background:var(--panel); border:1px solid var(--rule-strong); box-shadow:var(--shadow); padding:12px 18px 12px; min-width:300px; max-width:420px; }
+#cartouche::before{ content:""; position:absolute; inset:4px; border:1px solid var(--rule); pointer-events:none; }
+#kicker{ font-family:var(--sc); font-size:13px; letter-spacing:.14em; color:var(--ink-3); }
+#dateBig{ font-family:var(--display); font-size:40px; line-height:1.05; margin:4px 0 2px; font-feature-settings:"lnum" 0; }
+#weekday{ font-family:var(--sc); font-size:13px; letter-spacing:.12em; color:var(--ink-3); }
+#phase{ font-family:var(--display); font-style:italic; font-size:18px; color:var(--ink-2); margin-top:6px; border-top:1px solid var(--rule); padding-top:6px; }
+#phase2{ font-size:14px; color:var(--ink-3); font-style:italic; }
+
+/* ---------- toolbar ---------- */
+#tools{ position:absolute; right:max(16px, env(safe-area-inset-right,0px)); top:calc(14px + env(safe-area-inset-top,0px)); display:flex; gap:6px; pointer-events:auto; flex-wrap:wrap; justify-content:flex-end; max-width:60vw; }
+.tbtn{ appearance:none; border:1px solid var(--rule-strong); background:var(--panel); box-shadow:var(--shadow); padding:7px 12px; cursor:pointer;
+  font-family:var(--sc); font-size:14px; letter-spacing:.08em; color:var(--ink); min-height:36px; }
+.tbtn:hover{ border-color:var(--brass); }
+.tbtn[aria-pressed="true"]{ background:var(--ink); color:var(--panel-solid); }
+#guideBtn{ display:none; }
+#guideBtn.show{ display:inline-block; background:var(--brass); color:#1b150f; border-color:var(--brass-2); }
+
+/* ---------- dispatch cards ---------- */
+#cards{ position:absolute; right:max(16px, env(safe-area-inset-right,0px)); top:calc(66px + env(safe-area-inset-top,0px)); bottom:calc(var(--tl-h) + 18px);
+  width:340px; display:flex; flex-direction:column; gap:10px; pointer-events:none; justify-content:flex-start; overflow:hidden; }
+.card{ pointer-events:auto; position:relative; background:var(--panel); border:1px solid var(--rule-strong); box-shadow:var(--shadow);
+  padding:10px 14px 11px 16px; cursor:pointer; text-align:left; width:100%; }
+.card::after{ content:""; position:absolute; left:0; top:0; bottom:0; width:5px; background:var(--c,var(--neutral)); }
+.card:hover{ border-color:var(--brass); }
+.card .meta{ font-family:var(--sc); font-size:12.5px; letter-spacing:.09em; color:var(--ink-3); display:flex; justify-content:space-between; gap:8px; }
+.card .ttl{ font-family:var(--display); font-size:21px; line-height:1.12; margin:3px 0 2px; }
+.card .pl{ font-style:italic; font-size:14.5px; color:var(--ink-2); }
+.card .sm{ font-size:15px; line-height:1.35; margin-top:5px; color:var(--ink); display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+.card .foot{ display:flex; align-items:center; gap:8px; margin-top:7px; font-size:13px; color:var(--ink-3); }
+.badge{ font-family:var(--sc); font-size:12px; letter-spacing:.08em; padding:1px 7px 2px; border:1px solid currentColor; border-radius:2px; white-space:nowrap; }
+.badge.A{ color:var(--mac-ui); } .badge.B{ color:var(--per-ui); } .badge.I,.badge.U{ color:var(--ink-3); } .badge.P{ color:var(--pol-ui); }
+.approx{ font-family:var(--sc); font-size:11.5px; letter-spacing:.06em; color:var(--brass-2); border:1px dashed var(--brass); padding:0 5px; border-radius:2px; }
+.flagimg{ height:14px; width:auto; border:1px solid rgba(0,0,0,.35); vertical-align:-2px; }
+
+/* ---------- timeline ---------- */
+#timeline{ position:absolute; left:0; right:0; bottom:0; height:calc(var(--tl-h) + env(safe-area-inset-bottom,0px)); padding-bottom:env(safe-area-inset-bottom,0px);
+  background:var(--panel-solid); border-top:1px solid var(--rule-strong); box-shadow:0 -8px 24px rgba(0,0,0,.18); pointer-events:auto; display:flex; flex-direction:column; }
+#tlTop{ display:flex; align-items:center; gap:10px; padding:8px 16px 4px; }
+#playBtn{ width:46px; height:46px; border-radius:50%; border:1px solid var(--brass-2); background:radial-gradient(circle at 35% 30%, #d9bb74, var(--brass) 55%, var(--brass-2)); cursor:pointer;
+  display:grid; place-items:center; box-shadow:0 2px 6px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.35); flex:0 0 auto; }
+#playBtn svg{ width:18px; height:18px; fill:#1b150f; }
+.speed{ display:flex; border:1px solid var(--rule-strong); }
+.speed button{ appearance:none; border:0; background:transparent; padding:5px 9px; cursor:pointer; font-family:var(--sc); font-size:13.5px; letter-spacing:.05em; color:var(--ink-2); min-height:32px; }
+.speed button[aria-pressed="true"]{ background:var(--ink); color:var(--panel-solid); }
+#tlDate{ font-family:var(--display); font-size:18px; min-width:150px; }
+#tlHint{ margin-left:auto; font-size:13.5px; color:var(--ink-3); font-style:italic; }
+.stepbtn{ appearance:none; border:1px solid var(--rule-strong); background:transparent; min-width:34px; min-height:32px; cursor:pointer; font-size:15px; color:var(--ink-2); }
+#tlBody{ position:relative; flex:1; margin:0 16px 8px 16px; }
+#tlCanvas{ position:absolute; inset:0; width:100%; height:100%; }
+#scrub{ position:absolute; left:var(--lane-w,120px); right:0; top:0; bottom:0; width:calc(100% - var(--lane-w,120px)); margin:0; background:transparent; -webkit-appearance:none; appearance:none; cursor:pointer; }
+#scrub::-webkit-slider-runnable-track{ height:100%; background:transparent; }
+#scrub::-moz-range-track{ height:100%; background:transparent; }
+#scrub::-webkit-slider-thumb{ -webkit-appearance:none; width:18px; height:100%; background:transparent; border:0; }
+#scrub::-moz-range-thumb{ width:18px; height:100%; background:transparent; border:0; }
+#scrub:focus-visible{ outline:2px solid var(--focus); outline-offset:1px; }
+#tlTip{ position:absolute; bottom:calc(100% + 6px); transform:translateX(-50%); background:var(--panel-solid); border:1px solid var(--rule-strong); padding:4px 8px; font-size:13.5px;
+  white-space:nowrap; pointer-events:none; display:none; box-shadow:var(--shadow); z-index:3; }
+
+/* ---------- legend ---------- */
+#legend{ position:absolute; left:max(16px, env(safe-area-inset-left,0px)); bottom:calc(var(--tl-h) + 14px); width:300px; pointer-events:auto; background:var(--panel);
+  border:1px solid var(--rule-strong); box-shadow:var(--shadow); font-size:14px; }
+#legend summary{ cursor:pointer; padding:7px 12px; font-family:var(--sc); letter-spacing:.1em; font-size:13.5px; list-style:none; display:flex; justify-content:space-between; }
+#legend summary::-webkit-details-marker{ display:none; }
+#legend summary::after{ content:"+"; }
+#legend[open] summary::after{ content:"–"; }
+#legend .lg{ padding:2px 12px 10px; max-height:46vh; overflow:auto; }
+.lrow{ display:flex; align-items:center; gap:8px; margin:4px 0; line-height:1.25; }
+.lrow svg,.lrow canvas{ flex:0 0 auto; }
+.lh{ font-family:var(--sc); letter-spacing:.08em; font-size:12.5px; color:var(--ink-3); margin:9px 0 3px; border-top:1px solid var(--rule); padding-top:6px; }
+.lnote{ font-size:13px; color:var(--ink-3); font-style:italic; line-height:1.3; }
+.toggle{ display:flex; align-items:center; gap:8px; margin:5px 0; cursor:pointer; }
+.toggle input{ accent-color:var(--brass); width:16px; height:16px; }
+
+/* ---------- beyond the map ---------- */
+#beyond{ position:absolute; left:max(16px, env(safe-area-inset-left,0px)); top:calc(210px + env(safe-area-inset-top,0px)); width:300px; pointer-events:auto; display:none; }
+#beyond.show{ display:block; }
+#beyond .bx{ background:var(--panel); border:1px solid var(--rule-strong); box-shadow:var(--shadow); padding:8px 12px 10px; }
+#beyond h3{ margin:0 0 4px; font-family:var(--sc); font-weight:normal; letter-spacing:.1em; font-size:12.5px; color:var(--ink-3); }
+#beyond button{ display:block; width:100%; text-align:left; appearance:none; border:0; border-top:1px solid var(--rule); background:none; padding:6px 0; cursor:pointer; }
+#beyond button:first-of-type{ border-top:0; }
+#beyond .bt{ font-family:var(--display); font-size:17px; }
+#beyond .bd{ font-size:13px; color:var(--ink-3); font-style:italic; }
+
+/* ---------- drawer & panels ---------- */
+.sheet{ position:absolute; top:0; right:0; bottom:0; width:min(480px, 100%); background:var(--panel-solid); border-left:1px solid var(--rule-strong); box-shadow:-10px 0 30px rgba(0,0,0,.3);
+  transform:translateX(105%); transition:transform .35s ease; pointer-events:auto; display:flex; flex-direction:column; z-index:10; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px); }
+.sheet.open{ transform:none; }
+.sheet header{ padding:16px 20px 10px; border-bottom:1px solid var(--rule); position:relative; }
+.sheet .x{ position:absolute; right:12px; top:12px; appearance:none; border:1px solid var(--rule-strong); background:transparent; width:36px; height:36px; cursor:pointer; font-size:20px; line-height:1; }
+.sheet .body{ padding:12px 20px 28px; overflow:auto; flex:1; font-size:16.5px; line-height:1.5; }
+.sheet h2{ font-family:var(--display); font-weight:normal; font-size:30px; line-height:1.1; margin:4px 40px 4px 0; }
+.sheet h3{ font-family:var(--sc); font-weight:normal; letter-spacing:.1em; font-size:13.5px; color:var(--ink-3); margin:18px 0 4px; border-top:1px solid var(--rule); padding-top:10px; }
+.sheet .kick{ font-family:var(--sc); letter-spacing:.1em; font-size:13px; color:var(--ink-3); }
+.sheet .sub{ font-style:italic; color:var(--ink-2); }
+.sheet dl{ display:grid; grid-template-columns:max-content 1fr; gap:3px 12px; margin:0; }
+.sheet dt{ font-family:var(--sc); letter-spacing:.06em; font-size:13.5px; color:var(--ink-3); padding-top:2px; }
+.sheet dd{ margin:0; }
+.src{ margin:8px 0; padding-left:10px; border-left:2px solid var(--rule-strong); font-size:15px; }
+.src a{ text-decoration-color:var(--brass); text-underline-offset:2px; }
+.src .role{ color:var(--ink-3); font-size:14px; }
+.ver{ font-size:14.5px; padding:6px 10px; border:1px solid var(--rule-strong); margin-top:6px; }
+.ver.k{ border-style:dashed; border-color:var(--brass); }
+.cas{ display:flex; gap:18px; }
+.cas div{ flex:1; } .cas b{ font-family:var(--display); font-weight:normal; font-size:26px; display:block; }
+.wp{ width:100%; border-collapse:collapse; font-size:14.5px; }
+.wp td{ border-top:1px solid var(--rule); padding:3px 4px; vertical-align:top; }
+.wp td:first-child{ white-space:nowrap; font-variant-numeric:tabular-nums; color:var(--ink-2); }
+.goto{ appearance:none; border:1px solid var(--brass); background:transparent; padding:5px 10px; cursor:pointer; font-family:var(--sc); letter-spacing:.06em; font-size:13.5px; margin-top:10px; }
+
+#index .search{ width:100%; padding:8px 10px; font:inherit; font-size:16px; border:1px solid var(--rule-strong); background:var(--paper); color:var(--ink); margin:8px 0; }
+#idxList{ list-style:none; margin:0; padding:0; }
+#idxList li{ border-top:1px solid var(--rule); }
+#idxList .yr{ font-family:var(--display); font-size:24px; border:0; margin-top:12px; }
+#idxList button{ appearance:none; border:0; background:none; width:100%; text-align:left; padding:6px 2px; cursor:pointer; display:grid; grid-template-columns:92px 1fr; gap:8px; }
+#idxList button:disabled{ cursor:default; opacity:.8; }
+#idxList .d{ font-variant-numeric:tabular-nums; color:var(--ink-3); font-size:14px; }
+#idxList .n{ font-size:15.5px; }
+#idxList .s{ display:block; font-size:13px; color:var(--ink-3); font-style:italic; }
+#idxList .mapped .n::before{ content:"◆ "; color:var(--brass); }
+
+#loading{ position:fixed; inset:0; display:grid; place-items:center; background:var(--scene); z-index:50; transition:opacity .6s; }
+#loading .lb{ text-align:center; color:var(--ink); }
+#loading .lt{ font-family:var(--display); font-size:34px; }
+#loading .ls{ font-family:var(--sc); letter-spacing:.14em; color:var(--ink-3); margin-top:8px; }
+#loading.done{ opacity:0; pointer-events:none; }
+#err{ position:fixed; left:50%; top:40%; transform:translate(-50%,-50%); max-width:520px; background:var(--panel-solid); border:1px solid var(--rule-strong); padding:20px; display:none; z-index:60; }
+
+#attract{ position:absolute; left:50%; top:calc(18px + env(safe-area-inset-top,0px)); transform:translateX(-50%); background:var(--ink); color:var(--panel-solid);
+  font-family:var(--sc); letter-spacing:.12em; padding:6px 14px; display:none; pointer-events:none; }
+#attract.show{ display:block; }
+
+/* ---------- responsive ---------- */
+@media (max-width: 900px){
+  :root{ --tl-h:150px; }
+  #cards{ left:12px; right:12px; width:auto; top:auto; bottom:calc(var(--tl-h) + 10px + env(safe-area-inset-bottom,0px)); flex-direction:column-reverse; }
+  #cards .card:nth-child(n+2){ display:none; }
+  .card .sm{ -webkit-line-clamp:2; }
+  #cartouche{ min-width:0; max-width:calc(100% - 140px); padding:8px 12px; }
+  #dateBig{ font-size:26px; }
+  #phase{ font-size:15px; }
+  #kicker{ font-size:11px; }
+  #legend{ display:none; }
+  #legend.mobile-open{ display:block; left:12px; right:12px; width:auto; bottom:calc(var(--tl-h) + 10px); z-index:9; background:var(--panel-solid); }
+  body:has(#legend.mobile-open) #cards{ visibility:hidden; }
+  #beyond{ display:none!important; }
+  #tools{ max-width:130px; flex-direction:column; align-items:flex-end; }
+  .tbtn{ padding:6px 9px; font-size:13px; }
+  #tlHint{ display:none; }
+  #tlTop{ padding:6px 10px 2px; gap:6px; }
+  #tlBody{ margin:0 10px 6px; }
+  #tlDate{ min-width:0; font-size:15px; }
+  .speed button{ padding:4px 6px; }
+}
+@media (prefers-reduced-motion: reduce){
+  .sheet{ transition:none; }
+}
+
+/* ======================================================================
+   Polar theme: ice, navy and the rust of a Norwegian hull
+   ====================================================================== */
+:root{
+  --ink:#16222E; --ink-2:#2E3E4C; --ink-3:#5E6E7A; --paper:#EEF2F4; --paper-2:#E1E8EC;
+  --panel:rgba(238,242,244,.95); --panel-solid:#EEF2F4; --rule:rgba(22,34,46,.28); --rule-strong:rgba(22,34,46,.55);
+  --brass:#B5502C; --brass-2:#8D3D20; --gilt:#C9963B; --scene:#0B1620; --focus:#B5502C;
+  --display:"Playfair Display", "Baskerville", Georgia, serif; --sc:"Libre Baskerville", Georgia, serif; --body:"Libre Baskerville", Baskerville, Georgia, serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --ink:#EEF2F4; --ink-2:#CFDAE0; --ink-3:#9AAAB4; --paper:#16222E; --paper-2:#101A24; --panel:rgba(16,26,36,.94); --panel-solid:#101A24; --rule:rgba(238,242,244,.22); --rule-strong:rgba(238,242,244,.5); --scene:#060C12; } }
+:root[data-theme="dark"]{ --ink:#EEF2F4; --ink-2:#CFDAE0; --ink-3:#9AAAB4; --paper:#16222E; --paper-2:#101A24; --panel:rgba(16,26,36,.94); --panel-solid:#101A24; --rule:rgba(238,242,244,.22); --rule-strong:rgba(238,242,244,.5); --scene:#060C12; }
+body{ font-size:16.5px; }
+#cartouche{ background:#16222E; color:#EEF2F4; border:1px solid #B5502C; }
+#cartouche::before{ border-color:rgba(181,80,44,.4); }
+#kicker{ color:#C9963B; font-family:var(--sc); font-size:11.5px; letter-spacing:.16em; text-transform:uppercase; }
+#dateBig{ font-family:var(--display); font-weight:700; font-size:30px; }
+#weekday{ color:#9AAAB4; font-family:var(--body); font-style:italic; letter-spacing:0; font-size:14px; }
+#phase{ color:#EEF2F4; border-top:1px solid rgba(201,150,59,.4); font-family:var(--display); font-style:italic; font-size:18px; }
+#phase2{ color:#C9963B; }
+.tbtn{ background:#16222E; color:#EEF2F4; border:1px solid #B5502C; font-family:var(--sc); font-size:11px; letter-spacing:.08em; text-transform:uppercase; padding:6px 9px; }
+.tbtn[aria-pressed="true"]{ background:#B5502C; color:#EEF2F4; }
+#guideBtn.show{ background:#C9963B; color:#16222E; }
+#tools{ max-width:72vw; }
+.card{ padding:14px 16px 12px 18px; }
+.card .meta{ font-family:var(--sc); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--brass); }
+.card .ttl{ font-family:var(--display); font-weight:700; font-size:18px; line-height:1.2; }
+.card .pl{ font-style:italic; font-size:14.5px; }
+.card .cimg{ display:block; width:100%; height:auto; margin:8px 0 6px; border:1px solid var(--rule); filter:sepia(.15) contrast(1.05); background:#1b2a36; min-height:40px; }
+.card .sm{ font-size:15px; line-height:1.45; -webkit-line-clamp:3; }
+.card.reading .sm{ -webkit-line-clamp:unset; display:block; max-height:38vh; overflow:auto; padding-right:4px; }
+.card.reading{ border-color:var(--brass); box-shadow:0 0 0 2px rgba(181,80,44,.35), var(--shadow); }
+.card .jq, .sheet .jq{ margin:8px 0; padding:6px 12px; border-left:3px solid #C9963B; font-family:var(--display); font-style:italic; font-size:15.5px; line-height:1.4; color:var(--ink-2); }
+.jq footer{ font-family:var(--sc); font-style:normal; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3); margin-top:4px; }
+.card .lnk{ display:inline-block; margin-top:6px; font-size:14px; color:var(--brass); }
+.badge{ font-family:var(--sc); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; }
+.badge.P{ color:var(--brass); }
+.prec{ font-family:var(--body); font-style:italic; font-size:13.5px; letter-spacing:0; text-transform:none; }
+#readNext{ position:absolute; right:max(16px, env(safe-area-inset-right,0px)); bottom:calc(var(--tl-h) + 18px); pointer-events:auto; z-index:7; background:var(--brass); color:#EEF2F4; border-color:#C9963B; font-size:13.5px; padding:10px 18px; box-shadow:var(--shadow); }
+#readNext[hidden]{ display:none; }
+.sheet h2{ font-family:var(--display); font-weight:700; font-size:24px; }
+.sheet h3, .lh, #legend summary, .sheet .kick{ font-family:var(--sc); text-transform:uppercase; letter-spacing:.12em; font-size:11.5px; }
+.fig{ margin:8px 0 14px; } .fig img{ width:100%; height:auto; border:1px solid var(--rule); display:block; background:#1b2a36; }
+.fig figcaption{ font-size:13.5px; color:var(--ink-3); margin-top:5px; font-style:italic; } .fig .cred{ display:block; font-style:normal; font-size:12px; }
+#timeline{ background:var(--panel-solid); }
+#playBtn{ background:radial-gradient(circle at 35% 30%, #d98a6a, #B5502C 55%, #8D3D20); border-color:#16222E; }
+#loading{ background:#0B1620; color:#EEF2F4; } #loading .lt{ font-family:var(--display); font-weight:700; } #loading .ls{ color:#C9963B; font-style:italic; }
+.col{ font-family:var(--sc); font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; background:rgba(22,34,46,.9); color:#EEF2F4; }
+#musicPop{ position:absolute; right:max(16px, env(safe-area-inset-right,0px)); top:calc(58px + env(safe-area-inset-top,0px)); width:300px; background:var(--panel); border:1px solid var(--rule-strong); box-shadow:var(--shadow); padding:12px 14px; pointer-events:auto; z-index:8; font-size:14px; }
+#musicPop label{ font-family:var(--sc); letter-spacing:.08em; font-size:12px; color:var(--ink-3); text-transform:uppercase; }
+#musicPop input[type=range]{ width:100%; accent-color:var(--brass); margin:6px 0 8px; }
+#musicPop .mrow{ display:flex; gap:6px; margin-bottom:8px; } #musicPop .mrow .tbtn{ box-shadow:none; padding:5px 10px; }
+@media (max-width: 900px){ #tools{ top:calc(190px + env(safe-area-inset-top,0px)); left:12px; right:12px; max-width:none; flex-direction:row; flex-wrap:wrap; justify-content:flex-start; gap:5px; } #tools .tbtn{ font-size:10px; padding:5px 7px; min-height:30px; } #cartouche{ max-width:calc(100% - 24px); } #dateBig{ font-size:22px; } #musicPop{ left:12px; right:12px; width:auto; top:auto; bottom:calc(var(--tl-h) + 10px); } #readNext{ right:12px; bottom:calc(var(--tl-h) + 84px); font-size:12.5px; padding:8px 12px; } .card .cimg{ max-height:120px; object-fit:cover; } }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="gl" role="img" aria-label="Three-dimensional globe showing the voyage of the Endurance and the drift, boat journey and rescues of Shackleton's expedition, 1914 to 1917. Use the timeline controls below to move through time."></div>
+  <div id="overlay">
+    <div id="labels"></div>
+    <svg id="leaders" aria-hidden="true"></svg>
+
+    <div id="cartouche" aria-live="polite">
+      <div id="kicker">By Endurance We Conquer · Shackleton, 1914–1917</div>
+      <div id="dateBig">29 December 1913</div>
+      <div id="weekday">Monday</div>
+      <div id="phase">Prologue: a plan, a war and a ship</div>
+      <div id="phase2"></div>
+    </div>
+
+    <div id="tools" role="toolbar" aria-label="Map tools">
+      <button class="tbtn" id="guideBtn" type="button">Return to guided view</button>
+      <button class="tbtn" id="readBtn" type="button" aria-pressed="true" title="Reading mode pauses at each episode so the story can be read; press Continue to go on.">Reading: on</button>
+      <button class="tbtn" id="musicBtn" type="button" aria-pressed="false" aria-expanded="false" title="Music from the audio folder. M toggles it.">♪ Music</button>
+      <button class="tbtn" id="modeBtn" type="button" aria-pressed="true" title="Guided: the camera follows the action. Explore: pan, zoom and tilt freely.">Guided</button>
+      <button class="tbtn" id="legendBtn" type="button" aria-expanded="false">Key</button>
+      <button class="tbtn" id="indexBtn" type="button">Chronicle</button>
+      <button class="tbtn" id="aboutBtn" type="button">Sources</button>
+    </div>
+
+    <div id="musicPop" hidden>
+      <label for="musicVol">Volume</label> <input type="range" id="musicVol" min="0" max="100" value="55" aria-label="Music volume">
+      <div class="mrow"><button type="button" id="musicMute" class="tbtn" aria-pressed="false">Mute</button><button type="button" id="musicOff" class="tbtn">Turn off</button></div>
+      <div id="musicNow" class="lnote" style="margin-bottom:6px"></div>
+      <div class="lnote">Recorded music chosen by the mood of the moment: the voyage, the ice, peril, grief, rescue. Credits for the track playing are shown above.</div>
+    </div>
+    <div id="cards" aria-label="The story: episodes in progress"></div>
+    <button id="readNext" class="tbtn" type="button" hidden>Continue the story ▸</button>
+
+    <div id="beyond"><div class="bx"><h3>Meanwhile, elsewhere</h3><div id="beyondList"></div></div></div>
+
+    <details id="legend">
+      <summary>Key &amp; layers</summary>
+      <div class="lg" id="legendBody"></div>
+    </details>
+
+    <div id="attract">Touch the globe or timeline to explore</div>
+    <div id="credits"></div>
+
+    <section id="timeline" aria-label="Timeline">
+      <div id="tlTop">
+        <button id="playBtn" type="button" aria-label="Play"><svg viewBox="0 0 20 20" id="playIcon"><path d="M5 3 L17 10 L5 17 Z"/></svg></button>
+        <button class="stepbtn" id="backBtn" type="button" aria-label="Back one month">‹</button>
+        <button class="stepbtn" id="fwdBtn" type="button" aria-label="Forward one month">›</button>
+        <div class="speed" role="group" aria-label="Playback speed">
+          <button type="button" data-s="0.5" aria-pressed="false">½×</button>
+          <button type="button" data-s="1" aria-pressed="true">1×</button>
+          <button type="button" data-s="2" aria-pressed="false">2×</button>
+          <button type="button" data-s="4" aria-pressed="false">4×</button>
+        </div>
+        <div id="tlDate" aria-hidden="true"></div>
+        <div id="tlHint">Reading mode pauses at each episode; Enter continues · Space: play/pause · ←/→: a week · Shift: a month</div>
+      </div>
+      <div id="tlBody">
+        <canvas id="tlCanvas"></canvas>
+        <input id="scrub" type="range" min="0" max="100" step="1" value="0" aria-label="Date">
+        <div id="tlTip"></div>
+      </div>
+    </section>
+
+    <aside class="sheet" id="drawer" aria-hidden="true" aria-labelledby="drTitle">
+      <header><div class="kick" id="drKick"></div><h2 id="drTitle"></h2><div class="sub" id="drSub"></div>
+        <button class="x" type="button" data-close aria-label="Close">×</button></header>
+      <div class="body" id="drBody"></div>
+    </aside>
+
+    <aside class="sheet" id="index" aria-hidden="true" aria-labelledby="ixTitle">
+      <header><div class="kick">The log</div><h2 id="ixTitle">Every episode, in order</h2>
+        <div class="sub">≈ marks a date taken from general reference rather than a retrieved source.</div>
+        <button class="x" type="button" data-close aria-label="Close">×</button>
+        <input class="search" id="idxSearch" type="search" placeholder="Search battles, places, people…" aria-label="Search the chronicle"></header>
+      <div class="body"><ul id="idxList"></ul></div>
+    </aside>
+
+    <aside class="sheet" id="about" aria-hidden="true" aria-labelledby="abTitle">
+      <header><div class="kick">About this exhibit</div><h2 id="abTitle">Sources, method and the two stories</h2>
+        <button class="x" type="button" data-close aria-label="Close">×</button></header>
+      <div class="body" id="aboutBody"></div>
+    </aside>
+  </div>
+</div>
+<div id="loading"><div class="lb"><div class="lt">Raising the Southern Ocean…</div><div class="ls" id="loadStep">Loading</div></div></div>
+<div id="err" role="alert"></div>
+<div class="sr-only" id="live" aria-live="polite"></div>
+
+<script>
+// ============================================================================
+//  BY ENDURANCE WE CONQUER — Shackleton's Imperial Trans-Antarctic Expedition, 1914–1917
+//  Dates are Gregorian. p = precision (d day, m month). q = verification: v matched in a retrieved
+//  source; k general reference. Quotes marked SOUTH are from Shackleton's book "South" (1919), which is
+//  in the public domain; they are reproduced as the retrieved sources give them.
+// ============================================================================
+const SOURCES = {
+  WIKI_ITAE: { org: "Wikipedia", title: "Imperial Trans-Antarctic Expedition", url: "https://en.wikipedia.org/wiki/Imperial_Trans-Antarctic_Expedition", role: "Detailed chronology with positions (76°34′S 31°30′W beset; 69°05′S 51°30′W abandoned), quotations from South, the Ross Sea party, the four rescue attempts." },
+  COOL: { org: "Cool Antarctica", title: "Sir Ernest Shackleton, Endurance Voyage Timeline and Map", url: "https://www.coolantarctica.com/Antarctica%20fact%20file/History/Ernest_Shackleton_map_time_line.php", role: "Day-by-day timeline from 8 Aug 1914 to 3 Sep 1916." },
+  SPRI: { org: "Scott Polar Research Institute, University of Cambridge", title: "Imperial Trans-Antarctic Expedition 1914–1916 (picture library catalogue)", url: "https://www.spri.cam.ac.uk/picturelibrary/catalogue/itae1914-16/", role: "The Admiralty's one-word reply 'Proceed'; Ocean Camp 1 Nov; Hurley smashing his plates; the James Caird's modification." },
+  FF: { org: "Freeze Frame (SPRI historic polar images)", title: "Imperial Trans-Antarctic Expedition 1914–16", url: "https://www.freezeframe.ac.uk/resources/expeditions/antarctic/imperial-trans-antarctic-expedition-1914-16/imperial-trans-antarctic-expedition-1914-16", role: "Ocean Camp routine; the boats hauled on sledges; Hurley's photographs of the ice damage." },
+  AUR: { org: "Aurora Expeditions", title: "Sir Ernest Shackleton's Endurance Expedition Timeline", url: "https://www.aurora-expeditions.com/blog/shackletons-endurance-expedition-timeline", role: "Midwinter Day 22 June 1915; Blackborow on the pressure of 2 Sept 1915; 'She's going, boys!'; 17 and 20 April 1916." },
+  WIKI_END: { org: "Wikipedia", title: "Endurance (1912 ship)", url: "https://en.wikipedia.org/wiki/Endurance_(1912_ship)", role: "Ship's particulars (barquentine, 144 ft, 350 hp); wreck found 5 Mar 2022 at 68°44′21″S 52°19′47″W, 3,008 m." },
+  WIKI_JC: { org: "Wikipedia", title: "Voyage of the James Caird", url: "https://en.wikipedia.org/wiki/Voyage_of_the_James_Caird", role: "The 800-mile boat journey in a 22.5-foot ship's boat." },
+  E22: { org: "Falklands Maritime Heritage Trust — Endurance22", title: "Endurance is Found (9 March 2022)", url: "https://endurance22.org/endurance-is-found", role: "Discovery announcement: depth 3,008 m, four miles south of Worsley's position; protected under the Antarctic Treaty." },
+  E22G: { org: "Falklands Maritime Heritage Trust — Endurance22", title: "Endurance22 Gallery (stern with name and polestar; ship's wheel)", url: "https://endurance22.org/?p=348", role: "The wreck photographs. © Falklands Maritime Heritage Trust / National Geographic; linked, not reproduced." },
+  SMITH: { org: "Smithsonian Magazine", title: "Shackleton Probably Never Took Out an Ad Seeking Men for a Hazardous Journey", url: "https://www.smithsonianmag.com/smart-news/shackleton-probably-never-took-out-an-ad-seeking-men-for-a-hazardous-journey-5552379/", role: "The famous advertisement has never been found and is regarded as apocryphal." },
+  HIST: { org: "HISTORY.com", title: "The Stunning Survival Story of Ernest Shackleton and His Endurance Crew", url: "https://www.history.com/articles/shackleton-endurance-survival", role: "Patience Camp, the 'Snuggery' hut on Elephant Island, launching the James Caird." },
+  SHK: { org: "Shackleton (company history pages)", title: "Shackleton's Imperial Trans-Antarctic Expedition", url: "https://shackleton.com/en-us/blogs/articles/shackleton-imperial-trans-antarctic-expedition", role: "Warned at South Georgia that the ice was the worst in memory; 2,000-mile drift." },
+  MG: { org: "The Manchester Guardian, 2 June 1916 (via Wikimedia Commons)", title: "The Story of Shackleton's Expedition", url: "https://commons.wikimedia.org/wiki/File:19160602_The_Story_of_Shackleton%27s_Expedition_-_The_Manchester_Guardian.png", role: "First newspaper account after Shackleton reached the Falklands." },
+  COMMONS: { org: "Wikimedia Commons", title: "Category: Endurance Expedition (photographs by Frank Hurley, public domain)", url: "https://commons.wikimedia.org/wiki/Category:Endurance_Expedition", role: "All expedition photographs shown in this exhibit; Hurley's 1914–16 pictures are out of copyright." }
+};
+const IMG = name => "https://commons.wikimedia.org/wiki/Special:FilePath/" + encodeURIComponent(name) + "?width=900";
+const HURLEY = "Frank Hurley, 1914–16 · State Library of NSW / Wikimedia Commons · public domain";
+
+const LANES = [
+  { id: "WS", name: "Endurance and the Weddell Sea party" }, { id: "BJ", name: "The boats, the crossing and the rescues" }, { id: "RS", name: "The Ross Sea party" },
+  { id: "GB", name: "The gamble: decisions and their cost" }, { id: "WD", name: "The world outside" }
+];
+const PHASES = [
+  { from: "1914-07-01", to: "1914-12-04", title: "Prologue: a plan, a war and a ship" },
+  { from: "1914-12-05", to: "1915-01-18", title: "Into the Weddell Sea" },
+  { from: "1915-01-19", to: "1915-10-26", title: "Beset: ten months in the ice" },
+  { from: "1915-10-27", to: "1916-04-08", title: "Camped on the floe" },
+  { from: "1916-04-09", to: "1916-05-20", title: "The boats and the James Caird" },
+  { from: "1916-05-21", to: "1916-09-03", title: "Four attempts to bring them home" },
+  { from: "1916-09-04", to: "1917-02-28", title: "The Ross Sea party and the war" }
+];
+const SIDES = { E: { name: "Endurance and her people", col: "#B5502C" }, B: { name: "The boats", col: "#C9963B" }, R: { name: "Rescue ships", col: "#2F7A5E" }, A: { name: "Aurora and the Ross Sea party", col: "#3E4E8C" }, W: { name: "The world", col: "#6A5A4C" } };
+const KIND = { voyage: "Voyage", ice: "In the ice", camp: "Camp life", peril: "Peril", gamble: "The gamble", rescue: "Rescue", death: "Death", home: "Homecoming", science: "Science and record", epilogue: "Epilogue" };
+
+// fields: id n d p [e pe] pl lat lon lane k t story quote{q,who} img{f,cap} src q anchor note
+const EVENTS_DATA = [
+  { id: "plan", n: "The one great main object", d: "1913-12-29", p: "d", pl: "London", lat: 51.507, lon: -0.128, lane: "GB", k: "gamble", t: 2,
+    story: "Amundsen had taken the Pole in 1911 and Scott had died coming back from it. Shackleton, forty years old and, by one friend's account, 'a bit of a floating gent', announced in a letter to The Times what remained: a crossing of the continent from sea to sea, 1,800 miles, through the Pole. He had no money. The government offered £10,000 if he could match it; the Royal Geographical Society, from which he expected nothing, gave £1,000; Lord Rosebery, who had never cared a farthing about the Poles, gave £50. The money came in the end from a Birmingham arms maker, a tobacco heiress, and a Dundee jute baron named James Caird, whose £24,000 'relieved him of all anxiety'. The three lifeboats would carry their names.",
+    quote: { q: "The discovery of the South Pole will not be the end of Antarctic exploration.", who: "Shackleton, on hearing of Amundsen's success, March 1912" },
+    src: ["WIKI_ITAE"], q: "v", anchor: "The letter to The Times is dated 29 December 1913 (Wikipedia, after Huntford)." },
+  { id: "advert", n: "Men wanted for hazardous journey", d: "1914-02-15", p: "m", pl: "London", lat: 51.507, lon: -0.128, lane: "GB", k: "gamble", t: 2,
+    story: "Every telling of this story includes the advertisement: 'Men wanted for hazardous journey. Low wages, bitter cold, long hours of complete darkness. Safe return doubtful. Honour and recognition in event of success.' It is a perfect piece of writing, and nobody has ever found it. Searches of the London papers have turned up nothing; a standing reward for the original has gone unclaimed; historians regard it as a later invention. What is documented is that more than 5,000 people applied, among them 'three sporty girls' who offered to wear men's clothes if their own were inconvenient. Shackleton took 56 men in two ships, and a stowaway.",
+    quote: { q: "Men wanted for hazardous journey. Low wages, bitter cold, long hours of complete darkness. Safe return doubtful. Honour and recognition in event of success.", who: "The advertisement as legend has it. No original has been found." },
+    src: ["WIKI_ITAE", "SMITH"], q: "v", anchor: "Wikipedia and Smithsonian Magazine both describe the advertisement as unfound and generally regarded as apocryphal. Placed in early 1914, when the crews were being chosen.", note: "This exhibit shows the advertisement because it is part of how the story is remembered, and says plainly that it is probably not real." },
+  { id: "proceed", n: "'Proceed': the war begins and the expedition sails", d: "1914-08-08", p: "d", pl: "Plymouth", lat: 50.37, lon: -4.14, lane: "GB", k: "gamble", t: 1,
+    story: "Britain went to war on 4 August 1914. Shackleton, with Endurance ready in the Thames, telegraphed the Admiralty offering his ships, stores and men to the war effort. The reply came in one word: 'Proceed.' Churchill followed it with a longer message saying the government wished the expedition to go on. So, in the first week of the greatest war in history, twenty-eight men sailed to try to walk across Antarctica. Endurance left Plymouth on 8 August without her leader, who was detained in London by expedition business and caught a faster steamer to Buenos Aires. It was the first of many things done at the last minute.",
+    quote: { q: "Proceed.", who: "The Admiralty's telegram, August 1914" },
+    img: { f: "Endurance under full sail Frank Hurley State Library NSW a090012h.jpg", cap: "Endurance under full sail in the pack, a Paget colour plate by Frank Hurley, 1915." },
+    src: ["SPRI", "COOL", "WIKI_ITAE"], q: "v", anchor: "SPRI: the one-word wire 'proceed' and departure 8 August 1914. Cool Antarctica gives 1 August from London; the Plymouth departure on the 8th is the usual date." },
+  { id: "ba", n: "Buenos Aires: Hurley, the dogs and a stowaway", d: "1914-10-26", p: "d", pl: "Buenos Aires", lat: -34.61, lon: -58.37, lane: "WS", k: "voyage", t: 3,
+    story: "Shackleton rejoined his ship in Buenos Aires, and so did the man who would give the expedition its face: Frank Hurley, an Australian photographer who had been to the ice with Mawson and would go anywhere for a picture. Sixty-nine Canadian sledge dogs came aboard. So, hidden in a locker, did Perce Blackborow, a nineteen-year-old Welshman whose application had been refused. Shackleton, when he found him, told him that on expeditions the stowaway was always the first to be eaten. Blackborow said they would get more meat off the Boss. He was signed on as steward.",
+    src: ["WIKI_ITAE"], q: "v", anchor: "Departure from Buenos Aires 26 October 1914 (Wikipedia). The exchange with Blackborow is expedition tradition, told in several memoirs." },
+  { id: "grytviken", n: "South Georgia: the whalers' warning", d: "1914-11-05", p: "d", e: "1914-12-05", pe: "d", pl: "Grytviken whaling station, South Georgia", lat: -54.281, lon: -36.508, lane: "GB", k: "gamble", t: 1,
+    story: "A month among the Norwegian whalers at Grytviken, the last outpost. They knew the Weddell Sea as well as anyone alive, and they told Shackleton that the ice that season was the worst they had seen: the pack lay far to the north, and he should wait. He listened, delayed his departure by weeks, and then went anyway. The men had a last taste of company and coffee; Hurley photographed the mountains; Sir Daniel Gooch, grandson of the railway engineer, who had sailed as a dog handler on a seaman's pay, went home from here.",
+    quote: { q: "I had been prepared for evil conditions in the Weddell Sea, but had hoped that the pack would be loose. What we were encountering was fairly dense pack of a very obstinate character.", who: "Shackleton, South (of the ice met in mid-December 1914)" },
+    img: { f: "Glacier, New Fortuna Bay, 1915 - photographed by Frank Hurley (3534641257).jpg", cap: "A glacier in Fortuna Bay, South Georgia, photographed by Hurley." },
+    src: ["COOL", "SHK", "WIKI_ITAE"], q: "v", anchor: "Arrival 5 November, departure 5 December 1914 (Cool Antarctica). The whalers' warning is recorded in every account (shackleton.com, Wikipedia)." },
+  { id: "pack", n: "Into the pack, far too soon", d: "1914-12-07", p: "d", pl: "57°26′S, the northern edge of the ice", lat: -57.43, lon: -29.5, lane: "WS", k: "ice", t: 2,
+    story: "Two days out of South Georgia, at 57°26′S, they met the pack: a thousand miles north of where the charts said the sea should be open. Endurance was built in Norway for exactly this, a barquentine of oak and greenheart with a bow that could ride up onto floes and split them, and for a fortnight she rammed and twisted her way south through leads that opened and shut like doors. On 14 December the ice stopped her for twenty-four hours; on 17 December it stopped her again. The men grew used to the sound of floes grinding along the hull.",
+    img: { f: "Endurance in Antarctica, 1915 Hurley a090007.jpg", cap: "Endurance among the floes, Frank Hurley." },
+    src: ["WIKI_ITAE", "COOL"], q: "v", anchor: "Pack ice met on 7 December at 57°26′S; halts on 14 and 17 December (Wikipedia, after South)." },
+  { id: "christmas14", n: "Christmas in the ice; the leads open", d: "1914-12-22", p: "d", e: "1915-01-06", pe: "d", pl: "Weddell Sea, about 64°S", lat: -64.5, lon: -22.5, lane: "WS", k: "voyage", t: 3,
+    story: "On 22 December the leads opened and for two weeks the ship ran steadily south, deep into the Weddell Sea. Christmas was kept with a feast and a sing-song; Hussey played the banjo he had brought against all advice about weight. Worsley, the captain, took the wheel in the crow's-nest for hours at a time, conning her through the ice with the confidence of a man who claimed to have joined the expedition because of a dream.",
+    src: ["WIKI_ITAE"], q: "v", anchor: "Leads opened 22 December; steady progress for two weeks (Wikipedia)." },
+  { id: "coatsland", n: "Land: Coats Land and the Caird Coast", d: "1915-01-10", p: "d", e: "1915-01-17", pe: "d", pl: "Off Coats Land, 76°S", lat: -75.8, lon: -26.5, lane: "WS", k: "voyage", t: 2,
+    story: "A long run south from 7 to 10 January brought them under the hundred-foot ice cliffs of Coats Land. On 15 January the ship came abreast of a great glacier whose edge made a bay, and a landing looked possible. Shackleton judged it too far north of his chosen Vahsel Bay and sailed on, 'except under pressure of necessity'. In South he admits he came to regret it. On 17 January, at 76°27′S, he named the new coast for his backer, the Caird Coast, and the ship sheltered from bad weather in the lee of a grounded berg. Vahsel Bay was a day's sail away.",
+    quote: { q: "...except under pressure of necessity.", who: "Shackleton, South, on declining the landing place of 15 January 1915, 'a decision he would later regret'" },
+    img: { f: "Glimpse of the Endurance Shackleton Expedition 1914-17 Hurley a090018.jpg", cap: "A glimpse of Endurance from the ice, Frank Hurley." },
+    src: ["WIKI_ITAE", "AUR"], q: "v", anchor: "Coats Land sighted 10 January; glacier bay 15 January; Caird Coast named 17 January (Wikipedia; Aurora Expeditions)." },
+  { id: "beset", n: "Beset", d: "1915-01-19", p: "d", pl: "76°34′S 31°30′W, Weddell Sea", lat: -76.567, lon: -31.5, lane: "WS", k: "ice", t: 1,
+    story: "On 18 January the ship was forced fourteen miles north-west, then turned south again, then stopped. Overnight the pack closed round her and froze. Nothing they did would move her. The position, 76°34′S 31°30′W, was a day's sail from the intended landfall; they were, as one crewman put it, frozen 'like an almond in the middle of a chocolate bar'. For ten days they waited for the ice to loosen. Then the fires were banked to save coal. On 14 February Shackleton put every man on the ice with saws, picks and chisels to cut a channel to a lead a quarter of a mile away. They cut for two days and gave up.",
+    quote: { q: "...the possibility of having to spend a winter in the inhospitable arms of the pack.", who: "Shackleton, South, February 1915" },
+    img: { f: "Endurance trapped in pack ice.jpg", cap: "Endurance held fast in the pack, 1915. Frank Hurley." },
+    src: ["WIKI_ITAE", "COOL", "FF"], q: "v", anchor: "Beset 18–19 January 1915 at 76°34′S 31°30′W (Wikipedia; Freeze Frame). Cool Antarctica gives 18 January.", note: "The 'almond in a chocolate bar' image is Orde-Lees's, in his diary." },
+  { id: "furthest", n: "Furthest south, and the drift begins", d: "1915-02-22", p: "d", pl: "76°58′S, the ship's furthest south", lat: -76.967, lon: -35.0, lane: "WS", k: "ice", t: 2,
+    story: "On 22 February, still held fast, Endurance drifted to 76°58′S, the furthest south she would ever reach. Then the whole field of ice, with the ship in it, began to move north. Two days later Shackleton accepted what the ship's routine had been denying: they would winter in the pack. The dogs went over the side into 'dogloos' cut in the ice; the hold was cleared and the wardroom, 'the Ritz', fitted out for the scientists and officers; the seamen had the fo'c'sle. A wireless mast went up. Nothing was ever heard on it.",
+    quote: { q: "In the meantime, we must wait.", who: "Shackleton, South, autumn 1915" },
+    img: { f: "A distant bow view of Endurance frozen into the ice floe (4792722677).jpg", cap: "A distant bow view of Endurance frozen into the floe. Frank Hurley." },
+    src: ["WIKI_ITAE", "COOL"], q: "v", anchor: "Furthest south 76°58′S on 22 February; ship's routine abandoned 24 February (Wikipedia). Cool Antarctica gives 77°S 35°W." },
+  { id: "dogs", n: "Dog teams on the floe", d: "1915-03-15", p: "m", pl: "Beside the ship, about 76°S", lat: -76.2, lon: -37.0, lane: "WS", k: "camp", t: 3,
+    story: "The dogs were the expedition's engine for the crossing that would never happen, and now they became its entertainment and its worry. Sixty-nine had come aboard; illness, fights and a few mishaps thinned them through the year. Each man with a team trained it on the floe, and Hurley photographed them against the ship, the sledges, and the endless white. In the winter they raced, with betting in chocolate and cigarettes, and Shackleton's own team was not the fastest.",
+    img: { f: "A seven-dog sledge team on the ice with unidentified Endurance crew member (4793354178).jpg", cap: "A seven-dog sledge team on the ice. Frank Hurley." },
+    src: ["WIKI_ITAE", "COMMONS"], q: "v", anchor: "Dogs housed in ice kennels from late February; exercised and raced through the winter (Wikipedia)." },
+  { id: "slowdrift", n: "Ninety-five miles in ten weeks", d: "1915-03-31", p: "d", pl: "Weddell Sea, about 75°S", lat: -75.6, lon: -38.5, lane: "WS", k: "ice", t: 3,
+    story: "At the end of March Shackleton calculated that the ship had travelled ninety-five miles since 19 January, in a great slow curve. He knew that Filchner's Deutschland had been frozen in nearby three years before and had drifted for six months before the ice let her go, none the worse; he hoped for the same and a second try at Vahsel Bay in the spring. The scientists took soundings through holes in the ice, the biologist dredged, and the meteorologist Hussey, a tiny man with a banjo, kept the weather log that would later prove the drift.",
+    img: { f: "Leonard Hussey and Reginald James working in the laboratory onboard Endurance (4792720081).jpg", cap: "Hussey and James in the ship's laboratory. Frank Hurley." },
+    src: ["WIKI_ITAE"], q: "v", anchor: "Shackleton's calculation of 95 miles by the end of March (Wikipedia, after South)." },
+  { id: "eggshell", n: "'She would be crushed like an eggshell'", d: "1915-04-14", p: "d", pl: "Weddell Sea, about 75°S 41°W", lat: -75.4, lon: -41.0, lane: "WS", k: "peril", t: 2,
+    story: "The first warning. On 14 April Shackleton watched the pack nearby 'piling and rafting against the masses of ice', floes riding up over one another and shattering. If the ship were caught in such a disturbance, he wrote, she would be crushed like an eggshell. That night the men slept in their clothes. The pressure passed a few hundred yards away. It would come back.",
+    quote: { q: "...she would be crushed like an eggshell.", who: "Shackleton, South, 14 April 1915" },
+    img: { f: "The 'Endurance', The pink glow of the rising sun shining on a pressure ridge, 1915 - photographed by Frank Hurley (3534602329).jpg", cap: "The rising sun on a pressure ridge beside the ship. Frank Hurley." },
+    src: ["WIKI_ITAE"], q: "v", anchor: "14 April 1915 (Wikipedia, quoting South)." },
+  { id: "sunset", n: "The sun goes down for the winter", d: "1915-05-01", p: "m", pl: "75°23′S 42°14′W", lat: -75.383, lon: -42.233, lane: "WS", k: "camp", t: 2,
+    story: "In May the sun set and did not rise again for four months. The ship lay at 75°23′S 42°14′W, still drifting north. Shackleton's task now was the one he was best at: keeping twenty-seven men sane. Moonlight walks were encouraged. There were theatricals, lectures, the dog derby, a gramophone. Empire Day was celebrated. Hurley worked in the dark with flash powder, and his pictures of the ship rimed with frost under the moon are among the most beautiful ever taken in the Antarctic. The wireless operator listened every night for a signal from the Falklands and heard the static of the ionosphere.",
+    quote: { q: "It would be at least four months before spring brought the chance of an opening of the ice.", who: "After Shackleton's reckoning in May 1915" },
+    img: { f: "A mid-winter glow, Weddell Sea (showing The 'Endurance'), 1915 - by Frank Hurley (3534618959).jpg", cap: "A midwinter glow over the Weddell Sea, the ship in the dark. Frank Hurley." },
+    src: ["WIKI_ITAE", "WIKI_END"], q: "v", anchor: "Position in May 75°23′S 42°14′W (Wikipedia). The winter activities are from Alexander and South via Wikipedia." },
+  { id: "midwinter", n: "Midwinter's Day", d: "1915-06-22", p: "d", pl: "In the ship, about 73°S", lat: -73.4, lon: -44.5, lane: "WS", k: "camp", t: 3,
+    story: "The Antarctic Christmas: 22 June, the middle of the dark, was kept with a feast and a concert in the Ritz. Men who would be dead in the war within three years sang comic songs in costume. Outside it was forty below and the ice groaned. From here the days would lengthen and the pressure would grow.",
+    img: { f: "Frank hurley on Endurance.jpg", cap: "Frank Hurley on the ice beside the ship, February 1915." },
+    src: ["AUR"], q: "v", anchor: "Midwinter's Day feast, 22 June 1915 (Aurora Expeditions)." },
+  { id: "pressure1", n: "The floe breaks up around the ship", d: "1915-08-01", p: "d", pl: "About 72°S 49°W", lat: -72.2, lon: -49.0, lane: "WS", k: "peril", t: 1,
+    story: "The first signs of the ice breaking up came on 22 July. On 1 August, in a south-westerly gale with heavy snow, the floe that had held the ship all winter disintegrated on every side. Pressure drove masses of ice under the keel and heeled her hard to port; the dogs were rushed aboard from their kennels. Shackleton wrote that mighty blocks of ice rose slowly until they 'jumped like cherry-stones gripped between thumb and finger'. Then it stopped, and for weeks the ice was quiet. They had drifted into the sea where Captain Morrell of the sealer Wasp swore, in 1823, he had seen a coastline, 'New South Greenland'. There was nothing there.",
+    quote: { q: "The effects of the pressure around us was awe-inspiring. Mighty blocks of ice ... rose slowly till they jumped like cherry-stones gripped between thumb and finger ... if the ship was once gripped firmly her fate would be sealed.", who: "Shackleton, South, 1 August 1915" },
+    img: { f: "The impenetrable icefield which prevented us from reaching the land (showing part of the 'Endurance'), 1915 - photographed by Frank Hurley (3534651393).jpg", cap: "'The impenetrable icefield which prevented us from reaching the land.' Frank Hurley." },
+    src: ["WIKI_ITAE", "COOL"], q: "v", anchor: "First break-up 22 July; the gale and pressure of 1 August 1915 (Wikipedia; Cool Antarctica)." },
+  { id: "pressure2", n: "'Literally jumped into the air'", d: "1915-09-02", p: "d", pl: "About 70°S 50°W", lat: -70.0, lon: -50.2, lane: "WS", k: "peril", t: 2,
+    story: "Pressure again on 1 and 2 September. Blackborow, the stowaway turned steward, wrote that the ship literally jumped into the air and settled on her beam. The men had lived in her for a year; now they began to listen to her the way you listen to a sick animal.",
+    quote: { q: "...literally jumped into the air and settled on its beam.", who: "Perce Blackborow, 2 September 1915" },
+    src: ["AUR", "COOL"], q: "v", anchor: "1–2 September 1915 (Cool Antarctica; Aurora Expeditions, quoting Blackborow)." },
+  { id: "squeeze", n: "The worst squeeze", d: "1915-09-30", p: "d", pl: "About 69°30′S 51°W", lat: -69.5, lon: -51.0, lane: "WS", k: "peril", t: 2,
+    story: "On 30 September the ship took what Shackleton called 'the worst squeeze we had experienced'. Worsley said she was thrown to and fro like a shuttlecock a dozen times. Her timbers held. By now lateral cracks were opening in the floes on every side and the ice had carried them, without a stroke of their own, more than 500 miles from where they were caught.",
+    quote: { q: "...thrown to and fro like a shuttlecock a dozen times.", who: "Frank Worsley, 30 September 1915" },
+    src: ["WIKI_ITAE", "FF"], q: "v", anchor: "30 September 1915 (Wikipedia; Freeze Frame)." },
+  { id: "leak", n: "The hull gives way", d: "1915-10-24", p: "d", pl: "69°S 51°W", lat: -69.1, lon: -51.3, lane: "WS", k: "peril", t: 1,
+    story: "On 24 October the starboard side was forced against a big floe. The pressure grew until the hull bent and splintered and the sea came pouring in from beneath the ice. The men worked the pumps in shifts and McNish, the carpenter, built a cofferdam in the stern; the sound of the breaking timbers, the sailors said afterwards, was like heavy fireworks and the blasting of guns. The three boats, the sledges and the stores went out onto the ice. For three days they fought for her.",
+    quote: { q: "...like heavy fireworks and the blasting of guns.", who: "The sailors, on the sound of the timbers breaking, 24 October 1915" },
+    img: { f: "StateLibQld 1 242813 Frank Hurley's photograph of the Endurance being crushed by the ice in Antarctica, 1915.jpg", cap: "Endurance crushed by the ice, November 1915. Frank Hurley." },
+    src: ["WIKI_ITAE"], q: "v", anchor: "24 October 1915 (Wikipedia)." },
+  { id: "abandon", n: "Abandon ship", d: "1915-10-27", p: "d", pl: "69°05′S 51°30′W", lat: -69.083, lon: -51.5, lane: "WS", k: "peril", t: 1,
+    story: "At five in the afternoon of 27 October, in a temperature of minus 26 degrees, Shackleton ordered the ship abandoned. Twenty-eight men stood on the ice with their boats and their dogs and no way of telling anyone where they were, 346 miles from the nearest known food depot and more than a thousand from the nearest human being. That night he wrote in his diary that he prayed God he could get the whole party to civilisation. The transcontinental expedition was over. What began was the thing the story is remembered for.",
+    quote: { q: "Ten months in the ice; a year and a day since we left South Georgia.", who: "The expedition's reckoning on the day the ship was left" },
+    img: { f: "Dog teams scouting a way to the land, 1915 - photographed by Frank Hurley (3534651563).jpg", cap: "Dog teams scouting a way over the ice towards the land. Frank Hurley." },
+    src: ["WIKI_ITAE", "COOL", "AUR"], q: "v", anchor: "27 October 1915, 69°05′S 51°30′W, below −26 °C (Wikipedia; Cool Antarctica)." },
+  { id: "cat", n: "The cost of the march: the dogs' pups and Mrs Chippy", d: "1915-10-29", p: "d", pl: "On the ice beside the wreck", lat: -69.05, lon: -51.6, lane: "GB", k: "gamble", t: 2,
+    story: "Shackleton decided to march west across the ice towards Paulet Island, hauling two of the boats on sledges, and he would carry nothing that could not pull its weight. On his order the weakest animals were shot: the pups the men had raised through the winter, the pup that was Macklin's pet, and Mrs Chippy, the carpenter's cat, a tom despite the name, who had walked the deck rails and slept in McNish's bunk for fourteen months. Worsley thought the march itself was madness; the ice was a chaos of ridges and hummocks and they should wait for open water and take to the boats. Shackleton overruled him. McNish never forgave the death of his cat.",
+    src: ["WIKI_ITAE"], q: "v", anchor: "The animals shot before the march; Worsley's objection (Wikipedia, after Huntford and South)." },
+  { id: "march1", n: "The first march: two miles in three days", d: "1915-10-30", p: "d", e: "1915-11-01", pe: "d", pl: "Towards Ocean Camp", lat: -69.0, lon: -51.75, lane: "WS", k: "ice", t: 2,
+    story: "They set out on 30 October with two boats on sledges, the dogs hauling stores and the men in harness. Hurley described the surface as a labyrinth of hummocks and ridges without a square yard of it smooth. In three days they made two miles. On 1 November Shackleton stopped, picked the flattest and solidest-looking floe he could find, and called it Ocean Camp. They would wait for the ice to take them north and break up.",
+    img: { f: "A dog-sledge at rest, with Endurance in the background (4792719821).jpg", cap: "A dog sledge at rest, Endurance in the background. Frank Hurley." },
+    src: ["WIKI_ITAE", "FF", "SPRI"], q: "v", anchor: "March 30 October–1 November; Ocean Camp established 1 November 1915 (Wikipedia; Freeze Frame; SPRI)." },
+  { id: "plates", n: "Hurley saves 120 plates and smashes 400", d: "1915-11-08", p: "m", pl: "The wreck, a mile and a half from Ocean Camp", lat: -68.95, lon: -51.9, lane: "WS", k: "science", t: 2,
+    story: "The wreck stayed afloat in the ice for weeks, and parties went back to strip her. Hurley went for his negatives, diving into the flooded darkroom under mushy ice to bring up the sealed cases. From some 550 glass plates he and Shackleton chose the best 120, the most that could be carried, and then, so that he could not be tempted back for more, Hurley smashed the rest on the ice. He kept a pocket camera and three rolls of film. Almost every picture in this exhibit passed through that selection.",
+    img: { f: "Frank Hurley photographing under the bows of the 'Endurance', 1915 (3523860471).jpg", cap: "Hurley photographing under the bows of the ship. Frank Hurley (with a companion at the camera)." },
+    src: ["WIKI_ITAE", "SPRI", "FF"], q: "v", anchor: "About 550 plates, 120 kept (Wikipedia, after Huntford); Hurley smashing the rest (SPRI, Freeze Frame)." },
+  { id: "sinks", n: "'She's going, boys!'", d: "1915-11-21", p: "d", pl: "68°39′S 52°26′W, by Worsley's reckoning", lat: -68.65, lon: -52.44, lane: "WS", k: "death", t: 1,
+    story: "On 21 November, at about five in the afternoon, the ice that had held the wreck relaxed and let her go. Shackleton saw it from the lookout and shouted 'She's going, boys!' and the men ran out of the tents to watch. The stern lifted, the bow went under, and in a few minutes there was nothing but a hole in the ice, which closed. Worsley took the position from his last sights. He was wrong by four miles. It would take 107 years to find out.",
+    quote: { q: "She's going, boys!", who: "Shackleton, 21 November 1915" },
+    img: { f: "StateLibQld 1 242813 Frank Hurley's photograph of the Endurance being crushed by the ice in Antarctica, 1915.jpg", cap: "The wreck in the ice before she sank. Frank Hurley." },
+    src: ["COOL", "AUR", "WIKI_ITAE", "E22"], q: "v", anchor: "21 November 1915 (Cool Antarctica; Wikipedia). 'She's going, boys!' (Aurora Expeditions). Worsley's position was about four miles north of the wreck (Endurance22)." },
+  { id: "oceancamp", n: "Life at Ocean Camp", d: "1915-11-25", p: "m", e: "1915-12-22", pe: "d", pl: "Ocean Camp, drifting north past 68°S", lat: -68.3, lon: -52.8, lane: "WS", k: "camp", t: 2,
+    story: "For seven weeks the floe was a village: five tents, a galley built from the ship's timbers with a stove made from the ash chute, a lookout tower, and a routine in which every man had a job so that no one could sit and brood. The cook, Green, turned out seal hoosh and penguin stew. They read the few books saved, played cards, and argued about food. By late November the ice was carrying them seven miles a day, but slightly east of north, away from the islands they hoped for. On 22 December they held Christmas and ate every remaining luxury: the last good meal, as it turned out, for eight months.",
+    src: ["FF", "COOL", "WIKI_ITAE"], q: "v", anchor: "Ocean Camp routine (Freeze Frame); drift of seven miles a day by late November; Christmas kept on 22 December (Cool Antarctica; Wikipedia)." },
+  { id: "march2", n: "The second march, and McNish refuses", d: "1915-12-23", p: "d", e: "1915-12-29", pe: "d", pl: "Between Ocean Camp and Patience Camp", lat: -67.6, lon: -53.0, lane: "GB", k: "gamble", t: 1,
+    story: "On 21 December Shackleton announced a second march, to shorten the boat journey to Paulet Island, then 250 miles away. They set out on the 23rd into thaw: men sank to their knees in slush hauling boats that weighed a ton each over pressure ridges, in relays, a few hundred yards at a time. On 27 December McNish, the carpenter, stopped work and refused to go on. Ship's articles, he said, had lapsed when the ship sank; he was under no man's orders now. Shackleton, who knew a mutiny could kill them all, read him the articles and reminded him that wages ran until they reached port, and McNish went back into harness. He was right about the ice. In seven days they made seven and a half miles. On 29 December Shackleton gave up: at this rate, he wrote, it would take three hundred days to reach the land.",
+    quote: { q: "It would take us over three hundred days to reach the land.", who: "Shackleton, South, 29 December 1915" },
+    src: ["WIKI_ITAE", "COOL"], q: "v", anchor: "Second march 23–29 December; McNish's refusal 27 December (Wikipedia, after Huntford). Cool Antarctica dates Patience Camp to 29 December." },
+  { id: "patience", n: "Patience Camp", d: "1915-12-29", p: "d", e: "1916-04-08", pe: "d", pl: "Patience Camp, drifting from 67°S to 62°S", lat: -66.0, lon: -53.5, lane: "WS", k: "camp", t: 1,
+    story: "Three months and ten days on one floe. The name was Shackleton's. Food ran short; the men went back to Ocean Camp for what had been left and, on 2 February, for the third boat, which would save their lives. Seal became the staple, and blubber the fuel, and everyone was black with it. In January all but two dog teams were shot because they ate too much seal; the last two went on 2 April, and were eaten. Hurley, with three rolls of film left, photographed almost nothing. Shackleton walked the camp every day, watched every man, and lied cheerfully about the future. Orde-Lees, the unpopular storekeeper, hoarded and was hated for it and was, in the end, right.",
+    img: { f: "Elephant island party (cropped).jpg", cap: "The men of the expedition, photographed on Elephant Island. Frank Hurley." },
+    src: ["WIKI_ITAE", "COOL", "HIST"], q: "v", anchor: "Patience Camp 29 December 1915 to 9 April 1916 (Cool Antarctica; Wikipedia); the third boat fetched 2 February; the dogs shot in January and on 2 April." },
+  { id: "paulet", n: "Within sixty miles of Paulet Island, and no way to it", d: "1916-03-17", p: "d", pl: "At the latitude of Paulet Island, 60 miles east of it", lat: -63.58, lon: -53.6, lane: "GB", k: "gamble", t: 2,
+    story: "After weeks held near 67°S, the floe made a series of fast runs north-east, and on 17 March Patience Camp lay on the latitude of Paulet Island, sixty miles east of the hut and the depot Shackleton himself had ordered stocked twelve years earlier for Nordenskjöld's relief. 'It might have been six hundred,' he wrote, 'for all the chance we had of reaching it across the broken sea-ice.' Land was in sight now most days: the peak of Mount Haddington on James Ross Island slid past. He looked north to Clarence and Elephant Islands, and west to Deception Island, where whalers sometimes called, and could not decide.",
+    quote: { q: "It might have been six hundred for all the chance we had of reaching it across the broken sea-ice.", who: "Shackleton, South, 17 March 1916" },
+    src: ["WIKI_ITAE"], q: "v", anchor: "17 March 1916, 60 nautical miles east of Paulet Island (Wikipedia, quoting South)." },
+  { id: "floesplits", n: "The floe splits under the camp", d: "1916-04-08", p: "d", pl: "About 62°S 54°W", lat: -62.1, lon: -54.0, lane: "WS", k: "peril", t: 1,
+    story: "On the evening of 8 April the floe that had carried them for a hundred days cracked across. The camp was left on a triangle of ice a few hundred yards across, with the swell of the open sea running under it. Shackleton had the boats packed and the men sleeping in their boots. He would try for Deception Island, where there was said to be a wooden church whose timbers might build a seaworthy boat.",
+    src: ["WIKI_ITAE", "COOL"], q: "v", anchor: "The floe splits on 8 April 1916 (Wikipedia)." },
+  { id: "boats", n: "Into the boats", d: "1916-04-09", p: "d", e: "1916-04-15", pe: "d", pl: "Weddell Sea to Elephant Island", lat: -61.7, lon: -54.4, lane: "BJ", k: "peril", t: 1,
+    story: "At one o'clock on 9 April the Dudley Docker was launched and an hour later all three boats were away: Shackleton in the James Caird, Worsley in the Dudley Docker, and Crean effectively commanding the Stancomb Wills, since the navigator Hudson was breaking down. Seven days followed that several men never fully described. Ice closed round them and they hauled the boats onto floes to sleep; a floe split under a tent in the night and Shackleton pulled a man out of the sea in his sleeping bag; the temperature fell to twenty below; they were soaked with spray that froze; there was no fresh water. On 12 April Shackleton changed the destination to Hope Bay, then, as the men failed, to Elephant Island, the nearest rock.",
+    src: ["WIKI_ITAE", "COOL", "SHK"], q: "v", anchor: "Boats launched 9 April 1916; seven days to Elephant Island (Wikipedia; Cool Antarctica)." },
+  { id: "elephant", n: "Land, for the first time in 497 days", d: "1916-04-15", p: "d", pl: "Cape Valentine, Elephant Island", lat: -61.1, lon: -54.65, lane: "BJ", k: "home", t: 1,
+    story: "On 14 April the boats lay off a coast of cliffs and glaciers with nowhere to land. On the 15th the James Caird rounded the eastern point and found a narrow shingle beach on the lee side, and the three boats, separated in the night, came together on it. Men fell out of the boats onto the stones and lay there; some laughed, some wept, one picked up pebbles and let them run through his fingers. It was the first land under their feet since South Georgia, 497 days before. It was also, from the tide marks on the cliff, going to be underwater in the next storm. Wild found a spit seven miles west and on the 17th they moved to it, and called it Cape Wild.",
+    img: { f: "Elephant island party (cropped).jpg", cap: "The Elephant Island party. Frank Hurley." },
+    src: ["COOL", "WIKI_ITAE", "AUR"], q: "v", anchor: "Landfall 15 April 1916 after 497 days (Cool Antarctica); move to Cape Wild 17 April (Wikipedia; Aurora Expeditions gives 16 and 17 April)." },
+  { id: "decision", n: "Six men, one boat, 800 miles", d: "1916-04-20", p: "d", pl: "Cape Wild, Elephant Island", lat: -61.085, lon: -54.87, lane: "GB", k: "gamble", t: 1,
+    story: "Nobody would come. Elephant Island was off every route and no ship called there. Port Stanley was nearer than South Georgia but dead to windward. Deception Island was safer but the men could not have survived the trip. On 20 April Shackleton announced that he would take the James Caird, twenty-two and a half feet long, and sail her 800 miles across the worst ocean in the world to the whaling stations of South Georgia, before winter closed the sea. He chose Worsley, because only Worsley could navigate her; Crean, because Crean asked; McNish, who had defied him and who now decked and raised the boat with sledge runners, packing-case lids, canvas and seal blood; and two seamen, McCarthy and Vincent. He took food for four weeks. If they were not there in four weeks, he judged, they would not be anywhere.",
+    src: ["WIKI_ITAE", "AUR", "SPRI"], q: "v", anchor: "The decision announced 20 April 1916 (Aurora Expeditions); the boat party and McNish's work (Wikipedia; SPRI)." },
+  { id: "caird", n: "The voyage of the James Caird", d: "1916-04-24", p: "d", e: "1916-05-10", pe: "d", pl: "Elephant Island to South Georgia", lat: -57.5, lon: -45.0, lane: "BJ", k: "peril", t: 1,
+    story: "They launched on 24 April into a north-west wind that was, mercifully, behind them. Within days everything in the boat was soaked and freezing; ice built up on the deck until she rode like a log and men crawled out on the canvas with an axe to chop it off. They slept in turn in the bow among the ballast stones, in reindeer bags that rotted and shed hair into the food. Worsley took four sun sights in seventeen days, kneeling on the thwart with two men holding him, and hit an island eighty miles wide from 800 miles away. On 5 May a wave came out of the night so large that Shackleton, who had been at sea for twenty-six years, took its white crest for a clearing sky and shouted that it was, and then saw what it was. The boat filled and did not sink. On 8 May they saw South Georgia.",
+    quote: { q: "...the largest waves he had seen in twenty-six years at sea.", who: "Shackleton, of the wave of 5 May 1916, in South" },
+    img: { f: "The James Caird (15947298659).jpg", cap: "The James Caird, the 22.5-foot boat that made the crossing, preserved at Dulwich College." },
+    src: ["WIKI_ITAE", "WIKI_JC", "COOL"], q: "v", anchor: "Launch 24 April; the gale of 5 May; land sighted 8 May; landing 10 May 1916 (Wikipedia; Cool Antarctica)." },
+  { id: "haakon", n: "King Haakon Bay: the wrong side of the island", d: "1916-05-10", p: "d", e: "1916-05-18", pe: "d", pl: "King Haakon Bay, South Georgia", lat: -54.17, lon: -37.3, lane: "BJ", k: "home", t: 1,
+    story: "For two days a hurricane held them off the cliffs of an island they could see and not reach; a 500-ton steamer sank in the same storm on its way to the same coast. On 10 May they got the boat into a cove in King Haakon Bay, drank from a stream, and slept in a cave. They were on the uninhabited south coast. The whaling stations were on the north, over mountains no one had crossed, and Vincent and McNish could go no further. On 15 May they moved the boat to the head of the bay and turned her over for a hut, and called the place Peggotty Camp, after the family in Dickens who lived in a boat.",
+    src: ["WIKI_ITAE", "COOL"], q: "v", anchor: "Landing 10 May 1916; the move to Peggotty Camp after five days (Wikipedia)." },
+  { id: "crossing", n: "Thirty-six hours across South Georgia", d: "1916-05-19", p: "d", e: "1916-05-20", pe: "d", pl: "Over the Allardyce Range to Stromness", lat: -54.15, lon: -36.9, lane: "BJ", k: "peril", t: 1,
+    story: "At three in the morning on 19 May, in clear moonlight, Shackleton, Worsley and Crean started up the glacier with fifty feet of rope, a carpenter's adze for an ice axe, screws from the boat driven through their boot soles, and food for three days. They had no map; no one had been inland. Three times they climbed a pass and looked down on a drop they could not descend. At dusk, on a ridge with the cold coming, Shackleton proposed that they sit on the coiled rope and slide. They slid, a thousand feet in a minute, and lived. They walked all night without stopping. At seven the next morning, above Husvik, they heard a steam whistle call the whalers to work: the first sound from another human being in seventeen months. They came down through a freezing waterfall and walked into Stromness on the afternoon of 20 May, three filthy men with hair to their shoulders. The children ran. The station manager, Sørlle, who had dined with Shackleton eighteen months before, did not know him.",
+    quote: { q: "I have no doubt that Providence guided us ... it seemed to me often that we were four, not three.", who: "Shackleton, South, on the crossing of South Georgia" },
+    img: { f: "Glacier, New Fortuna Bay, 1915 - photographed by Frank Hurley (3534641257).jpg", cap: "The glacier country of Fortuna Bay, which the three men crossed. Frank Hurley, 1915." },
+    src: ["WIKI_ITAE", "COOL"], q: "v", anchor: "Departure 3 a.m. 19 May; the whistle at 7 a.m. and arrival at Stromness 20 May 1916 (Wikipedia; Cool Antarctica)." },
+  { id: "peggotty", n: "The three at Peggotty Camp are picked up", d: "1916-05-21", p: "d", pl: "King Haakon Bay", lat: -54.13, lon: -37.15, lane: "BJ", k: "rescue", t: 3,
+    story: "The first thing Shackleton did at Stromness was arrange a whaler to go round the island for McNish, McCarthy and Vincent. Worsley went with it to show the way. When it reached Peggotty Camp the three men were annoyed that none of their own party had come, not recognising the clean-shaven officer in borrowed clothes who had walked over the mountains with them two days before.",
+    src: ["WIKI_ITAE", "COOL"], q: "v", anchor: "21 May 1916 (Wikipedia; Cool Antarctica)." },
+  { id: "news", n: "The news reaches the world", d: "1916-06-02", p: "d", pl: "Port Stanley, Falkland Islands; London", lat: -51.69, lon: -57.86, lane: "WD", k: "home", t: 2,
+    story: "When the Southern Sky put into Port Stanley, Shackleton cabled London. For a day his survival displaced the war from the front pages: the Manchester Guardian of 2 June ran 'The Story of Shackleton's Expedition' across page five. The men had left a world at peace and would return to one that had lost a generation; when they asked at Stromness who had won the war, the answer was that it was still going on and millions were dead. Shackleton's request to the Admiralty for a ship to rescue his men got the reply that nothing could be spared before October.",
+    img: { f: "19160602 The Story of Shackleton's Expedition - The Manchester Guardian.png", cap: "The Manchester Guardian, 2 June 1916." },
+    src: ["MG", "WIKI_ITAE"], q: "v", anchor: "Cable from Port Stanley; newspapers of 2 June 1916 (Wikipedia; Manchester Guardian)." },
+  { id: "southernsky", n: "First attempt: the Southern Sky", d: "1916-05-23", p: "d", e: "1916-05-31", pe: "d", pl: "From Husvik towards Elephant Island", lat: -60.0, lon: -49.0, lane: "BJ", k: "rescue", t: 2,
+    story: "Three days after walking out of the mountains Shackleton was at sea again, in the whaler Southern Sky, laid up at Husvik and crewed by volunteers from the stations. Seventy miles from Elephant Island they met a belt of pack ice the ship could not enter. They turned for Port Stanley.",
+    src: ["COOL", "WIKI_ITAE"], q: "v", anchor: "Sailed 23 May, turned back by ice, Port Stanley 31 May 1916 (Cool Antarctica; Wikipedia)." },
+  { id: "pesca", n: "Second attempt: Instituto de Pesca No. 1", d: "1916-06-10", p: "d", e: "1916-06-25", pe: "m", pl: "From Port Stanley towards Elephant Island", lat: -59.5, lon: -53.0, lane: "BJ", k: "rescue", t: 3,
+    story: "Uruguay lent a trawler, Instituto de Pesca No. 1, and she sailed from the Falklands on 10 June. The ice stopped her too, in sight of the island's peaks. Shackleton, Worsley and Crean went on to Punta Arenas to find another ship.",
+    src: ["COOL", "WIKI_ITAE"], q: "v", anchor: "Sailed 10 June 1916, turned back by ice (Cool Antarctica; Wikipedia)." },
+  { id: "emma", n: "Third attempt: the schooner Emma", d: "1916-07-12", p: "d", e: "1916-08-03", pe: "m", pl: "From Punta Arenas", lat: -60.5, lon: -56.5, lane: "BJ", k: "rescue", t: 3,
+    story: "The British community in Punta Arenas raised the money and Allan McDonald equipped his schooner Emma, with the Chilean tug Yelcho to tow her south. Ice and gales beat them back. It was August, three months since the Caird had left the beach, and Shackleton, by Worsley's account, was ageing visibly.",
+    src: ["COOL", "WIKI_ITAE"], q: "v", anchor: "Sailed 12 July 1916, turned back (Cool Antarctica; Wikipedia)." },
+  { id: "snuggery", n: "Meanwhile on Elephant Island: the Snuggery", d: "1916-04-25", p: "m", e: "1916-08-29", pe: "d", pl: "Cape Wild, Elephant Island", lat: -61.085, lon: -54.87, lane: "WS", k: "camp", t: 1,
+    story: "Twenty-two men under Frank Wild, on a spit of stones three hundred yards long, with the sea on two sides and a glacier behind. They turned the two remaining boats upside down on low stone walls and made a hut with five feet of headroom, the Snuggery, black with blubber smoke, where they lay in rows and Hussey played the banjo. Wild refused to let them stockpile seal and penguin against a long wait; that would be defeatist, and the Boss would be back in a month. On 15 June, by candlelight, the surgeons Macklin and McIlroy amputated the frostbitten toes of Blackborow's left foot with the last of the chloroform; it took fifty-five minutes. Every morning Wild rolled up his bag and said, 'Lash up and stow, boys, the Boss may come today.' He said it for 128 days.",
+    quote: { q: "Lash up and stow, boys, the Boss may come today.", who: "Frank Wild's morning call on Elephant Island, as the men remembered it" },
+    img: { f: "Elephant island party (cropped).jpg", cap: "The Elephant Island party, Frank Hurley." },
+    src: ["WIKI_ITAE", "HIST"], q: "v", anchor: "The hut of upturned boats (Wikipedia; HISTORY.com); the amputation of 15 June 1916 (Wikipedia). Wild's morning call is expedition tradition." },
+  { id: "starving", n: "'We shall have to eat the one who dies first'", d: "1916-08-23", p: "d", pl: "Cape Wild, Elephant Island", lat: -61.085, lon: -54.87, lane: "WS", k: "peril", t: 2,
+    story: "By 23 August the sea round the island was solid with pack that would stop any ship, the food was nearly gone, and the penguins had stopped coming ashore. Orde-Lees, the storekeeper whose hoarding everyone had mocked, wrote in his diary that they would have to eat the one who died first, and added that there was many a true word said in jest. Wild set a date, 5 October, to take the Stancomb Wills and try for Deception Island.",
+    quote: { q: "We shall have to eat the one who dies first ... there's many a true word said in jest.", who: "Thomas Orde-Lees, diary, 23 August 1916" },
+    src: ["WIKI_ITAE"], q: "v", anchor: "23 August 1916; Wild's plan for 5 October (Wikipedia, after Huntford and Alexander)." },
+  { id: "yelcho", n: "Fourth attempt: the Yelcho, and the fog lifts", d: "1916-08-25", p: "d", e: "1916-08-30", pe: "d", pl: "Punta Arenas to Elephant Island", lat: -61.085, lon: -54.87, lane: "BJ", k: "rescue", t: 1,
+    story: "Shackleton begged the Chilean Navy for the Yelcho, a small steel tug with no heating and no business in ice, and on 25 August she went south under Lieutenant Luis Pardo, a Chilean naval officer who volunteered to take her. This time the sea was open. On the morning of 30 August she came in through thick fog and at 11.40 the fog lifted and there was the camp. On the beach a man saw a ship and shouted, and Wild's men ran to light the signal fire and could not get it lit, and then a boat came in with Shackleton standing in the bow, counting heads. 'Are you all well?' 'All safe, all well.' Within an hour every man was aboard; Wild had the last of the seal hoosh thrown into the sea. The 22 men had been on the island 137 days.",
+    quote: { q: "Are you all well? — All safe, all well, Boss.", who: "The exchange from the boat, 30 August 1916, as the survivors told it" },
+    img: { f: "Relieving of marooned men by Chilean tug Yelcho, 1916 - photographer Frank Hurley (8725114142).jpg", cap: "The Yelcho's boat comes in to Cape Wild, 30 August 1916. Frank Hurley." },
+    src: ["WIKI_ITAE", "COOL"], q: "v", anchor: "Yelcho sailed 25 August; the camp sighted at 11.40 a.m. on 30 August 1916 (Wikipedia; Cool Antarctica)." },
+  { id: "puntaarenas", n: "Punta Arenas: all twenty-eight", d: "1916-09-03", p: "d", pl: "Punta Arenas, Chile", lat: -53.163, lon: -70.917, lane: "BJ", k: "home", t: 2,
+    story: "The Yelcho steamed into Punta Arenas on 3 September to a town that had turned out entirely to meet her; Pardo was a national hero and remains one. Every man who had sailed in Endurance was alive. From Chile they went home in twos and threes, into a war that would kill two of them, McCarthy of the boat party and Cheetham the veteran bosun, within two years.",
+    src: ["COOL", "WIKI_ITAE"], q: "v", anchor: "3 September 1916 (Cool Antarctica; Wikipedia)." },
+  // ---- the Ross Sea party
+  { id: "aurora_sail", n: "The other ship: Aurora sails from Hobart", d: "1914-12-24", p: "d", pl: "Hobart, Tasmania", lat: -42.88, lon: 147.33, lane: "RS", k: "voyage", t: 2,
+    story: "Half a world away, the expedition's second ship left Hobart on Christmas Eve 1914, late and underfunded. Shackleton had halved the Ross Sea party's money as an economy and its commander, Aeneas Mackintosh, one-eyed since the Nimrod expedition, only found out when he reached Australia and had to beg for supplies. Their job was to lay depots of food across the Ross Ice Shelf to the Beardmore Glacier for a crossing party that, unknown to them, was already frozen into the ice on the far side of the continent. Nobody had told them that the crossing was postponed; the cable was never sent.",
+    src: ["WIKI_ITAE"], q: "v", anchor: "Aurora left Hobart 24 December 1914; the halved budget and the unsent cable (Wikipedia, after Tyler-Lewis)." },
+  { id: "aurora_blown", n: "Aurora torn from her moorings", d: "1915-05-07", p: "d", pl: "Cape Evans, McMurdo Sound", lat: -77.638, lon: 166.41, lane: "RS", k: "peril", t: 1,
+    story: "On 7 May 1915 a gale tore Aurora from her anchors at Cape Evans and carried her out into the Ross Sea in the ice, with most of the shore party's food, fuel and clothing still aboard. She drifted for nine months and 1,600 miles before she broke free in February 1916 and limped to New Zealand. The ten men left ashore, with the sledging rations they had landed and whatever Scott's Terra Nova expedition had left in the huts, decided to lay the depots anyway. The men they were laying them for would never come.",
+    img: { f: "Mackintosh and Spencer-Smith.jpg", cap: "Aeneas Mackintosh and the Reverend Arnold Spencer-Smith of the Ross Sea party." },
+    src: ["WIKI_ITAE"], q: "v", anchor: "7 May 1915; nine months and about 1,600 miles of drift; open water 12 February 1916 (Wikipedia)." },
+  { id: "depots", n: "The depots are laid to Mount Hope", d: "1915-09-01", p: "m", e: "1916-01-26", pe: "m", pl: "Across the Ross Ice Shelf to the foot of the Beardmore Glacier", lat: -82.0, lon: 170.0, lane: "RS", k: "voyage", t: 2,
+    story: "From September 1915 to January 1916 the Ross Sea party man-hauled their depots south across the ice shelf, one every degree of latitude, to Mount Hope at the foot of the Beardmore, 83°30′S: the hardest sledging of the whole expedition, done in worn-out clothing for a party that did not exist. They completed the task. Nothing they laid was ever used.",
+    src: ["WIKI_ITAE"], q: "v", anchor: "Depot-laying September 1915 to January 1916, to the Beardmore Glacier (Wikipedia, after Tyler-Lewis)." },
+  { id: "spencersmith", n: "Death of Spencer-Smith", d: "1916-03-09", p: "d", pl: "Ross Ice Shelf, on the return from Mount Hope", lat: -79.8, lon: 169.0, lane: "RS", k: "death", t: 2,
+    story: "On the way back scurvy took hold. The chaplain and photographer Arnold Spencer-Smith collapsed and was hauled on a sledge for forty days; he died on the ice on 9 March 1916, a few days short of Hut Point. Mackintosh could barely walk. The survivors crawled into Scott's old hut and slowly recovered on seal meat.",
+    src: ["WIKI_ITAE"], q: "v", anchor: "Spencer-Smith died on the return journey, March 1916 (Wikipedia). The day, 9 March, is the standard date; the retrieved source gives the month." },
+  { id: "mackintosh", n: "Mackintosh and Hayward walk into a blizzard", d: "1916-05-08", p: "d", pl: "The sea ice between Hut Point and Cape Evans", lat: -77.75, lon: 166.5, lane: "RS", k: "death", t: 2,
+    story: "On 8 May 1916, against advice, Mackintosh and Victor Hayward set out to walk the thirteen miles of new sea ice from Hut Point to Cape Evans. A blizzard came down within hours. Their tracks ran to the edge of the ice and stopped. They were never seen again. On the same day, on the other side of the continent, Shackleton was in a cave in King Haakon Bay, planning his mountain crossing.",
+    src: ["WIKI_ITAE"], q: "v", anchor: "8 May 1916 (Wikipedia, after Tyler-Lewis)." },
+  { id: "aurora_relief", n: "Aurora returns for the survivors", d: "1917-01-10", p: "d", pl: "Cape Evans, McMurdo Sound", lat: -77.638, lon: 166.41, lane: "RS", k: "rescue", t: 1,
+    story: "The seven survivors waited eight more months at Cape Evans. Aurora, repaired in New Zealand with money the three governments concerned argued over for months, finally reached them on 10 January 1917. Shackleton was aboard, but not in command: New Zealand, Australia and Britain, who were paying, had refused to give him the ship. Of fifty-six men who set out in 1914, three of the Ross Sea party were dead. Every one of the twenty-eight in the Weddell Sea had come home.",
+    src: ["WIKI_ITAE"], q: "v", anchor: "Relief 10 January 1917; Shackleton as supernumerary officer (Wikipedia, after Tyler-Lewis)." },
+  // ---- the world and the aftermath
+  { id: "warcost", n: "What the war took", d: "1917-02-15", p: "m", pl: "England", lat: 51.5, lon: -0.1, lane: "WD", k: "death", t: 2,
+    story: "The expedition came home in pieces, without ceremonies, into the fourth year of the war. Shackleton reached England on 29 May 1917 after a lecture tour and was barely noticed. Most of his men went straight into uniform. McCarthy, who had sailed in the James Caird, was killed at sea in 1917; Cheetham, the bosun on his fourth Antarctic voyage, was torpedoed in 1918; Ernest Wild of the Ross Sea party died of typhoid in the Mediterranean. McNish, Vincent, Stephenson and Holness were denied the Polar Medal on Shackleton's recommendation. McNish died poor in New Zealand; his grave in Wellington has a bronze cat on it.",
+    src: ["WIKI_ITAE"], q: "v", anchor: "Return 29 May 1917; the war dead; the Polar Medals withheld (Wikipedia)." },
+  { id: "wreck", n: "Epilogue · 5 March 2022: Endurance is found", d: "1917-02-25", p: "d", pl: "68°44′21″S 52°19′47″W, 3,008 metres down", lat: -68.739, lon: -52.33, lane: "WD", k: "epilogue", t: 1,
+    story: "One hundred years and two months after Shackleton's death, and a hundred years to the day after his funeral at Grytviken, the Endurance22 expedition of the Falklands Maritime Heritage Trust, working from the South African icebreaker S.A. Agulhas II with Saab Sabertooth submersibles, found the ship. She lies upright on the floor of the Weddell Sea at 3,008 metres, four miles south of the position Worsley recorded from his last sights in the ice, in water so cold and so poor in the organisms that eat wood that she is almost as she was: the wheel in place at the stern, the name still arced across the taffrail under the five-pointed star she carried as Polaris. She is a Historic Site and Monument under the Antarctic Treaty and nothing was touched. The exhibit shows this event at the end of the timeline; the photographs are the Trust's and are linked, not copied.",
+    quote: { q: "This is by far the finest wooden shipwreck I have ever seen. It is upright, well proud of the seabed, intact, and in a brilliant state of preservation.", who: "Mensun Bound, Director of Exploration, Endurance22, 9 March 2022" },
+    link: { url: "https://endurance22.org/?p=348", label: "See the wreck photographs at Endurance22 (© Falklands Maritime Heritage Trust / National Geographic)" },
+    src: ["E22", "E22G", "WIKI_END"], q: "v", anchor: "Found 5 March 2022 at 68°44′21″S 52°19′47″W, depth 3,008 m (Wikipedia; Endurance22). Shown at the end of the 1914–17 timeline because it closes the story.", note: "The Bound quotation is from the Trust's announcement, as reported in the press." }
+];
+
+// ---------------------------------------------------------------- MOVEMENTS
+// pts: [lon, lat, date|null, q, mode, label]  — mode: sea | ice (drifting with the pack) | land
+// model: how the head is drawn: endurance, camp, boats, caird, walkers, whaler, trawler, schooner, tug, aurora, sledge
+const MOVEMENTS = [
+  { id: "m_endurance", n: "Endurance: Plymouth to the Weddell Sea, and the drift", side: "E", mode: "sea", model: "endurance", tier: 1, cmd: "Frank Worsley, master; Shackleton, leader", src: ["COOL", "WIKI_ITAE"],
+    s: "The outward voyage by way of Buenos Aires and South Georgia, the fight through the pack in December 1914, and then ten months of drift held fast in the ice: a curve of some 1,200 miles from 76°58′S to 69°S, in which the ship never moved under her own power. Positions in the ice are the ship's own sights, as recorded in South and the standard chronologies; the line between them is interpolated.",
+    pts: [[-4.14, 50.37, "1914-08-08", "v", null, "Plymouth"], [-9.5, 45.0, null], [-17.0, 32.7, "1914-08-20", "k", null, "Madeira"], [-24.0, 15.0, null], [-30.0, 0.0, null], [-40.0, -20.0, null], [-52.0, -31.0, null], [-57.5, -34.8, null], [-58.37, -34.61, "1914-10-09", "k", null, "Buenos Aires"], [-58.37, -34.61, "1914-10-26", "v", null, "Buenos Aires: departure"],
+      [-55.0, -38.0, null], [-48.0, -45.0, null], [-40.0, -51.0, null], [-36.508, -54.281, "1914-11-05", "v", null, "Grytviken, South Georgia"], [-36.508, -54.281, "1914-12-05", "v", null, "Grytviken: departure"],
+      [-33.5, -56.0, null], [-29.5, -57.43, "1914-12-07", "v", null, "The pack, 57°26′S"], [-27.5, -60.0, "1914-12-14", "v", null, "Halted by the pack"], [-26.0, -62.0, "1914-12-17", "v", null, "Halted again"], [-24.0, -64.0, "1914-12-22", "v", null, "The leads open"],
+      [-22.0, -68.5, "1915-01-01", "k", null, "Deep in the Weddell Sea"], [-23.0, -72.5, "1915-01-07", "k", null, "The long run south"], [-26.5, -74.5, "1915-01-10", "v", null, "Coats Land sighted"], [-27.5, -76.0, "1915-01-15", "v", null, "Glacier bay: the landing declined"], [-30.0, -76.45, "1915-01-17", "v", null, "Caird Coast named"],
+      [-31.5, -76.567, "1915-01-19", "v", "ice", "Beset, 76°34′S 31°30′W"], [-35.0, -76.967, "1915-02-22", "v", "ice", "Furthest south, 76°58′S"], [-38.5, -75.6, "1915-03-31", "v", "ice", "95 miles of drift"], [-42.233, -75.383, "1915-05-01", "v", "ice", "75°23′S 42°14′W"], [-44.5, -73.4, "1915-06-22", "k", "ice", "Midwinter"], [-47.0, -72.6, "1915-07-22", "k", "ice", "The ice begins to break"],
+      [-49.0, -72.2, "1915-08-01", "k", "ice", "The August pressure"], [-50.2, -70.0, "1915-09-02", "k", "ice", "Pressure again"], [-51.0, -69.5, "1915-09-30", "k", "ice", "The worst squeeze"], [-51.3, -69.1, "1915-10-24", "v", "ice", "The hull gives way"], [-51.5, -69.083, "1915-10-27", "v", "ice", "Abandoned, 69°05′S 51°30′W"], [-52.44, -68.65, "1915-11-21", "v", "ice", "Endurance sinks"]] },
+  { id: "m_camp", n: "The camps on the ice", side: "E", mode: "ice", model: "camp", tier: 1, cmd: "Shackleton; Frank Wild, second-in-command", src: ["COOL", "WIKI_ITAE"],
+    s: "Ocean Camp and Patience Camp: five months on floes drifting north with the Weddell Sea gyre, from 69°S to 62°S, a few miles a day, sometimes east, sometimes west. Positions are those given in South and the chronologies; the camps did not move under their own effort except for the two short marches.",
+    pts: [[-51.5, -69.083, "1915-10-27", "v", null, "On the ice by the wreck"], [-51.75, -69.0, "1915-11-01", "v", null, "Ocean Camp"], [-52.6, -68.4, "1915-11-25", "k", null, "Seven miles a day"], [-52.8, -68.0, "1915-12-05", "v", null, "Past 68°S, turning east of north"], [-53.0, -67.6, "1915-12-23", "v", null, "The second march"], [-53.2, -67.4, "1915-12-29", "v", null, "Patience Camp"],
+      [-53.3, -67.0, "1916-01-31", "k", null, "Held near 67°S"], [-53.4, -65.5, "1916-02-20", "k", null, "Fast runs north-east"], [-53.6, -63.58, "1916-03-17", "v", null, "The latitude of Paulet Island"], [-54.0, -62.8, "1916-03-25", "v", null, "100 miles south of Elephant Island"], [-54.0, -62.1, "1916-04-08", "v", null, "The floe splits"]] },
+  { id: "m_boats", n: "The three boats to Elephant Island", side: "B", mode: "sea", model: "boats", tier: 1, cmd: "Shackleton (James Caird), Worsley (Dudley Docker), Crean (Stancomb Wills)", src: ["WIKI_ITAE", "COOL"],
+    s: "Seven days through the loosening pack and the open sea, first towards Deception Island, then Hope Bay, then the nearest rock. The course is reconstructed from the destinations Shackleton chose and abandoned; the boats were separated for a night before the landing.",
+    pts: [[-54.0, -62.1, "1916-04-09", "v", null, "The boats are launched"], [-54.6, -62.0, "1916-04-10", "k", null, "Among the floes"], [-55.3, -61.8, "1916-04-12", "k", null, "Course changed to Hope Bay"], [-55.0, -61.5, "1916-04-13", "k", null, "Course changed to Elephant Island"], [-54.4, -61.25, "1916-04-14", "v", null, "Off the cliffs of Elephant Island"], [-54.65, -61.1, "1916-04-15", "v", null, "Cape Valentine: landfall"], [-54.87, -61.085, "1916-04-17", "v", null, "Cape Wild"]] },
+  { id: "m_caird", n: "The voyage of the James Caird", side: "B", mode: "sea", model: "caird", tier: 1, cmd: "Shackleton; Worsley navigating; Crean, McNish, McCarthy, Vincent", src: ["WIKI_JC", "WIKI_ITAE", "COOL"],
+    s: "Sixteen days and 800 miles in a 22.5-foot boat, running before the westerlies across the Drake Passage and the Scotia Sea. Worsley took four sun sights in the whole voyage. The line is the great-circle course; the boat's actual track wandered with the weather.",
+    pts: [[-54.87, -61.085, "1916-04-24", "v", null, "Launch from Cape Wild"], [-52.5, -59.8, "1916-04-27", "k", null, "Ice forming on the deck"], [-48.5, -58.0, "1916-05-01", "k", null, "The middle of the Scotia Sea"], [-44.5, -56.5, "1916-05-05", "v", null, "The great wave"], [-40.5, -55.2, "1916-05-08", "v", null, "South Georgia sighted"], [-38.5, -54.7, "1916-05-09", "k", null, "Hurricane off the coast"], [-37.4, -54.17, "1916-05-10", "v", null, "King Haakon Bay: Cave Cove"], [-37.15, -54.13, "1916-05-15", "v", null, "Peggotty Camp"]] },
+  { id: "m_crossing", n: "The crossing of South Georgia", side: "B", mode: "land", model: "walkers", tier: 1, cmd: "Shackleton, Worsley, Crean", src: ["WIKI_ITAE", "COOL"],
+    s: "Thirty-six hours over the Allardyce Range without a map: up from Peggotty Camp, three false passes, the slide down the slope on the coiled rope, the night march, Fortuna Bay, the waterfall, and Stromness. The line follows the route as generally reconstructed; the men themselves could not have drawn it.",
+    pts: [[-37.15, -54.13, "1916-05-19", "v", null, "Peggotty Camp, 3 a.m."], [-37.0, -54.1, null], [-36.9, -54.05, "1916-05-19", "k", null, "The passes: three false starts"], [-36.85, -54.08, null], [-36.8, -54.1, "1916-05-19", "k", null, "The rope slide, dusk"], [-36.75, -54.12, null], [-36.72, -54.1, "1916-05-20", "k", null, "Fortuna Bay: the whistle heard, 7 a.m."], [-36.7, -54.15, null], [-36.71, -54.16, "1916-05-20", "v", null, "Stromness, afternoon"]] },
+  { id: "m_samson", n: "The whaler fetches the men at Peggotty Camp", side: "R", mode: "sea", model: "whaler", tier: 3, cmd: "A Stromness whaler, with Worsley aboard", src: ["WIKI_ITAE"],
+    s: "Round the island to King Haakon Bay and back with McNish, McCarthy and Vincent and the James Caird.",
+    pts: [[-36.71, -54.16, "1916-05-21", "v", null, "Stromness"], [-36.4, -53.95, null], [-37.6, -54.0, null], [-37.15, -54.13, "1916-05-21", "v", null, "Peggotty Camp"], [-37.6, -54.0, null], [-36.4, -53.95, null], [-36.71, -54.16, "1916-05-22", "k", null, "Stromness"]] },
+  { id: "m_southernsky", n: "First attempt: the Southern Sky", side: "R", mode: "sea", model: "whaler", tier: 2, cmd: "Shackleton, with a volunteer crew", src: ["COOL", "WIKI_ITAE"],
+    s: "From Husvik towards Elephant Island; stopped by pack 70 miles short, then to Port Stanley.",
+    pts: [[-36.71, -54.16, "1916-05-23", "v", null, "Stromness / Husvik"], [-42.0, -56.5, null], [-48.0, -59.5, "1916-05-27", "k", null, "The pack, 70 miles from the island"], [-52.0, -57.0, null], [-57.86, -51.69, "1916-05-31", "v", null, "Port Stanley"]] },
+  { id: "m_pesca", n: "Second attempt: Instituto de Pesca No. 1", side: "R", mode: "sea", model: "trawler", tier: 3, cmd: "Shackleton; a Uruguayan crew", src: ["COOL", "WIKI_ITAE"],
+    s: "The Uruguayan trawler from Port Stanley; turned back by ice in sight of the island.",
+    pts: [[-57.86, -51.69, "1916-06-10", "v", null, "Port Stanley"], [-56.0, -56.0, null], [-54.5, -59.8, "1916-06-15", "k", null, "Stopped by the pack"], [-58.0, -56.0, null], [-57.86, -51.69, "1916-06-22", "k", null, "Port Stanley"], [-63.0, -52.5, null], [-70.917, -53.163, "1916-07-01", "k", null, "Punta Arenas"]] },
+  { id: "m_emma", n: "Third attempt: the schooner Emma", side: "R", mode: "sea", model: "schooner", tier: 3, cmd: "Shackleton; Allan McDonald's schooner, towed by Yelcho", src: ["COOL", "WIKI_ITAE"],
+    s: "From Punta Arenas; beaten back by ice and gales.",
+    pts: [[-70.917, -53.163, "1916-07-12", "v", null, "Punta Arenas"], [-66.0, -55.5, null], [-60.0, -58.5, null], [-56.5, -60.5, "1916-07-22", "k", null, "Turned back by the ice"], [-63.0, -56.0, null], [-70.917, -53.163, "1916-08-03", "k", null, "Punta Arenas"]] },
+  { id: "m_yelcho", n: "Fourth attempt: the Yelcho", side: "R", mode: "sea", model: "tug", tier: 1, cmd: "Luis Pardo, Chilean Navy; Shackleton, Worsley and Crean aboard", src: ["COOL", "WIKI_ITAE"],
+    s: "The small steel tug that finally reached Elephant Island through open water and fog, took off the 22 men in an hour, and brought all 28 into Punta Arenas.",
+    pts: [[-70.917, -53.163, "1916-08-25", "v", null, "Punta Arenas"], [-66.0, -55.5, null], [-60.0, -58.5, null], [-55.5, -60.8, "1916-08-30", "k", null, "In fog off the island"], [-54.87, -61.085, "1916-08-30", "v", null, "Cape Wild, 11.40 a.m."], [-56.0, -60.5, null], [-62.0, -57.5, null], [-67.5, -54.8, null], [-70.917, -53.163, "1916-09-03", "v", null, "Punta Arenas"]] },
+  { id: "m_aurora", n: "Aurora: Hobart to McMurdo Sound, and the drift", side: "A", mode: "sea", model: "aurora", tier: 2, cmd: "Aeneas Mackintosh", src: ["WIKI_ITAE"],
+    s: "The Ross Sea ship: from Hobart to Cape Evans, then nine months adrift in the ice of the Ross Sea after the gale of 7 May 1915, and a limping passage to New Zealand.",
+    pts: [[147.33, -42.88, "1914-12-24", "v", null, "Hobart"], [155.0, -50.0, null], [165.0, -62.0, null], [170.0, -71.0, null], [168.0, -76.0, null], [166.41, -77.638, "1915-01-15", "v", null, "Cape Evans, McMurdo Sound"], [166.41, -77.638, "1915-05-07", "v", "ice", "Torn from her moorings"], [170.0, -76.0, "1915-07-01", "k", "ice", "Drifting in the Ross Sea"], [175.0, -73.0, "1915-10-01", "k", "ice"], [178.0, -69.5, "1915-12-15", "k", "ice"], [178.5, -65.5, "1916-02-12", "v", "sea", "Open water at last"], [175.0, -55.0, null], [170.6, -45.8, "1916-04-03", "k", null, "Port Chalmers, New Zealand"]] },
+  { id: "m_depot", n: "The Ross Sea party's depot journey", side: "A", mode: "land", model: "sledge", tier: 2, cmd: "Mackintosh; Ernest Joyce", src: ["WIKI_ITAE"],
+    s: "Man-hauling depots south across the Ross Ice Shelf to Mount Hope at the foot of the Beardmore Glacier, and the terrible return with scurvy. Positions along the 170th meridian are approximate.",
+    pts: [[166.41, -77.638, "1915-09-01", "v", null, "Cape Evans"], [166.64, -77.85, "1915-09-10", "k", null, "Hut Point"], [169.5, -79.0, "1915-10-20", "k", null, "79° depot"], [169.8, -80.0, "1915-11-15", "k", null, "80° depot"], [170.0, -81.0, "1915-12-10", "k", null, "81° depot"], [170.5, -82.0, "1916-01-05", "k", null, "82° depot"], [171.0, -83.5, "1916-01-26", "k", null, "Mount Hope, 83°30′S"], [170.5, -82.0, "1916-02-10", "k", null], [169.8, -80.5, "1916-03-01", "k", null, "Spencer-Smith hauled on the sledge"], [169.0, -79.8, "1916-03-09", "k", null, "Death of Spencer-Smith"], [166.64, -77.85, "1916-03-18", "k", null, "Hut Point"]] },
+  { id: "m_relief", n: "Aurora's relief voyage", side: "A", mode: "sea", model: "aurora", tier: 2, cmd: "John King Davis, master; Shackleton as supernumerary", src: ["WIKI_ITAE"],
+    s: "From New Zealand to Cape Evans for the seven survivors, and home.",
+    pts: [[170.6, -45.8, "1916-12-20", "k", null, "Port Chalmers"], [170.0, -60.0, null], [172.0, -70.0, null], [168.0, -76.5, null], [166.41, -77.638, "1917-01-10", "v", null, "Cape Evans: the survivors relieved"], [170.0, -72.0, null], [174.0, -55.0, null], [174.78, -41.29, "1917-02-09", "k", null, "Wellington"]] }
+];
+
+// ---------------------------------------------------------------- PLACES  [name, lon, lat, rank]
+const PLACES = [
+  ["London", -0.128, 51.507, 1], ["Plymouth", -4.14, 50.37, 2], ["Buenos Aires", -58.37, -34.61, 1], ["Montevideo", -56.16, -34.9, 3], ["Port Stanley", -57.86, -51.69, 1], ["Punta Arenas", -70.917, -53.163, 1],
+  ["Grytviken", -36.508, -54.281, 1], ["Stromness", -36.71, -54.16, 2], ["Husvik", -36.71, -54.18, 3], ["King Haakon Bay", -37.3, -54.17, 2], ["Peggotty Camp", -37.15, -54.13, 3],
+  ["Elephant Island", -55.1, -61.15, 1], ["Cape Wild", -54.87, -61.085, 3], ["Cape Valentine", -54.65, -61.1, 3], ["Clarence Island", -54.05, -61.2, 3], ["Deception Island", -60.63, -62.95, 2], ["Paulet Island", -55.78, -63.58, 2], ["Snow Hill Island", -57.2, -64.47, 3], ["Hope Bay", -57.0, -63.4, 3], ["James Ross Island", -57.75, -64.15, 3],
+  ["Vahsel Bay", -36.0, -77.8, 2], ["Coats Land", -26.0, -76.0, 2], ["Caird Coast", -29.0, -76.4, 3], ["The wreck (found 2022)", -52.33, -68.739, 1], ["Ocean Camp", -51.75, -69.0, 3], ["Patience Camp", -53.2, -67.4, 3],
+  ["Hobart", 147.33, -42.88, 1], ["Port Chalmers", 170.6, -45.8, 2], ["Wellington", 174.78, -41.29, 3], ["Cape Evans", 166.41, -77.638, 1], ["Hut Point", 166.64, -77.85, 3], ["Mount Hope", 171.0, -83.5, 2], ["Beardmore Glacier", 171.0, -84.2, 3], ["South Pole", 0.0, -89.98, 2], ["Cape Town", 18.42, -33.93, 3]
+];
+const REGIONS = [
+  ["WEDDELL SEA", -42.0, -72.5, 1], ["ROSS SEA", 175.0, -74.0, 1], ["ROSS ICE SHELF", 175.0, -81.0, 2], ["ANTARCTICA", 20.0, -83.0, 1], ["GRAHAM LAND", -62.0, -66.5, 2], ["SOUTH SHETLAND ISLANDS", -58.5, -62.3, 3],
+  ["SOUTH GEORGIA", -36.5, -54.9, 2], ["FALKLAND ISLANDS", -59.5, -51.9, 3], ["PATAGONIA", -70.0, -48.0, 2], ["TASMANIA", 146.5, -42.0, 3], ["NEW ZEALAND", 172.0, -43.5, 3], ["DRONNING MAUD LAND", 10.0, -75.0, 3], ["COATS LAND", -25.0, -77.5, 3]
+];
+const SEAS = [
+  ["SOUTH ATLANTIC OCEAN", -25.0, -45.0, 1], ["SOUTHERN OCEAN", -30.0, -63.0, 1], ["SCOTIA SEA", -45.0, -57.5, 2], ["DRAKE PASSAGE", -63.0, -59.5, 3], ["SOUTHERN OCEAN", 150.0, -62.0, 1], ["TASMAN SEA", 160.0, -40.0, 3]
+];
+
+</script>
+<script>
+"use strict";
+// ============================================================================
+//  By Endurance We Conquer — CesiumJS exhibit. Part 1: time & data
+// ============================================================================
+const $ = (s, r = document) => r.querySelector(s);
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+const REDUCED = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const MOBILE = window.matchMedia && window.matchMedia("(max-width: 900px)").matches;
+const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const RAD = Math.PI / 180;
+
+// ---------------------------------------------------------------- time model (Gregorian, days since 1 July 1914)
+const DAY = 86400000;
+const T0 = Date.UTC(1913, 11, 15), T1 = Date.UTC(1917, 1, 28);
+const NDAYS = Math.round((T1 - T0) / DAY);
+const JDN0 = 2420321;                                     // Julian Day Number of 1 July 1914 (for Cesium's clock only)
+function dayOf(iso) { const [y, m, d] = iso.slice(0, 10).split("-").map(Number); return (Date.UTC(y, m - 1, d) - T0) / DAY; }
+function dateOf(t) { const dt = new Date(T0 + Math.floor(t) * DAY); return { y: dt.getUTCFullYear(), m: dt.getUTCMonth() + 1, d: dt.getUTCDate(), wd: dt.getUTCDay() }; }
+const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+const MON3 = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const WEEKDAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+function fmtLong(t) { const d = dateOf(t); return d.d + " " + MONTHS[d.m - 1] + " " + d.y; }
+function fmtShort(t) { const d = dateOf(t); return d.d + " " + MON3[d.m - 1] + " " + d.y; }
+function fmtPrec(iso, p, short) { const d = dateOf(dayOf(iso)), M = short ? MON3 : MONTHS; return p === "m" ? M[d.m - 1] + " " + d.y : d.d + " " + M[d.m - 1] + " " + d.y; }
+function fmtRange(e, short) {
+  const a = fmtPrec(e.d, e.p, short); if (!e.e) return a;
+  const b = fmtPrec(e.e, e.pe || e.p, short); if (a === b) return a;
+  const da = dateOf(dayOf(e.d)), db = dateOf(dayOf(e.e)), M = short ? MON3 : MONTHS;
+  if (e.p === "d" && (e.pe || e.p) === "d" && da.y === db.y && da.m === db.m) return da.d + "–" + db.d + " " + M[da.m - 1] + " " + da.y;
+  if (da.y === db.y) return a.replace(" " + da.y, "") + " – " + b;
+  return a + " – " + b;
+}
+const PREC_NAME = { d: "Dated to the day", m: "Dated to the month" };
+function daysSince(t, iso) { return Math.floor(t - dayOf(iso)); }
+
+// ---------------------------------------------------------------- events
+const COMBAT = new Set(["peril"]);
+const EVENTS = EVENTS_DATA.map(e => {
+  const o = Object.assign({}, e);
+  o.t0 = dayOf(e.d);
+  const monthStart = dayOf(e.d.slice(0, 8) + "01");
+  if (!e.e && e.p === "m") o.t0 = monthStart;
+  o.t1 = e.e ? dayOf(e.e) + 1 : e.p === "d" ? o.t0 + 1 : monthStart + 30;
+  o.live0 = o.t0; o.live1 = o.t1;
+  o.sides = []; o.r = "-";
+  return o;
+}).sort((a, b) => a.t0 - b.t0 || a.t - b.t);
+const EV_BY_ID = Object.fromEntries(EVENTS.map(e => [e.id, e]));
+const LANE_NAME = Object.fromEntries(LANES.map(l => [l.id, l.name]));
+
+// ---------------------------------------------------------------- movements
+function segKm(a, b) { const dx = (b[0] - a[0]) * Math.cos((a[1] + b[1]) / 2 * RAD), dy = b[1] - a[1]; return Math.hypot(dx, dy) * 111.2; }
+const MOVES = MOVEMENTS.map(m => {
+  const pts = m.pts.map(p => ({ lon: p[0], lat: p[1], date: p[2] || null, q: p[3] || null, mode: p[4] || null, label: p[5] || null }));
+  let cur = m.mode; pts.forEach(p => { if (p.mode) cur = p.mode; else p.mode = cur; });
+  const cum = [0];
+  for (let i = 1; i < pts.length; i++) cum.push(cum[i - 1] + segKm([pts[i - 1].lon, pts[i - 1].lat], [pts[i].lon, pts[i].lat]));
+  const di = pts.map((p, i) => p.date ? i : -1).filter(i => i >= 0);
+  const T = new Array(pts.length).fill(null);
+  let k = 0;
+  while (k < di.length) {
+    let j = k; while (j + 1 < di.length && pts[di[j + 1]].date === pts[di[k]].date) j++;
+    const base = dayOf(pts[di[k]].date);
+    if (j === k) T[di[k]] = base + 0.5; else { const d0 = cum[di[k]], d1 = cum[di[j]], span = Math.max(1e-6, d1 - d0); for (let q = k; q <= j; q++) T[di[q]] = base + 0.12 + 0.76 * (d1 > d0 ? (cum[di[q]] - d0) / span : (q - k) / (j - k)); }
+    k = j + 1;
+  }
+  for (let a = 0; a < di.length - 1; a++) { const i0 = di[a], i1 = di[a + 1], d0 = cum[i0], d1 = cum[i1]; for (let i = i0 + 1; i < i1; i++) T[i] = T[i0] + (T[i1] - T[i0]) * ((cum[i] - d0) / Math.max(1e-6, d1 - d0)); }
+  const segApprox = [];
+  for (let i = 1; i < pts.length; i++) { let a = i - 1; while (a > 0 && !pts[a].date) a--; let b = i; while (b < pts.length - 1 && !pts[b].date) b++; segApprox.push(pts[a].q !== "v" || pts[b].q !== "v"); }
+  return Object.assign({}, m, { P: pts, T, cum, segApprox, tStart: T[0], tEnd: T[T.length - 1], km: cum[cum.length - 1] });
+});
+function movePos(m, t) {
+  const T = m.T, P = m.P;
+  if (t <= T[0]) return { lon: P[0].lon, lat: P[0].lat, i: 0, f: 0, mode: P[0].mode };
+  if (t >= T[T.length - 1]) { const n = P.length - 1; return { lon: P[n].lon, lat: P[n].lat, i: n - 1, f: 1, mode: P[n].mode }; }
+  let i = 0; while (i < T.length - 2 && T[i + 1] < t) i++;
+  const f = (t - T[i]) / Math.max(1e-9, T[i + 1] - T[i]);
+  return { lon: lerp(P[i].lon, P[i + 1].lon, f), lat: lerp(P[i].lat, P[i + 1].lat, f), i, f, mode: P[i + 1].mode };
+}
+function moveHeading(m, t) { const a = movePos(m, t - 1), b = movePos(m, t + 1); const dx = (b.lon - a.lon) * Math.cos(a.lat * RAD), dy = b.lat - a.lat; return Math.hypot(dx, dy) < 1e-7 ? null : Math.atan2(dx, dy); }
+
+// ---------------------------------------------------------------- emblems used on cards (a plain roundel per side)
+function drawEmblem(ctx, side, w, h) { ctx.fillStyle = (SIDES[side] || { col: "#666" }).col; ctx.fillRect(0, 0, w, h); ctx.strokeStyle = "rgba(0,0,0,.45)"; ctx.strokeRect(0.5, 0.5, w - 1, h - 1); }
+const EMBLEM_URL = {};
+function emblemURL(side) { if (EMBLEM_URL[side]) return EMBLEM_URL[side]; const c = document.createElement("canvas"); c.width = 60; c.height = 38; drawEmblem(c.getContext("2d"), side, 60, 38); return (EMBLEM_URL[side] = c.toDataURL()); }
+const EMBLEM_NAME = {};
+
+// ============================================================================
+//  Part 2: the globe (CesiumJS)
+// ============================================================================
+const SC = {};
+const C = Cesium;
+const SIDE_COL = Object.fromEntries(Object.entries(SIDES).map(([k, v]) => [k, v.col]));
+const RESCOL = { "-": "#B8912F" };
+const KINDCOL = { voyage: "#3E4E8C", ice: "#5E8FA8", camp: "#B5502C", peril: "#9E2B25", gamble: "#C9963B", rescue: "#2F7A5E", death: "#2b2219", home: "#2F7A5E", science: "#6A5A4C", epilogue: "#1B3A5C" };
+const ST = { t: dayOf("1913-12-29") + 0.5, playing: false, speed: 1, rate: 1, guided: true, hold: true, showPast: true, showTraces: true, showPlaces: true, showRegions: true,
+  layers: { route: true, columns: true, fleets: true, voyage: true, ice: true, camp: true, peril: true, gamble: true, rescue: true, death: true, home: true, science: true, epilogue: true }, reading: true, readDone: new Set(), readingStop: null,
+  lastDay: -1, lastInteract: performance.now(), attract: false, fly: null, openId: null, time: 0, terrainReady: false };
+let W_PX = 1, H_PX = 1;
+
+function jd(t) { return new C.JulianDate(JDN0 + Math.floor(t), (t - Math.floor(t)) * 86400); }
+
+async function initGlobe() {
+  const token = (window.ION_TOKEN || "").trim();
+  const useIon = token.length > 20;
+  if (useIon) C.Ion.defaultAccessToken = token; else C.Ion.defaultAccessToken = "";
+  const opts = { baseLayerPicker: false, geocoder: false, timeline: false, animation: false, sceneModePicker: false, navigationHelpButton: false, homeButton: false,
+    infoBox: false, selectionIndicator: false, fullscreenButton: false, shouldAnimate: false, requestRenderMode: false, scene3DOnly: true, skyBox: false, creditContainer: "credits" };
+  if (useIon) {
+    opts.terrain = C.Terrain.fromWorldTerrain({ requestVertexNormals: true });
+    opts.baseLayer = C.ImageryLayer.fromProviderAsync(C.IonImageryProvider.fromAssetId(3954));   // Sentinel-2 cloudless (ion)
+  } else {
+    // No ion token: EOX Sentinel-2 cloudless (free for non-commercial use with attribution), 10 m imagery, flat globe
+    opts.baseLayer = new C.ImageryLayer(new C.UrlTemplateImageryProvider({
+      url: "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2020_3857/default/g/{z}/{y}/{x}.jpg", maximumLevel: 14, tileWidth: 256, tileHeight: 256,
+      credit: new C.Credit('<a href="https://s2maps.eu" target="_blank" rel="noopener">Sentinel-2 cloudless</a> by <a href="https://eox.at" target="_blank" rel="noopener">EOX IT Services GmbH</a> (Contains modified Copernicus Sentinel data 2020)', true) }));
+  }
+  const viewer = new C.Viewer("gl", opts);
+  SC.viewer = viewer; SC.scene = viewer.scene; SC.camera = viewer.camera; SC.useIon = useIon;
+  const scene = viewer.scene;
+  scene.globe.enableLighting = false; scene.globe.depthTestAgainstTerrain = false;
+  scene.globe.baseColor = C.Color.fromCssColorString("#DCE6EA");
+  scene.skyAtmosphere.show = true; scene.fog.enabled = true; scene.fog.density = 0.00012;
+  scene.screenSpaceCameraController.minimumZoomDistance = 2500; scene.screenSpaceCameraController.maximumZoomDistance = 1.6e7;
+  scene.screenSpaceCameraController.enableCollisionDetection = true;
+  scene.postProcessStages.fxaa.enabled = true;
+  viewer.resolutionScale = Math.min(window.devicePixelRatio || 1, MOBILE ? 1.5 : 2) / (window.devicePixelRatio || 1);
+  // muted, sepia-leaning imagery so the modern land cover reads as background, not as the subject
+  const base = viewer.imageryLayers.get(0);
+  base.saturation = 0.55; base.brightness = 1.02; base.contrast = 1.06; base.gamma = 1.0;
+  const tint = document.createElement("canvas"); tint.width = tint.height = 4; const tx = tint.getContext("2d"); tx.fillStyle = "#7FA3B8"; tx.fillRect(0, 0, 4, 4);
+  const tintLayer = new C.ImageryLayer(new C.SingleTileImageryProvider({ url: tint.toDataURL(), tileWidth: 4, tileHeight: 4 }));
+  tintLayer.alpha = 0.12; viewer.imageryLayers.add(tintLayer);
+  // opening view: the whole theatre from the Adriatic to the Indus
+  viewer.camera.setView({ destination: C.Cartesian3.fromDegrees(-40, -52, 7.8e6), orientation: { heading: 0, pitch: -C.Math.PI_OVER_TWO * 0.9, roll: 0 } });
+  const ds = new C.CustomDataSource("exhibit"); await viewer.dataSources.add(ds); SC.ds = ds;
+  initLabels(); initMarkers(); initRoutes(); initColumns();
+  if (useIon) sampleRouteHeights(); else ST.terrainReady = true;
+  // user interaction → explore mode
+  const cv = viewer.canvas;
+  ["pointerdown", "wheel", "touchstart"].forEach(ev => cv.addEventListener(ev, () => { if (ST.guided) setGuided(false); ST.fly = null; poke(); }, { passive: true }));
+  cv.addEventListener("click", ev => { const hit = pickMarker(ev.clientX, ev.clientY); if (hit) openEvent(hit.id); });
+  cv.addEventListener("mousemove", ev => { cv.style.cursor = pickMarker(ev.clientX, ev.clientY) ? "pointer" : ""; });
+  return viewer;
+}
+
+// ------------------------------------------------------------------ labels (ancient places, regions, seas)
+function initLabels() {
+  const ds = SC.ds;
+  const far = new C.DistanceDisplayCondition(0, 1.2e7);
+  SC.placeEnts = PLACES.map(([n, lon, lat, rank]) => ds.entities.add({
+    position: C.Cartesian3.fromDegrees(lon, lat),
+    point: { pixelSize: rank === 1 ? 5 : 4, color: C.Color.fromCssColorString("#F3EAD3"), outlineColor: C.Color.fromCssColorString("#2b2219"), outlineWidth: 1.5, heightReference: C.HeightReference.CLAMP_TO_GROUND, disableDepthTestDistance: Number.POSITIVE_INFINITY,
+      distanceDisplayCondition: new C.DistanceDisplayCondition(0, rank === 1 ? 1.2e7 : rank === 2 ? 3.2e6 : 1.4e6) },
+    label: { text: n, font: (rank === 1 ? "15px" : "13px") + ' "IM Fell English", Georgia, serif', fillColor: C.Color.fromCssColorString("#2b2219"), outlineColor: C.Color.fromCssColorString("#F3EAD3"), outlineWidth: 4, style: C.LabelStyle.FILL_AND_OUTLINE,
+      pixelOffset: new C.Cartesian2(8, 0), horizontalOrigin: C.HorizontalOrigin.LEFT, verticalOrigin: C.VerticalOrigin.CENTER, heightReference: C.HeightReference.CLAMP_TO_GROUND, disableDepthTestDistance: Number.POSITIVE_INFINITY,
+      distanceDisplayCondition: new C.DistanceDisplayCondition(0, rank === 1 ? 1.2e7 : rank === 2 ? 3.2e6 : 1.4e6) }
+  }));
+  const spaced = s => [...s].join("\u2009");
+  SC.regionEnts = REGIONS.map(([n, lon, lat, rank]) => ds.entities.add({
+    position: C.Cartesian3.fromDegrees(lon, lat),
+    label: { text: spaced(n), font: (rank === 1 ? "17px" : rank === 2 ? "14px" : "12px") + ' "IM Fell English SC", Georgia, serif', fillColor: C.Color.fromCssColorString("#4a3220").withAlpha(0.85), outlineColor: C.Color.fromCssColorString("#EFE5CC").withAlpha(0.6), outlineWidth: 3,
+      style: C.LabelStyle.FILL_AND_OUTLINE, horizontalOrigin: C.HorizontalOrigin.CENTER, heightReference: C.HeightReference.CLAMP_TO_GROUND, disableDepthTestDistance: Number.POSITIVE_INFINITY,
+      distanceDisplayCondition: new C.DistanceDisplayCondition(rank === 1 ? 0 : rank === 2 ? 0 : 0, rank === 1 ? 1.5e7 : rank === 2 ? 6e6 : 2.5e6), scaleByDistance: new C.NearFarScalar(4e5, 1.4, 8e6, 0.9) }
+  }));
+  SC.seaEnts = SEAS.map(([n, lon, lat, rank]) => ds.entities.add({
+    position: C.Cartesian3.fromDegrees(lon, lat),
+    label: { text: spaced(n), font: 'italic ' + (rank === 1 ? "16px" : "13px") + ' "IM Fell English", Georgia, serif', fillColor: C.Color.fromCssColorString("#1e2c2e").withAlpha(0.8), outlineColor: C.Color.fromCssColorString("#A7B3A7").withAlpha(0.5), outlineWidth: 3,
+      style: C.LabelStyle.FILL_AND_OUTLINE, horizontalOrigin: C.HorizontalOrigin.CENTER, disableDepthTestDistance: Number.POSITIVE_INFINITY, distanceDisplayCondition: new C.DistanceDisplayCondition(0, rank === 1 ? 1.5e7 : 4e6) }
+  }));
+}
+
+// ------------------------------------------------------------------ event markers (billboards drawn on canvas)
+const ICON_CACHE = {};
+function iconCanvas(kind, res, size = 128) {
+  const key = kind + size; if (ICON_CACHE[key]) return ICON_CACHE[key];
+  const c = document.createElement("canvas"); c.width = c.height = size; const x = c.getContext("2d"), r = size / 2;
+  const dark = kind === "death" || kind === "epilogue";
+  x.beginPath(); x.arc(r, r, r * 0.9, 0, 7); x.fillStyle = dark ? "#1B3A5C" : kind === "gamble" ? "#E4C97A" : "#F3EAD3"; x.fill();
+  x.lineWidth = size * 0.1; x.strokeStyle = KINDCOL[kind] || "#5B5246"; x.stroke();
+  x.lineWidth = size * 0.02; x.strokeStyle = "#231C15"; x.beginPath(); x.arc(r, r, r * 0.95, 0, 7); x.stroke();
+  x.save(); x.translate(r, r); x.strokeStyle = dark ? "#F3EAD3" : "#231C15"; x.fillStyle = x.strokeStyle; x.lineCap = "round"; x.lineJoin = "round";
+  const L = r * 0.5, lw = size * 0.065;
+  if (kind === "voyage") {          // a sail and hull
+    x.beginPath(); x.moveTo(-L * 0.15, -L * 1.0); x.bezierCurveTo(L * 0.9, -L * 0.6, L * 0.9, L * 0.2, L * 0.05, L * 0.45); x.closePath(); x.fill();
+    x.lineWidth = lw * 0.7; x.beginPath(); x.moveTo(-L * 0.15, -L * 1.05); x.lineTo(-L * 0.15, L * 0.55); x.stroke();
+    x.beginPath(); x.moveTo(-L * 1.0, L * 0.55); x.lineTo(L * 0.85, L * 0.55); x.quadraticCurveTo(L * 0.6, L * 1.0, 0, L * 1.0); x.quadraticCurveTo(-L * 0.7, L * 1.0, -L * 1.0, L * 0.55); x.closePath(); x.fill();
+  } else if (kind === "ice") {      // an ice crystal
+    x.lineWidth = lw * 0.6; for (let i = 0; i < 6; i++) { const a = i * Math.PI / 3; x.beginPath(); x.moveTo(0, 0); x.lineTo(Math.cos(a) * L, Math.sin(a) * L); x.stroke(); [0.45, 0.75].forEach(f => { x.beginPath(); x.moveTo(Math.cos(a) * L * f, Math.sin(a) * L * f); x.lineTo(Math.cos(a + 0.6) * L * (f + 0.22), Math.sin(a + 0.6) * L * (f + 0.22)); x.moveTo(Math.cos(a) * L * f, Math.sin(a) * L * f); x.lineTo(Math.cos(a - 0.6) * L * (f + 0.22), Math.sin(a - 0.6) * L * (f + 0.22)); x.stroke(); }); }
+  } else if (kind === "camp") {     // a tent
+    x.lineWidth = lw * 0.8; x.beginPath(); x.moveTo(-L, L * 0.75); x.lineTo(0, -L * 0.85); x.lineTo(L, L * 0.75); x.closePath(); x.stroke(); x.beginPath(); x.moveTo(0, -L * 0.85); x.lineTo(-L * 0.25, L * 0.75); x.lineTo(L * 0.25, L * 0.75); x.closePath(); x.fill();
+  } else if (kind === "peril") {    // pressure: a cracked floe
+    x.lineWidth = lw * 0.8; x.beginPath(); x.moveTo(-L, -L * 0.3); x.lineTo(-L * 0.4, -L * 0.7); x.lineTo(L * 0.3, -L * 0.5); x.lineTo(L, -L * 0.8); x.lineTo(L * 0.9, L * 0.5); x.lineTo(L * 0.2, L * 0.85); x.lineTo(-L * 0.6, L * 0.6); x.lineTo(-L, L * 0.1); x.closePath(); x.stroke();
+    x.lineWidth = lw * 0.9; x.beginPath(); x.moveTo(-L * 0.5, -L * 0.6); x.lineTo(-L * 0.1, 0); x.lineTo(L * 0.1, L * 0.1); x.lineTo(L * 0.3, L * 0.8); x.stroke(); x.beginPath(); x.moveTo(-L * 0.1, 0); x.lineTo(L * 0.6, -L * 0.25); x.stroke();
+  } else if (kind === "gamble") {   // a compass needle, off true
+    x.lineWidth = lw * 0.5; x.beginPath(); x.arc(0, 0, L * 0.95, 0, 7); x.stroke();
+    x.save(); x.rotate(-0.5); x.beginPath(); x.moveTo(0, -L * 0.85); x.lineTo(L * 0.22, 0); x.lineTo(-L * 0.22, 0); x.closePath(); x.fill(); x.beginPath(); x.moveTo(0, L * 0.85); x.lineTo(L * 0.22, 0); x.lineTo(-L * 0.22, 0); x.closePath(); x.stroke(); x.restore();
+  } else if (kind === "rescue") {   // a lifebuoy
+    x.lineWidth = lw * 1.8; x.beginPath(); x.arc(0, 0, L * 0.65, 0, 7); x.stroke(); x.strokeStyle = dark ? "#1B3A5C" : "#F3EAD3"; x.lineWidth = lw * 0.5; [0, 1, 2, 3].forEach(i => { const a = i * Math.PI / 2 + Math.PI / 4; x.beginPath(); x.moveTo(Math.cos(a) * L * 0.4, Math.sin(a) * L * 0.4); x.lineTo(Math.cos(a) * L * 0.9, Math.sin(a) * L * 0.9); x.stroke(); });
+  } else if (kind === "death") {    // a cross
+    x.lineWidth = lw * 0.9; x.beginPath(); x.moveTo(0, -L); x.lineTo(0, L); x.moveTo(-L * 0.6, -L * 0.35); x.lineTo(L * 0.6, -L * 0.35); x.stroke();
+  } else if (kind === "home") {     // an anchor
+    x.lineWidth = lw * 0.9; x.beginPath(); x.moveTo(0, -L * 0.75); x.lineTo(0, L * 0.85); x.stroke(); x.beginPath(); x.arc(0, -L * 0.85, L * 0.17, 0, 7); x.stroke(); x.beginPath(); x.moveTo(-L * 0.45, -L * 0.4); x.lineTo(L * 0.45, -L * 0.4); x.stroke(); x.beginPath(); x.arc(0, L * 0.15, L * 0.72, Math.PI * 0.18, Math.PI * 0.82); x.stroke();
+  } else if (kind === "science") {  // Hurley's camera
+    x.lineWidth = lw * 0.7; x.strokeRect(-L * 0.95, -L * 0.5, L * 1.9, L * 1.25); x.beginPath(); x.arc(0, L * 0.12, L * 0.42, 0, 7); x.stroke(); x.fillRect(-L * 0.55, -L * 0.85, L * 0.5, L * 0.35);
+  } else if (kind === "epilogue") { // the polestar
+    x.beginPath(); for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? L * 0.42 : L; x.lineTo(Math.cos(a) * rr, Math.sin(a) * rr); } x.closePath(); x.fill();
+  }
+  x.restore();
+  return (ICON_CACHE[key] = c);
+}
+function ringCanvas() {
+  if (ICON_CACHE.ring) return ICON_CACHE.ring;
+  const c = document.createElement("canvas"); c.width = c.height = 128; const x = c.getContext("2d"); x.lineWidth = 6; x.strokeStyle = "#ffffff"; x.beginPath(); x.arc(64, 64, 58, 0, 7); x.stroke();
+  return (ICON_CACHE.ring = c);
+}
+function initMarkers() {
+  SC.markers = EVENTS.map((e, i) => {
+    const pos = C.Cartesian3.fromDegrees(e.lon, e.lat);
+    const mk = { e, pos, base: e.t === 1 ? 30 : e.t === 2 ? 24 : 18, phase: i * 0.37, state: "hidden" };
+    mk.bb = SC.ds.entities.add({ position: pos, show: false,
+      billboard: { image: iconCanvas(e.k), width: mk.base, height: mk.base, heightReference: C.HeightReference.CLAMP_TO_GROUND, disableDepthTestDistance: Number.POSITIVE_INFINITY, verticalOrigin: C.VerticalOrigin.CENTER,
+        scale: new C.CallbackProperty(() => mk.scale || 1, false), color: new C.CallbackProperty(() => mk.dim ? C.Color.WHITE.withAlpha(0.6) : C.Color.WHITE, false) } });
+    mk.ring = SC.ds.entities.add({ position: pos, show: false,
+      billboard: { image: ringCanvas(), width: 128, height: 128, heightReference: C.HeightReference.CLAMP_TO_GROUND, disableDepthTestDistance: Number.POSITIVE_INFINITY, verticalOrigin: C.VerticalOrigin.CENTER,
+        scale: new C.CallbackProperty(() => mk.ringScale || 0.3, false), color: new C.CallbackProperty(() => C.Color.fromCssColorString(KINDCOL[e.k] || "#B8912F").withAlpha(mk.ringAlpha || 0), false) } });
+    if (e.k === "camp" && e.t1 - e.t0 > 5) {
+      mk.siege = SC.ds.entities.add({ position: pos, show: false, ellipse: { semiMajorAxis: 20000, semiMinorAxis: 20000, material: C.Color.fromCssColorString("#B5502C").withAlpha(0.18), classificationType: C.ClassificationType.TERRAIN } });
+    }
+    return mk;
+  });
+}
+
+// ------------------------------------------------------------------ routes: dense polylines with terrain heights (sampled when ion terrain is on)
+function initRoutes() {
+  SC.routes = MOVES.map(m => {
+    // densify each segment into ~10 km steps (land) / 40 km (sea), keeping per-point time and approx flag
+    const pts = []; // {lon, lat, t, approx, mode}
+    for (let i = 1; i < m.P.length; i++) {
+      const a = m.P[i - 1], b = m.P[i], mode = b.mode, km = segKm([a.lon, a.lat], [b.lon, b.lat]);
+      const steps = Math.max(1, Math.ceil(km / (mode === "land" ? 10 : 40)));
+      for (let s = (i === 1 ? 0 : 1); s <= steps; s++) { const f = s / steps; pts.push({ lon: lerp(a.lon, b.lon, f), lat: lerp(a.lat, b.lat, f), t: lerp(m.T[i - 1], m.T[i], f), approx: m.segApprox[i - 1], mode, h: 0 }); }
+    }
+    const carts = pts.map(p => C.Cartesian3.fromDegrees(p.lon, p.lat, p.h + 30));
+    const col = C.Color.fromCssColorString(SIDE_COL[m.side] || "#888");
+    const r = { m, pts, carts, ents: [] };
+    // one polyline per run of equal approx flag; positions revealed by time
+    let runStart = 0;
+    for (let i = 1; i <= pts.length; i++) {
+      if (i === pts.length || pts[i].approx !== pts[runStart].approx) {
+        const s0 = runStart, s1 = i - 1, approx = pts[s0].approx;
+        const positions = new C.CallbackProperty(() => {
+          const t = ST.t; if (t < pts[s0].t) return [];
+          const out = [];
+          for (let k = s0; k <= s1 && pts[k].t <= t; k++) out.push(r.carts[k]);
+          if (out.length < 1) return [];
+          // interpolated head
+          const last = s0 + out.length - 1;
+          if (last < s1 && pts[last + 1].t > t) { const f = (t - pts[last].t) / Math.max(1e-6, pts[last + 1].t - pts[last].t); out.push(C.Cartesian3.lerp(r.carts[last], r.carts[last + 1], f, new C.Cartesian3())); }
+          return out.length >= 2 ? out : [];
+        }, false);
+        const alpha = new C.CallbackProperty(() => { const past = ST.t - m.tEnd; const a = past <= 0 ? 0.95 : ST.showTraces ? lerp(0.95, 0.3, clamp(past / 240, 0, 1)) : lerp(0.95, 0, clamp(past / 60, 0, 1)); return a; }, false);
+        const width = m.tier === 1 ? 5 : 4;
+        r.ents.push(SC.ds.entities.add({ show: false, polyline: { positions, width: width + 3, material: new C.ColorMaterialProperty(new C.CallbackProperty(() => C.Color.fromCssColorString("#F3EAD3").withAlpha(alpha.getValue() * 0.55), false)), arcType: C.ArcType.GEODESIC, depthFailMaterial: C.Color.fromCssColorString("#F3EAD3").withAlpha(0.15) } }));
+        r.ents.push(SC.ds.entities.add({ show: false, polyline: { positions, width,
+          material: approx ? new C.PolylineDashMaterialProperty({ color: new C.CallbackProperty(() => col.withAlpha(alpha.getValue()), false), dashLength: 14 }) : new C.ColorMaterialProperty(new C.CallbackProperty(() => col.withAlpha(alpha.getValue()), false)),
+          arcType: C.ArcType.GEODESIC, depthFailMaterial: new C.PolylineDashMaterialProperty({ color: col.withAlpha(0.3), dashLength: 8 }) } }));
+        runStart = i;
+      }
+    }
+    return r;
+  });
+}
+async function sampleRouteHeights() {
+  try {
+    const tp = SC.viewer.terrainProvider;
+    for (const r of SC.routes) {
+      const cg = r.pts.map(p => C.Cartographic.fromDegrees(p.lon, p.lat));
+      for (let i = 0; i < cg.length; i += 300) { await C.sampleTerrainMostDetailed(tp, cg.slice(i, i + 300)); }
+      cg.forEach((c, i) => { r.pts[i].h = r.pts[i].mode === "land" ? Math.max(0, c.height || 0) : 0; r.carts[i] = C.Cartesian3.fromDegrees(r.pts[i].lon, r.pts[i].lat, r.pts[i].h + 40); });
+    }
+  } catch (err) { console.warn("terrain sampling failed; routes drawn at sea level", err); }
+  ST.terrainReady = true;
+}
+
+// ------------------------------------------------------------------ marching columns and fleets (head markers)
+// side profiles drawn on canvas, facing right; flipped when heading west
+function modelCanvas(model, flip) {
+  const key = "mdl" + model + (flip ? "L" : "R"); if (ICON_CACHE[key]) return ICON_CACHE[key];
+  const W = 160, H = 100, c = document.createElement("canvas"); c.width = W; c.height = H; const x = c.getContext("2d");
+  if (flip) { x.translate(W, 0); x.scale(-1, 1); }
+  const hull = "#2b2219", sail = "#EFE6D0", rope = "#5c4a35", ice = "#dfe8ec";
+  x.lineJoin = "round"; x.lineCap = "round";
+  const wl = 78;                                                          // waterline y
+  if (model === "endurance") {
+    // barquentine: square rig on the foremast, fore-and-aft on main and mizzen; funnel abaft the main; bowsprit
+    x.strokeStyle = rope; x.lineWidth = 1.2;
+    x.beginPath(); x.moveTo(126, 60); x.lineTo(152, 46); x.stroke();                                  // bowsprit
+    [[44, 8], [80, 4], [112, 14]].forEach(([mx, top]) => { x.beginPath(); x.moveTo(mx, wl - 6); x.lineTo(mx, top); x.stroke(); });  // masts
+    x.fillStyle = sail;
+    // foremast square sails (yards)
+    [[112, 20, 34, 12], [112, 34, 40, 13], [112, 49, 46, 13]].forEach(([mx, y, w, h]) => { x.beginPath(); x.moveTo(mx - w / 2, y); x.lineTo(mx + w / 2, y); x.quadraticCurveTo(mx + w / 2 + 3, y + h / 2, mx + w / 2 - 2, y + h); x.lineTo(mx - w / 2 + 2, y + h); x.quadraticCurveTo(mx - w / 2 - 3, y + h / 2, mx - w / 2, y); x.closePath(); x.fill(); x.stroke(); });
+    // main and mizzen gaff sails
+    [[80, 10], [44, 14]].forEach(([mx, top]) => { x.beginPath(); x.moveTo(mx, top + 4); x.lineTo(mx - 26, top + 10); x.lineTo(mx - 24, wl - 14); x.lineTo(mx, wl - 12); x.closePath(); x.fill(); x.stroke(); });
+    // jibs
+    x.beginPath(); x.moveTo(112, 16); x.lineTo(148, 48); x.lineTo(114, 58); x.closePath(); x.fill(); x.stroke();
+    // funnel
+    x.fillStyle = "#3a3a3a"; x.fillRect(64, 44, 7, 22); x.fillStyle = "#c9963b"; x.fillRect(64, 44, 7, 3);
+    // hull
+    x.fillStyle = hull; x.beginPath(); x.moveTo(14, wl - 10); x.lineTo(128, wl - 10); x.quadraticCurveTo(140, wl - 8, 146, wl - 14); x.lineTo(140, wl + 6); x.quadraticCurveTo(80, wl + 12, 22, wl + 6); x.quadraticCurveTo(12, wl + 2, 14, wl - 10); x.closePath(); x.fill();
+    x.fillStyle = "#EFE6D0"; x.fillRect(16, wl - 9, 122, 2);                                             // rubbing strake
+    x.fillStyle = "#3a3a3a"; x.fillRect(28, wl - 22, 30, 12);                                            // deckhouse
+    x.fillStyle = "rgba(20,40,60,.35)"; x.fillRect(0, wl + 4, W, H - wl - 4);                            // water
+  } else if (model === "caird") {
+    // 22-foot ship's boat decked over with canvas; two short masts, lug and jib
+    x.strokeStyle = rope; x.lineWidth = 1.2;
+    x.beginPath(); x.moveTo(72, wl - 4); x.lineTo(72, 30); x.moveTo(104, wl - 4); x.lineTo(104, 40); x.stroke();
+    x.fillStyle = sail; x.beginPath(); x.moveTo(72, 32); x.lineTo(46, 40); x.lineTo(50, wl - 12); x.lineTo(72, wl - 10); x.closePath(); x.fill(); x.stroke();
+    x.beginPath(); x.moveTo(104, 42); x.lineTo(126, 66); x.lineTo(104, wl - 10); x.closePath(); x.fill(); x.stroke();
+    x.fillStyle = "#c8b58f"; x.beginPath(); x.moveTo(36, wl - 10); x.lineTo(126, wl - 10); x.lineTo(122, wl - 4); x.lineTo(40, wl - 4); x.closePath(); x.fill();   // canvas decking
+    x.fillStyle = hull; x.beginPath(); x.moveTo(34, wl - 5); x.lineTo(128, wl - 5); x.quadraticCurveTo(122, wl + 8, 100, wl + 8); x.lineTo(60, wl + 8); x.quadraticCurveTo(38, wl + 8, 34, wl - 5); x.closePath(); x.fill();
+    x.fillStyle = "rgba(20,40,60,.35)"; x.fillRect(0, wl + 4, W, H - wl - 4);
+    // spray
+    x.strokeStyle = "#cfe3ec"; x.lineWidth = 2; x.beginPath(); x.moveTo(130, wl - 2); x.quadraticCurveTo(140, wl - 14, 148, wl - 8); x.stroke();
+  } else if (model === "boats") {
+    for (let i = 0; i < 3; i++) { const dx = i * 40, dy = i * 6; x.fillStyle = hull; x.beginPath(); x.moveTo(20 + dx, 56 + dy); x.lineTo(70 + dx, 56 + dy); x.quadraticCurveTo(66 + dx, 66 + dy, 50 + dx, 66 + dy); x.lineTo(34 + dx, 66 + dy); x.quadraticCurveTo(22 + dx, 66 + dy, 20 + dx, 56 + dy); x.closePath(); x.fill(); x.strokeStyle = rope; x.lineWidth = 1; x.beginPath(); x.moveTo(45 + dx, 56 + dy); x.lineTo(45 + dx, 34 + dy); x.stroke(); x.fillStyle = sail; x.beginPath(); x.moveTo(45 + dx, 36 + dy); x.lineTo(30 + dx, 44 + dy); x.lineTo(44 + dx, 54 + dy); x.closePath(); x.fill(); }
+    x.fillStyle = "rgba(20,40,60,.35)"; x.fillRect(0, 80, W, 20);
+  } else if (model === "camp") {
+    x.fillStyle = ice; x.beginPath(); x.moveTo(0, 74); x.lineTo(30, 66); x.lineTo(70, 70); x.lineTo(110, 64); x.lineTo(160, 72); x.lineTo(160, 100); x.lineTo(0, 100); x.closePath(); x.fill();
+    x.strokeStyle = "#9fb4bc"; x.lineWidth = 1; x.beginPath(); x.moveTo(20, 84); x.lineTo(60, 80); x.moveTo(90, 88); x.lineTo(140, 84); x.stroke();
+    [[30, 60], [70, 64], [112, 58]].forEach(([tx, ty]) => { x.fillStyle = "#e8dcc4"; x.beginPath(); x.moveTo(tx - 20, ty + 12); x.lineTo(tx, ty - 16); x.lineTo(tx + 20, ty + 12); x.closePath(); x.fill(); x.strokeStyle = "#5c4a35"; x.stroke(); x.fillStyle = "#3a2a18"; x.beginPath(); x.moveTo(tx - 5, ty + 12); x.lineTo(tx, ty - 2); x.lineTo(tx + 5, ty + 12); x.closePath(); x.fill(); });
+    x.fillStyle = hull; x.beginPath(); x.moveTo(120, 76); x.lineTo(156, 76); x.quadraticCurveTo(152, 84, 140, 84); x.lineTo(128, 84); x.quadraticCurveTo(120, 84, 120, 76); x.closePath(); x.fill();   // a boat on the floe
+    x.fillStyle = "#3a3a3a"; x.fillRect(84, 44, 3, 22); x.fillStyle = "#c9963b"; x.fillRect(80, 44, 11, 6);      // lookout flag
+  } else if (model === "walkers") {
+    x.fillStyle = ice; x.beginPath(); x.moveTo(0, 90); x.lineTo(40, 70); x.lineTo(80, 78); x.lineTo(120, 56); x.lineTo(160, 66); x.lineTo(160, 100); x.lineTo(0, 100); x.closePath(); x.fill();
+    [[50, 66], [78, 72], [108, 54]].forEach(([px, py]) => { x.strokeStyle = hull; x.lineWidth = 3.5; x.beginPath(); x.moveTo(px, py); x.lineTo(px, py + 16); x.moveTo(px, py + 16); x.lineTo(px - 5, py + 28); x.moveTo(px, py + 16); x.lineTo(px + 5, py + 28); x.moveTo(px, py + 4); x.lineTo(px + 8, py + 10); x.stroke(); x.fillStyle = hull; x.beginPath(); x.arc(px, py - 4, 4, 0, 7); x.fill(); });
+    x.strokeStyle = rope; x.lineWidth = 1.2; x.beginPath(); x.moveTo(50, 74); x.lineTo(78, 80); x.lineTo(108, 62); x.stroke();
+  } else if (model === "sledge") {
+    x.fillStyle = ice; x.fillRect(0, 74, W, 26);
+    x.strokeStyle = hull; x.lineWidth = 3; x.beginPath(); x.moveTo(80, 72); x.lineTo(140, 72); x.quadraticCurveTo(150, 72, 150, 62); x.stroke(); x.fillStyle = "#c8b58f"; x.fillRect(86, 58, 50, 12);
+    [[30, 52], [52, 56]].forEach(([px, py]) => { x.strokeStyle = hull; x.lineWidth = 3.5; x.beginPath(); x.moveTo(px, py); x.lineTo(px + 6, py + 16); x.moveTo(px + 6, py + 16); x.lineTo(px, py + 28); x.moveTo(px + 6, py + 16); x.lineTo(px + 12, py + 26); x.stroke(); x.fillStyle = hull; x.beginPath(); x.arc(px - 2, py - 4, 4, 0, 7); x.fill(); });
+    x.strokeStyle = rope; x.lineWidth = 1.2; x.beginPath(); x.moveTo(36, 62); x.lineTo(86, 66); x.stroke();
+  } else if (model === "aurora") {
+    // barque with a funnel
+    x.strokeStyle = rope; x.lineWidth = 1.2; [[50, 10], [86, 6], [118, 14]].forEach(([mx, top]) => { x.beginPath(); x.moveTo(mx, wl - 6); x.lineTo(mx, top); x.stroke(); });
+    x.fillStyle = sail; [[86, 12, 34, 12], [86, 26, 40, 13], [86, 41, 46, 13], [118, 20, 30, 12], [118, 34, 36, 13], [118, 49, 40, 12]].forEach(([mx, y, w, h]) => { x.beginPath(); x.moveTo(mx - w / 2, y); x.lineTo(mx + w / 2, y); x.quadraticCurveTo(mx + w / 2 + 3, y + h / 2, mx + w / 2 - 2, y + h); x.lineTo(mx - w / 2 + 2, y + h); x.quadraticCurveTo(mx - w / 2 - 3, y + h / 2, mx - w / 2, y); x.closePath(); x.fill(); x.stroke(); });
+    x.beginPath(); x.moveTo(50, 14); x.lineTo(28, 20); x.lineTo(30, wl - 14); x.lineTo(50, wl - 12); x.closePath(); x.fill(); x.stroke();
+    x.fillStyle = "#3a3a3a"; x.fillRect(66, 46, 7, 20); x.fillStyle = hull; x.beginPath(); x.moveTo(14, wl - 10); x.lineTo(132, wl - 10); x.quadraticCurveTo(146, wl - 8, 150, wl - 14); x.lineTo(144, wl + 6); x.quadraticCurveTo(80, wl + 12, 22, wl + 6); x.quadraticCurveTo(12, wl + 2, 14, wl - 10); x.closePath(); x.fill();
+    x.fillStyle = "rgba(20,40,60,.35)"; x.fillRect(0, wl + 4, W, H - wl - 4);
+  } else {   // tug / whaler / trawler / schooner: a small steamer
+    x.fillStyle = hull; x.beginPath(); x.moveTo(30, wl - 12); x.lineTo(126, wl - 12); x.quadraticCurveTo(136, wl - 10, 140, wl - 16); x.lineTo(134, wl + 6); x.quadraticCurveTo(80, wl + 12, 36, wl + 6); x.quadraticCurveTo(28, wl + 2, 30, wl - 12); x.closePath(); x.fill();
+    x.fillStyle = "#5a5a5a"; x.fillRect(56, wl - 30, 40, 18); x.fillStyle = "#2a2a2a"; x.fillRect(72, wl - 50, 9, 22); x.fillStyle = "#c9963b"; x.fillRect(72, wl - 50, 9, 4);
+    x.strokeStyle = rope; x.lineWidth = 1.2; x.beginPath(); x.moveTo(44, wl - 12); x.lineTo(44, wl - 46); x.moveTo(112, wl - 12); x.lineTo(112, wl - 42); x.stroke();
+    if (model === "schooner") { x.fillStyle = sail; x.beginPath(); x.moveTo(44, wl - 44); x.lineTo(20, wl - 36); x.lineTo(24, wl - 16); x.lineTo(44, wl - 14); x.closePath(); x.fill(); x.stroke(); }
+    x.fillStyle = "rgba(120,120,120,.5)"; x.beginPath(); x.arc(60, wl - 58, 7, 0, 7); x.arc(48, wl - 66, 9, 0, 7); x.fill();   // smoke
+    x.fillStyle = "rgba(20,40,60,.35)"; x.fillRect(0, wl + 4, W, H - wl - 4);
+  }
+  return (ICON_CACHE[key] = c);
+}
+function initColumns() {
+  SC.cols = MOVES.map(m => {
+    const c = { m, active: false, lon: 0, lat: 0, flip: false };
+    c.pos = new C.CallbackProperty(() => C.Cartesian3.fromDegrees(c.lon, c.lat), false);
+    const size = m.model === "endurance" || m.model === "aurora" ? [68, 42] : m.model === "camp" || m.model === "boats" || m.model === "walkers" || m.model === "sledge" ? [58, 36] : [50, 31];
+    c.bb = SC.ds.entities.add({ position: c.pos, show: false, billboard: { image: new C.CallbackProperty(() => modelCanvas(m.model, c.flip), false), width: size[0], height: size[1], heightReference: C.HeightReference.CLAMP_TO_GROUND, disableDepthTestDistance: Number.POSITIVE_INFINITY, verticalOrigin: C.VerticalOrigin.BOTTOM, pixelOffset: new C.Cartesian2(0, 6) } });
+    c.land = c.bb; c.ship = c.bb;
+    return c;
+  });
+}
+// ------------------------------------------------------------------ per-frame globe update
+function updateGlobe(t, dt) {
+  const layerOn = e => ST.layers[e.k] !== false;
+  const camH = SC.scene.camera.positionCartographic.height;
+  const pulse = ST.time * 0.7;
+  SC.markers.forEach((mk, i) => {
+    const e = mk.e;
+    const live = t >= e.live0 && t <= e.live1, recent = t > e.live1 && t <= e.live1 + (e.t === 1 ? 40 : 20), past = t > e.live1 + (e.t === 1 ? 40 : 20);
+    const keepPast = ST.showPast && e.k !== "gamble" && e.k !== "science";
+    const vis = layerOn(e) && t >= e.live0 && (live || recent || keepPast);
+    mk.bb.show = vis; mk.state = vis ? (live ? "live" : recent ? "recent" : "past") : "hidden";
+    if (!vis) { mk.ring.show = false; if (mk.siege) mk.siege.show = false; return; }
+    mk.scale = live ? 1.2 : recent ? 1 : 0.62; mk.dim = past;
+    const pulsing = live && (e.k === "peril" || e.k === "rescue") && !REDUCED;
+    mk.ring.show = pulsing;
+    if (pulsing) { const ph = (pulse + i * 0.37) % 1; mk.ringScale = 0.25 + ph * 0.55; mk.ringAlpha = (1 - ph) * 0.8; }
+    if (mk.siege) mk.siege.show = live;
+  });
+  SC.routes.forEach(r => {
+    const m = r.m, on = m.side === "E" ? ST.layers.route : m.side === "B" ? ST.layers.columns : ST.layers.fleets;
+    const vis = on && t >= m.tStart - 0.5 && (ST.showTraces || t <= m.tEnd + 60);
+    r.ents.forEach(en => en.show = vis);
+  });
+  SC.cols.forEach(c => {
+    const m = c.m, on = m.side === "E" ? ST.layers.route : m.side === "B" ? ST.layers.columns : ST.layers.fleets;
+    const active = on && t >= m.tStart && t <= m.tEnd + 3;
+    c.active = active;
+    if (!active) { c.bb.show = false; return; }
+    const p = movePos(m, t), sea = p.mode !== "land";
+    c.lon = p.lon; c.lat = p.lat; c.sea = sea;
+    c.bb.show = true;
+    const hd = moveHeading(m, t); if (hd != null && m.model !== "camp") c.flip = Math.sin(hd) < -0.05 ? true : Math.sin(hd) > 0.05 ? false : c.flip;
+    let i0 = p.i; while (i0 > 0 && !m.P[i0].date) i0--; let i1 = Math.min(m.P.length - 1, p.i + 1); while (i1 < m.P.length - 1 && !m.P[i1].date) i1++;
+    c.approx = m.P[i0].q !== "v" || m.P[i1].q !== "v";
+  });
+  SC.placeEnts.forEach(en => en.show = ST.showPlaces);
+  SC.regionEnts.forEach(en => en.show = ST.showRegions);
+  return camH;
+}
+
+// ------------------------------------------------------------------ screen projection & picking
+const _win = new C.Cartesian2();
+function project(cart) {
+  const p = C.SceneTransforms.worldToWindowCoordinates ? C.SceneTransforms.worldToWindowCoordinates(SC.scene, cart, _win) : C.SceneTransforms.wgs84ToWindowCoordinates(SC.scene, cart, _win);
+  if (!p) return null;
+  // hide points on the far side of the globe
+  const occluder = new C.EllipsoidalOccluder(C.Ellipsoid.WGS84, SC.camera.positionWC);
+  if (!occluder.isPointVisible(cart)) return null;
+  return [p.x, p.y];
+}
+function groundPos(lon, lat) {
+  const h = SC.scene.globe.getHeight(C.Cartographic.fromDegrees(lon, lat));
+  return C.Cartesian3.fromDegrees(lon, lat, h || 0);
+}
+function pickMarker(cx, cy) {
+  let best = null, bd = 16;
+  SC.markers.forEach(mk => { if (!mk.bb.show) return; const p = project(groundPos(mk.e.lon, mk.e.lat)); if (!p) return; const d = Math.hypot(p[0] - cx, p[1] - cy); if (d < bd) { bd = d; best = mk.e; } });
+  return best;
+}
+
+// ============================================================================
+//  Part 3: interface, timeline, camera direction and the main loop
+// ============================================================================
+const SHORT = { m_endurance: "Endurance", m_camp: "The camp on the floe", m_boats: "The three boats", m_caird: "James Caird", m_crossing: "Shackleton, Worsley, Crean", m_samson: "Whaler to Peggotty Camp", m_southernsky: "Southern Sky", m_pesca: "Instituto de Pesca No. 1", m_emma: "Emma", m_yelcho: "Yelcho", m_aurora: "Aurora", m_depot: "Ross Sea party", m_relief: "Aurora (relief)" };
+const LANE_SHORT = { WS: "Endurance", BJ: "Boats & rescues", RS: "Ross Sea party", GB: "The gamble", WD: "The world" };
+
+async function boot() {
+  const step = s => { $("#loadStep").textContent = s; };
+  try {
+    if (!window.Cesium) throw new Error("The globe library (CesiumJS) did not load.");
+    step("Waiting for type");
+    if (document.fonts && document.fonts.load) await Promise.race([Promise.all(['16px "Playfair Display"', '700 16px "Playfair Display"', '16px "Libre Baskerville"', 'italic 16px "Libre Baskerville"'].map(f => document.fonts.load(f))), new Promise(r => setTimeout(r, 3000))]).catch(() => {});
+    step("Raising the globe");
+    await initGlobe();
+    buildUI();
+    readHash();
+    onResize();
+    window.addEventListener("resize", onResize);
+    requestAnimationFrame(loop);
+    setTimeout(() => $("#loading").classList.add("done"), 200); setTimeout(() => { $("#loading").style.display = "none"; }, 1000);
+  } catch (err) {
+    console.error(err);
+    $("#loading").classList.add("done"); $("#loading").style.display = "none";
+    const box = $("#err"); box.style.display = "block";
+    box.innerHTML = "<h2 style='font-family:var(--display);font-weight:normal;margin:0 0 8px'>The globe could not be drawn</h2><p>" + esc(err.message) + "</p><p>The Chronicle and Sources panels still work.</p>";
+    try { buildUI(); } catch (e) {}
+  }
+}
+function onResize() { W_PX = window.innerWidth; H_PX = window.innerHeight; layoutTimeline(); }
+
+// ------------------------------------------------------------------ UI wiring
+function buildUI() {
+  document.querySelectorAll(".speed button").forEach(b => b.addEventListener("click", () => { ST.speed = +b.dataset.s; document.querySelectorAll(".speed button").forEach(x => x.setAttribute("aria-pressed", x === b)); poke(); }));
+  $("#playBtn").addEventListener("click", () => { setPlaying(!ST.playing); poke(); });
+  $("#backBtn").addEventListener("click", () => { release(); setT(ST.t - 30); poke(); announce(); });
+  $("#fwdBtn").addEventListener("click", () => { release(); setT(ST.t + 30); poke(); announce(); });
+  const scrub = $("#scrub"); scrub.max = NDAYS;
+  scrub.addEventListener("input", () => { setT(+scrub.value + 0.5); release(); poke(); });
+  scrub.addEventListener("change", announce);
+  $("#modeBtn").addEventListener("click", () => { setGuided(!ST.guided); poke(); });
+  $("#readBtn").addEventListener("click", () => { setReading(!ST.reading); poke(); });
+  $("#readNext").addEventListener("click", () => { ST.readingStop = null; setPlaying(true); poke(); });
+  $("#guideBtn").addEventListener("click", () => { setGuided(true); poke(); });
+  $("#legendBtn").addEventListener("click", () => {
+    const lg = $("#legend");
+    if (MOBILE) { lg.classList.toggle("mobile-open"); lg.open = true; $("#legendBtn").setAttribute("aria-expanded", lg.classList.contains("mobile-open")); }
+    else { lg.open = !lg.open; $("#legendBtn").setAttribute("aria-expanded", lg.open); }
+    poke();
+  });
+  $("#indexBtn").addEventListener("click", () => openSheet("#index"));
+  $("#aboutBtn").addEventListener("click", () => openSheet("#about"));
+  document.querySelectorAll("[data-close]").forEach(b => b.addEventListener("click", () => closeSheets()));
+  buildLegend(); buildIndex(); buildAbout(); initTimeline();
+  ["pointerdown", "keydown", "wheel", "touchstart"].forEach(t => window.addEventListener(t, poke, { passive: true }));
+  window.addEventListener("keydown", onKey);
+  window.addEventListener("hashchange", readHash);
+}
+function poke() { ST.lastInteract = performance.now(); if (ST.attract) { ST.attract = false; $("#attract").classList.remove("show"); } }
+function release() { ST.hold = false; }
+function setPlaying(p) {
+  ST.playing = p; if (p) release();
+  if (p && ST.t >= NDAYS - 1) setT(0);
+  $("#playBtn").setAttribute("aria-label", p ? "Pause" : "Play");
+  $("#playIcon").innerHTML = p ? '<path d="M5 3h3.5v14H5zM11.5 3H15v14h-3.5z"/>' : '<path d="M5 3 L17 10 L5 17 Z"/>';
+  if (!p) { writeHash(); announce(); }
+}
+function setGuided(g) {
+  ST.guided = g; ST.fly = null;
+  $("#modeBtn").setAttribute("aria-pressed", g); $("#modeBtn").textContent = g ? "Guided" : "Explore";
+  $("#guideBtn").classList.toggle("show", !g);
+  if (g) { ST.desiredAt = 0; ST.cam = null; }
+}
+function setT(t) { ST.t = clamp(t, 0, NDAYS); ST.readingStop = null; for (const id of [...ST.readDone]) if (EV_BY_ID[id].t0 > ST.t + 0.5) ST.readDone.delete(id); }
+function setReading(on) { ST.reading = on; $("#readBtn").textContent = on ? "Reading: on" : "Reading: off"; $("#readBtn").setAttribute("aria-pressed", on); if (!on) ST.readingStop = null; }
+function onKey(ev) {
+  const tag = (ev.target.tagName || "").toLowerCase();
+  if (ev.key === "Escape") { closeSheets(); return; }
+  if (tag === "input" && ev.target.type === "search") return;
+  if (tag === "input" && ev.target.id === "scrub" && (ev.key === "ArrowLeft" || ev.key === "ArrowRight")) ev.preventDefault();
+  if (ev.key === " " && tag !== "button") { ev.preventDefault(); setPlaying(!ST.playing); }
+  else if (ev.key === "ArrowRight") { release(); setT(Math.floor(ST.t) + (ev.shiftKey ? 30 : 7) + 0.5); announce(); }
+  else if (ev.key === "ArrowLeft") { release(); setT(Math.floor(ST.t) - (ev.shiftKey ? 30 : 7) + 0.5); announce(); }
+  else if (ev.key === "Home") { setT(0.5); announce(); }
+  else if (ev.key === "End") { setT(NDAYS - 0.5); announce(); }
+  else if (ev.key === "g" || ev.key === "G") setGuided(!ST.guided);
+  else if (ev.key === "Enter" && ST.reading && !ST.playing && ST.readingStop && tag !== "button" && tag !== "input") { ST.readingStop = null; setPlaying(true); }
+}
+let annTimer = 0;
+function announce() {
+  clearTimeout(annTimer);
+  annTimer = setTimeout(() => { const live = EVENTS.filter(e => ST.t >= e.live0 && ST.t <= e.live1).slice(0, 3).map(e => e.n); $("#live").textContent = fmtLong(ST.t) + ". " + (live.length ? "Under way: " + live.join("; ") + "." : ""); }, 350);
+}
+function readHash() {
+  const h = new URLSearchParams(location.hash.slice(1));
+  if (h.get("t") || h.get("e")) release();
+  if (h.get("t") && /^\d{4}-\d{2}-\d{2}$/.test(h.get("t"))) setT(dayOf(h.get("t")) + 0.5);
+  if (h.get("e") && EV_BY_ID[h.get("e")]) { setT(EV_BY_ID[h.get("e")].t0 + 0.5); openEvent(h.get("e")); }
+}
+function writeHash() {
+  const d = dateOf(ST.t), iso = d.y + "-" + String(d.m).padStart(2, "0") + "-" + String(d.d).padStart(2, "0");
+  try { history.replaceState(null, "", "#t=" + iso + (ST.openId ? "&e=" + ST.openId : "")); } catch (e) {}
+}
+
+// ------------------------------------------------------------------ legend & layers
+function iconURL(kind, res) { return iconCanvas(kind, res, 64).toDataURL(); }
+function buildLegend() {
+  const line = (col, dashed, casing = "#f3ead3") => `<svg width="46" height="12" aria-hidden="true"><line x1="2" y1="6" x2="44" y2="6" stroke="${casing}" stroke-width="6" stroke-linecap="round"/><line x1="2" y1="6" x2="44" y2="6" stroke="${col}" stroke-width="3" ${dashed ? 'stroke-dasharray="6 5"' : ""}/></svg>`;
+  const ic = (k, label) => `<div class="lrow"><img src="${iconCanvas(k, k, 64).toDataURL()}" width="22" height="22" alt="">${label}</div>`;
+  const md = (m, label) => `<div class="lrow"><img src="${modelCanvas(m, false).toDataURL()}" width="48" height="30" alt="" style="background:#dfe8ec;border:1px solid var(--rule)">${label}</div>`;
+  const tg = (id, label, on) => `<label class="toggle"><input type="checkbox" id="${id}" ${on ? "checked" : ""}> ${label}</label>`;
+  $("#legendBody").innerHTML = `
+    <div class="lh" style="border:0;margin-top:2px">Tracks</div>
+    <div class="lrow">${line(SIDES.E.col)} Endurance, and the camps drifting on the ice</div><div class="lrow">${line(SIDES.B.col)} The boats and the crossing</div><div class="lrow">${line(SIDES.R.col)} Rescue ships</div><div class="lrow">${line(SIDES.A.col)} Aurora and the Ross Sea party</div>
+    <div class="lrow">${line("#5B5246", true)} Position reconstructed between recorded points</div>
+    <div class="lh">Vessels and parties</div>
+    ${md("endurance", "Endurance, barquentine, 144 ft")}${md("camp", "Ocean Camp and Patience Camp, drifting")}${md("boats", "The three boats")}${md("caird", "James Caird, 22½ ft, decked with canvas")}${md("walkers", "Shackleton, Worsley and Crean on foot")}${md("tug", "Rescue ships: whaler, trawler, schooner, tug")}${md("aurora", "Aurora, the Ross Sea ship")}${md("sledge", "The depot-laying party")}
+    <div class="lh">Events</div>
+    ${ic("voyage", "Voyage")}${ic("ice", "In the ice")}${ic("camp", "Camp life")}${ic("peril", "Peril")}${ic("gamble", "The gamble: a decision and its cost")}${ic("rescue", "Rescue")}${ic("death", "Death")}${ic("home", "Landfall and homecoming")}${ic("science", "Science and the record")}${ic("epilogue", "Epilogue: the wreck, 2022")}
+    <div class="lh">Layers</div>
+    ${tg("lyRoute", "Endurance and the camps", true)}${tg("lyCols", "The boats", true)}${tg("lyFleets", "Rescue ships and Aurora", true)}
+    ${tg("lyPeril", "Perils and rescues", true)}${tg("lyCamp", "Camp life and the ice", true)}${tg("lyGamble", "The gamble", true)}${tg("lyPast", "Earlier events stay on the globe", true)}${tg("lyTraces", "Keep faded tracks", true)}${tg("lyPlaces", "Place names", true)}${tg("lyRegions", "Seas and regions", true)}
+    <div class="lnote">${SC.useIon ? "Terrain and imagery: Cesium World Terrain and Sentinel-2 via Cesium ion." : "Imagery: Sentinel-2 cloudless by EOX; no Cesium ion token is set, so the globe is flat."} The satellite mosaic shows summer sea ice of recent years, not the pack of 1915.</div>`;
+  const bind = (id, fn) => $(id).addEventListener("change", e => fn(e.target.checked));
+  bind("#lyRoute", v => ST.layers.route = v); bind("#lyCols", v => ST.layers.columns = v); bind("#lyFleets", v => ST.layers.fleets = v);
+  bind("#lyPeril", v => { ST.layers.peril = v; ST.layers.rescue = v; }); bind("#lyCamp", v => { ST.layers.camp = v; ST.layers.ice = v; ST.layers.science = v; }); bind("#lyGamble", v => ST.layers.gamble = v);
+  bind("#lyPast", v => ST.showPast = v); bind("#lyTraces", v => ST.showTraces = v); bind("#lyPlaces", v => ST.showPlaces = v); bind("#lyRegions", v => ST.showRegions = v);
+  $("#legend").open = !!MOBILE;
+}
+
+// ------------------------------------------------------------------ sheets
+function openSheet(sel) { closeSheets(sel); const s = $(sel); s.classList.add("open"); s.setAttribute("aria-hidden", "false"); const f = s.querySelector("input.search") || s.querySelector("[data-close]"); setTimeout(() => f && f.focus(), 60); poke(); }
+function closeSheets(except) {
+  document.querySelectorAll(".sheet.open").forEach(s => { if ("#" + s.id !== except) { s.classList.remove("open"); s.setAttribute("aria-hidden", "true"); } });
+  if (except !== "#drawer") { ST.openId = null; if (!ST.playing) writeHash(); }
+}
+function srcHTML(keys) {
+  if (!keys || !keys.length) return `<div class="src">No source retrieved for this item; general reference only.</div>`;
+  return keys.map(k => { const s = SOURCES[k]; if (!s) return ""; return `<div class="src"><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)}</a> — ${esc(s.org)}<div class="role">${esc(s.role)}</div></div>`; }).join("");
+}
+function openEvent(id) {
+  const e = EV_BY_ID[id]; if (!e) return;
+  ST.openId = id;
+  $("#drKick").textContent = (KIND[e.k] || e.k) + " · " + (LANE_NAME[e.lane] || "");
+  $("#drTitle").textContent = e.n;
+  $("#drSub").innerHTML = esc(fmtRange(e)) + " · " + esc(e.pl);
+  let h = "";
+  if (e.img) h += `<figure class="fig"><img src="${IMG(e.img.f)}" alt="${esc(e.img.cap)}" loading="lazy"><figcaption>${esc(e.img.cap)} <span class="cred">${esc(HURLEY)}</span></figcaption></figure>`;
+  if (e.quote) h += `<blockquote class="jq">${esc(e.quote.q)}<footer>${esc(e.quote.who)}</footer></blockquote>`;
+  h += `<p>${esc(e.story)}</p>`;
+  if (e.link) h += `<p><a class="goto" href="${esc(e.link.url)}" target="_blank" rel="noopener" style="display:inline-block;text-decoration:none">${esc(e.link.label)} ↗</a></p>`;
+  h += `<h3>How the date is known</h3><p>${esc(e.anchor || "")}</p>`;
+  if (e.note) h += `<h3>Notes</h3><p>${esc(e.note)}</p>`;
+  h += `<h3>Verification</h3>` + (e.q === "v" ? `<div class="ver">✓ Date matched in the source(s) below.</div>` : `<div class="ver k">≈ Date from general reference; flagged for verification.</div>`);
+  h += `<dl style="margin-top:8px"><dt>Placement</dt><dd>${Math.abs(e.lat).toFixed(3)}° ${e.lat < 0 ? "S" : "N"}, ${Math.abs(e.lon).toFixed(3)}° ${e.lon < 0 ? "W" : "E"}</dd></dl>`;
+  h += `<h3>Sources</h3>${srcHTML(e.src)}`;
+  h += `<div><button class="goto" id="showOnMap">Show on the globe</button></div>`;
+  $("#drBody").innerHTML = h;
+  $("#showOnMap").addEventListener("click", () => { setGuided(false); flyTo(e.lon, e.lat, e.t === 1 ? 400000 : 250000); if (MOBILE) closeSheets(); });
+  openSheet("#drawer");
+  if (!ST.playing) writeHash();
+}
+function openMove(id) {
+  const m = MOVES.find(x => x.id === id); if (!m) return;
+  $("#drKick").textContent = "Track · " + (SIDES[m.side] || {}).name;
+  $("#drTitle").textContent = m.n;
+  $("#drSub").textContent = fmtShort(m.tStart) + " – " + fmtShort(m.tEnd) + (m.cmd ? " · " + m.cmd : "") + " · about " + Math.round(m.km / 100) * 100 + " km";
+  let h = `<p>${esc(m.s)}</p><h3>Recorded positions</h3><table class="wp">`;
+  m.P.forEach(p => { if (p.date || p.label) h += `<tr><td>${p.date ? (p.q === "k" ? "≈ " : "") + esc(fmtPrec(p.date, "d", true)) : "<span style='opacity:.6'>route</span>"}</td><td>${esc(p.label || "")}${p.mode !== "land" ? ` <span style="opacity:.6;font-style:italic">(${p.mode === "sea" ? "by sea" : "by river"})</span>` : ""}</td></tr>`; });
+  h += `</table><div class="lnote" style="margin-top:6px">≈ marks a position or date reconstructed between the recorded ones. Undated points only shape the line.</div>`;
+  h += `<h3>Sources</h3>${srcHTML(m.src)}<button class="goto" id="playMove">Follow this track</button>`;
+  $("#drBody").innerHTML = h;
+  $("#playMove").addEventListener("click", () => { setT(m.tStart); setGuided(true); setPlaying(true); if (MOBILE) closeSheets(); });
+  openSheet("#drawer");
+}
+function buildIndex() {
+  const items = EVENTS.map(e => ({ d: e.d, t: e.t0, n: e.n, sub: e.pl + " · " + (LANE_SHORT[e.lane] || ""), id: e.id, q: e.q, label: fmtRange(e, true) }));
+  MOVES.forEach(m => items.push({ d: m.P[0].date, t: m.tStart, n: m.n, sub: "Track · " + (m.cmd || ""), mv: m.id, q: "v", label: fmtShort(m.tStart) }));
+  items.sort((a, b) => a.t - b.t);
+  const ul = $("#idxList"); let yr = null, html = "";
+  items.forEach(it => {
+    const y = it.d.split("-")[0];
+    if (y !== yr) { yr = y; html += `<li class="yr" data-yr>${y}</li>`; }
+    html += `<li class="mapped" data-s="${esc((it.n + " " + it.sub).toLowerCase())}"><button type="button" ${it.id ? `data-id="${it.id}"` : `data-mv="${it.mv}"`}><span class="d">${esc(it.label)}</span><span class="n">${esc(it.n)}${it.q === "k" ? " <span class='approx'>≈</span>" : ""}<span class="s">${esc(it.sub)}</span></span></button></li>`;
+  });
+  ul.innerHTML = html;
+  ul.addEventListener("click", ev => { const b = ev.target.closest("button"); if (!b) return; if (b.dataset.id) { const e = EV_BY_ID[b.dataset.id]; release(); setT(e.t0 + 0.5); setPlaying(false); openEvent(e.id); } else if (b.dataset.mv) openMove(b.dataset.mv); });
+  $("#idxSearch").addEventListener("input", ev => { const q = ev.target.value.trim().toLowerCase(); ul.querySelectorAll("li[data-s]").forEach(li => { li.style.display = !q || li.dataset.s.includes(q) ? "" : "none"; }); ul.querySelectorAll("li[data-yr]").forEach(li => { li.style.display = q ? "none" : ""; }); });
+}
+function buildAbout() {
+  const nv = EVENTS.filter(e => e.q === "v").length, nk = EVENTS.length - nv;
+  const disc = EVENTS.filter(e => e.note).map(e => `<li><b>${esc(e.n)}</b> (${esc(fmtRange(e, true))}): ${esc(e.note)}</li>`).join("");
+  $("#aboutBody").innerHTML = `
+    <p>This exhibit follows the Imperial Trans-Antarctic Expedition from Shackleton's letter to The Times in December 1913 to the relief of the Ross Sea party in January 1917, and closes with the finding of the wreck in March 2022: <b>${EVENTS.length}</b> episodes and <b>${MOVES.length}</b> tracks, on a globe with modern imagery and, with a Cesium ion token, real terrain.</p>
+    <h3>Two stories at once</h3>
+    <p>The first is the one everyone knows: twenty-eight men, no deaths, a leader who brought them all home. It is true, and it is why the story lasts. The second is usually left out. Shackleton sailed into a war his own men would die in. He sailed against the direct warning of the men who knew the Weddell Sea best. He passed a landing place on 15 January 1915 and regretted it in print. He halved the money for the Ross Sea party, which then lost three men laying depots for a crossing he had already abandoned without telling them. He shot the dogs and the carpenter's cat to make a march that his own captain said was hopeless, and it was. None of this diminishes what came afterwards; the boat journey and the crossing of South Georgia are, by any measure, among the great feats of seamanship and nerve. But the survival was needed because of the gamble, and the exhibit marks the gambles as such, in their own lane on the timeline.</p>
+    <h3>Journal voice</h3>
+    <p>The quotations set in italics are from Shackleton's own account, South (1919), and from the diaries of his companions as the retrieved sources quote them. South is in the public domain. The 'Men wanted' advertisement is shown because the story is always told with it; no copy has ever been found and historians regard it as apocryphal, which the card says.</p>
+    <h3>Photographs</h3>
+    <p>Every photograph is by Frank Hurley, taken in 1914–16 and now out of copyright; they are served from Wikimedia Commons, where the State Libraries of New South Wales and Queensland and the Royal Geographical Society have placed them. The 2022 photographs of the wreck belong to the Falklands Maritime Heritage Trust and National Geographic and are linked, not copied.</p>
+    <h3>Positions and dates</h3>
+    <p>The ship's positions in the ice are those recorded in South and repeated in the chronologies: 76°34′S 31°30′W when beset, 76°58′S at the furthest south, 75°23′S 42°14′W in May, 69°05′S 51°30′W when abandoned. Between them the drift is interpolated and drawn dashed. Where two chronologies differ by a day (the besetting on 18 or 19 January 1915; the landing on Elephant Island on 15 or 16 April 1916) the exhibit follows Wikipedia's account, which cites South, and says so.</p>
+    <div class="ver">✓ ${nv} episodes: date matched in a retrieved source.</div>
+    <div class="ver k">≈ ${nk} episodes: from general reference.</div>
+    <h3>Notes and disagreements</h3><ul>${disc}</ul>
+    <h3>Sources</h3>${srcHTML(Object.keys(SOURCES))}
+    <h3>Using the exhibit</h3>
+    <p>Reading mode (on by default) pauses at every episode so the card can be read in full; press Continue or Enter to sail on. Drag to pan, scroll or pinch to zoom, right-drag or two-finger drag to tilt and rotate. Keyboard: Space plays or pauses, arrow keys step a week (Shift: a month), G toggles guided view, M toggles the music, Esc closes panels.</p>`;
+}
+
+// ------------------------------------------------------------------ timeline
+const TL = { lw: 128, lanes: LANES.map(l => l.id), static: null, hits: [] };
+function initTimeline() {
+  const scrub = $("#scrub"), tip = $("#tlTip"); let down = null;
+  scrub.addEventListener("pointerdown", ev => { down = { x: ev.clientX, y: ev.clientY }; });
+  scrub.addEventListener("pointerup", ev => { if (down && Math.hypot(ev.clientX - down.x, ev.clientY - down.y) < 4) { const h = tlHit(ev.clientX, ev.clientY); if (h) { setT(h.t0 + 0.5); setPlaying(false); openEvent(h.id); } } down = null; });
+  scrub.addEventListener("mousemove", ev => { const h = tlHit(ev.clientX, ev.clientY), r = $("#tlBody").getBoundingClientRect(); tip.style.display = "block"; tip.style.left = (ev.clientX - r.left) + "px"; tip.textContent = h ? fmtRange(h, true) + " — " + h.n : fmtShort(tlTimeAt(ev.clientX)); });
+  scrub.addEventListener("mouseleave", () => { tip.style.display = "none"; });
+}
+function tlTimeAt(cx) { const r = $("#tlBody").getBoundingClientRect(); return clamp((cx - r.left - TL.lw) / (r.width - TL.lw), 0, 1) * NDAYS; }
+function tlHit(cx, cy) {
+  const r = $("#tlBody").getBoundingClientRect(), x = cx - r.left, y = cy - r.top; let best = null, bd = 6;
+  TL.hits.forEach(h => { if (y >= h.y0 - 1 && y <= h.y1 + 1) { const d = x < h.x0 ? h.x0 - x : x > h.x1 ? x - h.x1 : 0; if (d < bd || (d === 0 && best && h.e.t < best.t)) { bd = d; best = h.e; } } });
+  return best;
+}
+function cssVar(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+function layoutTimeline() {
+  const body = $("#tlBody"), cv = $("#tlCanvas"); if (!body) return;
+  const r = body.getBoundingClientRect(), dpr = Math.min(window.devicePixelRatio || 1, 2);
+  TL.lw = r.width < 700 ? 0 : 132; document.documentElement.style.setProperty("--lane-w", TL.lw + "px");
+  cv.width = Math.max(1, Math.round(r.width * dpr)); cv.height = Math.max(1, Math.round(r.height * dpr));
+  const st = document.createElement("canvas"); st.width = cv.width; st.height = cv.height;
+  const x = st.getContext("2d"); x.scale(dpr, dpr);
+  const W = r.width, H = r.height, lw = TL.lw, axisH = 16, laneTop = 4, laneH = (H - axisH - laneTop) / TL.lanes.length;
+  const tx = t => lw + t / NDAYS * (W - lw);
+  const ink = cssVar("--ink"), ink3 = cssVar("--ink-3"), rule = cssVar("--rule");
+  PHASES.forEach((p, i) => { if (i % 2) { x.fillStyle = rule; x.globalAlpha = 0.35; x.fillRect(tx(dayOf(p.from)), laneTop, tx(dayOf(p.to) + 1) - tx(dayOf(p.from)), H - axisH - laneTop); x.globalAlpha = 1; } });
+  x.font = Math.min(12.5, laneH * 0.95).toFixed(1) + "px " + cssVar("--body"); x.textBaseline = "middle";
+  TL.lanes.forEach((id, i) => { const y = laneTop + i * laneH; x.strokeStyle = rule; x.lineWidth = 1; x.beginPath(); x.moveTo(lw, y + laneH); x.lineTo(W, y + laneH); x.stroke(); if (lw) { x.fillStyle = ink3; x.fillText(LANE_SHORT[id], 0, y + laneH / 2); } });
+  x.fillStyle = ink; x.font = "13px " + cssVar("--display"); x.textBaseline = "alphabetic";
+  for (let yv = 1913; yv <= 1917; yv++) for (let mo = 1; mo <= 12; mo++) {
+    const t = (Date.UTC(yv, mo - 1, 1) - T0) / DAY; if (t < 0 || t > NDAYS) continue;
+    const X = tx(t); x.strokeStyle = mo !== 1 ? rule : cssVar("--rule-strong"); x.beginPath(); x.moveTo(X, mo !== 1 ? H - axisH : laneTop); x.lineTo(X, H - axisH + (mo !== 1 ? 3 : 6)); x.stroke();
+    if (mo === 1) x.fillText(String(yv), X + 3, H - 3); else if (mo === 7 && lw) { x.fillStyle = ink3; x.fillText(MON3[mo - 1], X + 3, H - 3); x.fillStyle = ink; }
+  }
+  
+  TL.hits = [];
+  const colOf = e => KINDCOL[e.k] || ink3;
+  EVENTS.slice().sort((a, b) => b.t - a.t).forEach(e => {
+    const li = TL.lanes.indexOf(e.lane); if (li < 0) return;
+    const h = laneH * (e.t === 1 ? 0.84 : e.t === 2 ? 0.62 : 0.4), y0 = laneTop + li * laneH + (laneH - h) / 2;
+    const x0 = tx(e.t0), x1 = Math.max(x0 + (e.t === 1 ? 3 : 2), tx(e.t1));
+    x.fillStyle = colOf(e); x.globalAlpha = e.q === "k" ? 0.55 : e.p === "d" ? 1 : 0.8;
+    if (e.p !== "d" && !e.e) { x.fillRect(x0, y0 + h * 0.3, x1 - x0, h * 0.4); }
+    else if (e.t1 - e.t0 > 45) { x.globalAlpha *= 0.7; x.fillRect(x0, y0 + h / 2 - 1, x1 - x0, 2); x.fillRect(x0, y0, 2.5, h); x.fillRect(x1 - 1.5, y0 + h * 0.2, 1.5, h * 0.6); }
+    else x.fillRect(x0, y0, x1 - x0, h);
+    x.globalAlpha = 1;
+    TL.hits.push({ e, x0, x1, y0, y1: y0 + h });
+  });
+  TL.static = st; TL.geom = { W, H, lw, tx, laneTop, axisH };
+  drawTimelineCursor();
+}
+function drawTimelineCursor() {
+  const cv = $("#tlCanvas"); if (!TL.static || !cv) return;
+  const x = cv.getContext("2d"), dpr = cv.width / TL.geom.W;
+  x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, cv.width, cv.height); x.drawImage(TL.static, 0, 0);
+  x.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const X = TL.geom.tx(ST.t), H = TL.geom.H, brass = cssVar("--brass");
+  x.fillStyle = "rgba(0,0,0,.06)"; x.fillRect(TL.geom.lw, 0, X - TL.geom.lw, H - TL.geom.axisH);
+  x.strokeStyle = brass; x.lineWidth = 2; x.beginPath(); x.moveTo(X, 0); x.lineTo(X, H); x.stroke();
+  x.fillStyle = brass; x.beginPath(); x.moveTo(X - 6, H); x.lineTo(X + 6, H); x.lineTo(X, H - 8); x.closePath(); x.fill();
+  x.beginPath(); x.moveTo(X - 6, 0); x.lineTo(X + 6, 0); x.lineTo(X, 8); x.closePath(); x.fill();
+}
+
+// ------------------------------------------------------------------ dispatch cards
+const CARDS = new Map();
+function cardWindow(e) { const tail = e.t === 1 ? 30 : e.t === 2 ? 18 : 10; return [e.live0 - 1, e.live1 + tail, tail]; }
+function cardShows(e, t) { const [a, b, tail] = cardWindow(e); if (t < a || t > b) return false; if (e.live1 - e.live0 > 60) return t <= e.live0 + tail || t >= e.live1 - 5; return true; }
+function updateCards(t) {
+  const tlH = parseFloat(cssVar("--tl-h")) || 206;
+  const maxN = MOBILE ? 1 : (ST.readingStop ? 1 : clamp(Math.floor((H_PX - tlH - 90) / 175), 1, 3));
+  const cands = [];
+  EVENTS.forEach(e => {
+    if (ST.layers[e.k] === false) return;
+    const [, , tail] = cardWindow(e); if (!cardShows(e, t)) return;
+    const live = t >= e.live0 && t <= e.live1;
+    cands.push({ e, score: (live ? 12 : 0) + (4 - e.t) * 4 - Math.max(0, t - e.live1) / 6 + (ST.readingStop === e.id ? 100 : 0), fading: t > e.live1 + tail * 0.6 && ST.readingStop !== e.id });
+  });
+  cands.sort((p, q) => q.score - p.score);
+  const pick = cands.slice(0, maxN).sort((p, q) => (q.e.id === ST.readingStop) - (p.e.id === ST.readingStop) || q.e.t0 - p.e.t0 || p.e.t - q.e.t);
+  const box = $("#cards"), keep = new Set(pick.map(p => p.e.id));
+  for (const [id, el] of CARDS) if (!keep.has(id)) { el.remove(); CARDS.delete(id); }
+  pick.forEach((p, i) => {
+    let el = CARDS.get(p.e.id);
+    if (!el) { el = makeCard(p.e); CARDS.set(p.e.id, el); el.dataset.born = ST.time; }
+    el.classList.toggle("fading", p.fading); el.classList.toggle("reading", ST.readingStop === p.e.id);
+    const k = REDUCED ? 1 : clamp((ST.time - +el.dataset.born) / 0.45, 0, 1), ease = 1 - Math.pow(1 - k, 3);
+    el.style.opacity = (ease * (p.fading ? 0.55 : 1)).toFixed(3); el.style.transform = k < 1 ? `translateX(${((1 - ease) * 24).toFixed(1)}px)` : "";
+    if (box.children[i] !== el) box.insertBefore(el, box.children[i] || null);
+  });
+}
+function makeCard(e) {
+  const el = document.createElement("button"); el.type = "button"; el.className = "card"; el.dataset.id = e.id;
+  el.style.setProperty("--c", KINDCOL[e.k] || "#B8912F");
+  const days = e.t0 >= dayOf("1915-10-27") && e.t0 < dayOf("1916-09-04") ? `<span class="prec">day ${daysSince(e.t0, "1915-10-27") + 1} since the ship was lost</span>` : e.t0 >= dayOf("1915-01-19") && e.t0 < dayOf("1915-10-27") ? `<span class="prec">day ${daysSince(e.t0, "1915-01-19") + 1} in the ice</span>` : "";
+  el.innerHTML = `<div class="meta"><span>${esc(fmtRange(e, true))}</span><span>${esc(LANE_SHORT[e.lane])}</span></div>
+    <div class="ttl">${esc(e.n)}</div><div class="pl">${esc(e.pl)}</div>
+    ${e.img ? `<img class="cimg" src="${IMG(e.img.f)}" alt="${esc(e.img.cap)}" loading="lazy">` : ""}
+    ${e.quote ? `<blockquote class="jq">${esc(e.quote.q)}<footer>${esc(e.quote.who)}</footer></blockquote>` : ""}
+    <div class="sm">${esc(e.story)}</div>
+    ${e.link ? `<a class="lnk" href="${esc(e.link.url)}" target="_blank" rel="noopener">${esc(e.link.label)} ↗</a>` : ""}
+    <div class="foot"><span class="badge P">${esc(KIND[e.k] || e.k)}</span>${days}${e.q === "k" ? '<span class="approx">≈ to verify</span>' : ""}</div>`;
+  el.setAttribute("aria-label", e.n + ", " + fmtRange(e) + ". Open details.");
+  el.addEventListener("click", ev => { if (ev.target.tagName === "A") return; openEvent(e.id); if (!ST.guided) flyTo(e.lon, e.lat, 400000); });
+  return el;
+}
+
+// ------------------------------------------------------------------ overlay: column labels and leader lines
+const LABEL_EL = new Map();
+function labelEl(key, cls) { let el = LABEL_EL.get(key); if (!el) { el = document.createElement("div"); el.className = cls; $("#labels").appendChild(el); LABEL_EL.set(key, el); } return el; }
+function updateOverlay() {
+  const rects = [], placed = new Set();
+  const free = (x, y, w, h) => { for (const r of rects) if (x < r[0] + r[2] && x + w > r[0] && y < r[1] + r[3] && y + h > r[1]) return false; rects.push([x, y, w, h]); return true; };
+  const cols = SC.cols.filter(c => c.active).sort((a, b) => a.m.tier - b.m.tier).slice(0, MOBILE ? 5 : 10);
+  cols.forEach(c => {
+    const p = project(groundPos(c.lon, c.lat)); if (!p) return;
+    const el = labelEl("c:" + c.m.id, "col");
+    const txt = esc(SHORT[c.m.id] || c.m.n) + (c.approx ? '<span class="ap">≈</span>' : "");
+    if (el.dataset.txt !== txt) { el.dataset.txt = txt; el.style.setProperty("--c", c.m.side === "P" ? "#6FB3CF" : c.m.side === "X" ? "#D9A441" : "#B48BD9"); el.innerHTML = txt; }
+    const w = el.offsetWidth || 90;
+    if (p[0] < -50 || p[0] > W_PX + 50 || p[1] < 0 || p[1] > H_PX) return;
+    if (!free(p[0] - w / 2, p[1] - 44, w, 20)) return;
+    el.style.transform = `translate(${p[0].toFixed(1)}px,${(p[1] - 20).toFixed(1)}px) translate(-50%,-100%)`; el.style.left = "0"; el.style.top = "0"; el.style.display = "block";
+    placed.add("c:" + c.m.id);
+  });
+  for (const [k, el] of LABEL_EL) if (!placed.has(k)) el.style.display = "none";
+  let svg = "";
+  const covered = !!document.querySelector(".sheet.open") || (MOBILE && $("#legend").classList.contains("mobile-open"));
+  if (!covered) for (const [id, el] of CARDS) {
+    const e = EV_BY_ID[id]; const p = project(groundPos(e.lon, e.lat)); if (!p) continue;
+    const r = el.getBoundingClientRect(); if (!r.width || getComputedStyle(el).display === "none") continue;
+    if (p[0] < 0 || p[0] > W_PX || p[1] < 0 || p[1] > H_PX) continue;
+    const col = e.r === "-" ? "#B8912F" : RESCOL[e.r];
+    if (MOBILE) { const ax = clamp(p[0], r.left + 20, r.right - 20); svg += `<path d="M${ax},${r.top} L${p[0]},${p[1] + 14}" stroke="${col}" stroke-width="1.6" fill="none" opacity=".85"/>`; }
+    else { if (p[0] > r.left - 20) continue; const ax = r.left, ay = r.top + Math.min(26, r.height / 2), ex = ax - 22; svg += `<path d="M${ax},${ay} L${ex},${ay} L${p[0] + 12},${p[1]}" stroke="${col}" stroke-width="1.6" fill="none" opacity="${el.classList.contains("fading") ? 0.45 : 0.9}"/>`; }
+    svg += `<circle cx="${p[0]}" cy="${p[1]}" r="15" stroke="${col}" stroke-width="1.4" fill="none" opacity=".8"/>`;
+  }
+  $("#leaders").innerHTML = svg;
+}
+
+// ------------------------------------------------------------------ camera direction
+function flyTo(lon, lat, range) {
+  ST.fly = null;
+  SC.camera.flyTo({ destination: C.Cartesian3.fromDegrees(lon, lat - range / 111000 * 0.55, range * 0.85), orientation: { heading: 0, pitch: -0.95, roll: 0 }, duration: REDUCED ? 0 : 1.8 });
+}
+function guidedDesired(t) {
+  const pts = [];
+  EVENTS.forEach(e => {
+    if (ST.layers[e.k] === false) return;
+    const a = e.live0 - 3, b = e.live1 + (e.t === 1 ? 20 : 8);
+    if (t < a || t > b) return;
+    const long = e.live1 - e.live0 > 60, quiet = long && t > e.live0 + 10 && t < e.live1 - 5;
+    const side = e.lane === "RS" || e.lane === "WD";                       // subplots never pull the camera away from the main story
+    pts.push([e.lon, e.lat, quiet || side ? 1 : e.t === 1 ? 3 : e.t === 2 ? 2 : 1]);
+  });
+  SC.cols.forEach(c => { if (c.active) pts.push([c.lon, c.lat, c.m.side === "A" ? 1 : c.m.tier === 1 ? 3 : c.m.tier === 2 ? 2 : 1]); });
+  if (!pts.length) return null;
+  const wmax = Math.max(...pts.map(p => p[2])), use = pts.filter(p => p[2] >= Math.min(2, wmax));
+  let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
+  use.forEach(([x, y]) => { x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); });
+  const cx = (x0 + x1) / 2, cy = (y0 + y1) / 2;
+  const wKm = (x1 - x0) * 111 * Math.cos(cy * RAD) + 260, hKm = (y1 - y0) * 111 + 220;
+  const tlH = parseFloat(cssVar("--tl-h")) || 206, cardsW = MOBILE ? 0 : 370;
+  const usableW = Math.max(0.4, (W_PX - cardsW - 40) / W_PX), usableH = Math.max(0.4, (H_PX - tlH - 80) / H_PX);
+  const fov = SC.camera.frustum.fov, asp = W_PX / H_PX, tanH = Math.tan(fov / 2), tanV = tanH / Math.max(asp, 1);
+  const range = clamp(Math.max(wKm * 1000 / (2 * tanH * usableW), hKm * 1000 * 1.3 / (2 * tanV * usableH)), SC.useIon ? 140000 : 350000, 6.5e6);
+  const vw = 2 * range * tanH * (asp > 1 ? 1 : asp), vh = 2 * range * tanV;
+  const lon = cx + (cardsW / 2) / W_PX * vw / (111000 * Math.cos(cy * RAD)), lat = cy - (tlH / 2) / H_PX * vh / 111000 * 0.9;
+  return { lon, lat, range };
+}
+function updateCamera(dt) {
+  if (!ST.guided || ST.hold) return;
+  ST.desiredAt = (ST.desiredAt || 0) - dt;
+  if (ST.desiredAt <= 0) { const d = guidedDesired(ST.t); if (d) ST.desired = d; ST.desiredAt = 0.3; }
+  const d = ST.desired; if (!d) return;
+  if (!ST.cam) { const c = SC.camera.positionCartographic; ST.cam = { lon: C.Math.toDegrees(c.longitude), lat: C.Math.toDegrees(c.latitude), range: c.height }; }
+  const k = REDUCED ? 1 : 1 - Math.exp(-dt * 0.9), kd = REDUCED ? 1 : 1 - Math.exp(-dt * 0.7);
+  ST.cam.lon = lerp(ST.cam.lon, d.lon, k); ST.cam.lat = lerp(ST.cam.lat, d.lat, k); ST.cam.range = Math.exp(lerp(Math.log(ST.cam.range), Math.log(d.range), kd));
+  const pitch = -(0.55 + 0.35 * clamp((ST.cam.range - 3e5) / 3e6, 0, 1));
+  const az = REDUCED ? 0 : Math.sin(ST.time * 0.045) * 0.06;
+  const h = SC.scene.globe.getHeight(C.Cartographic.fromDegrees(ST.cam.lon, ST.cam.lat)) || 0;
+  SC.camera.lookAt(C.Cartesian3.fromDegrees(ST.cam.lon, ST.cam.lat, h), new C.HeadingPitchRange(az, pitch, ST.cam.range));
+  SC.camera.lookAtTransform(C.Matrix4.IDENTITY);
+}
+
+// ------------------------------------------------------------------ text per day
+function phaseAt(t) { const p = PHASES.find(p => t >= dayOf(p.from) && t < dayOf(p.to) + 1); return p ? p.title : ""; }
+function counterText(t) {
+  if (t >= dayOf("1917-02-24")) return "Epilogue";
+  if (t >= dayOf("1916-08-30")) return WEEKDAYS[dateOf(t).wd] + " · all twenty-eight safe";
+  if (t >= dayOf("1916-05-20")) return "Day " + (daysSince(t, "1916-04-24") + 1) + " since the James Caird sailed · the Elephant Island party waits";
+  if (t >= dayOf("1916-04-24")) return "Day " + (daysSince(t, "1916-04-24") + 1) + " of the James Caird's voyage";
+  if (t >= dayOf("1915-10-27")) return "Day " + (daysSince(t, "1915-10-27") + 1) + " since the ship was lost · " + (daysSince(t, "1914-12-05") + 1) + " days without land";
+  if (t >= dayOf("1915-01-19")) return "Day " + (daysSince(t, "1915-01-19") + 1) + " in the ice";
+  if (t >= dayOf("1914-12-05")) return "Day " + (daysSince(t, "1914-12-05") + 1) + " since South Georgia";
+  return WEEKDAYS[dateOf(t).wd];
+}
+function updateDayText(t) {
+  const day = Math.floor(t); if (day === ST.lastDay) return; ST.lastDay = day;
+  $("#dateBig").textContent = fmtLong(t); $("#weekday").textContent = counterText(t); $("#phase").textContent = phaseAt(t);
+  const live = EVENTS.filter(e => t >= e.t0 - 0.2 && t <= e.t1 && e.t <= 2).sort((a, b) => a.t - b.t)[0];
+  $("#phase2").textContent = live ? live.n : "";
+  $("#tlDate").textContent = fmtShort(t);
+  $("#scrub").value = day; $("#scrub").setAttribute("aria-valuetext", fmtLong(t));
+}
+
+// ------------------------------------------------------------------ main loop
+let lastTS = performance.now(), cardTimer = 0;
+function loop(ts) {
+  const dt = Math.min(0.1, (ts - lastTS) / 1000); lastTS = ts; ST.time += dt;
+  if (ST.playing) {
+    let t1 = false, t2 = false;
+    for (const e of EVENTS) { if (ST.t >= e.live0 - 0.5 && ST.t <= Math.min(e.live1, e.live0 + 12) + 0.5) { if (e.t === 1) t1 = true; else if (e.t === 2) t2 = true; } }
+    const moving = SC.cols && SC.cols.some(c => c.active && c.m.tier <= 2);
+    const target = t1 ? 0.25 : t2 ? 0.45 : moving ? 0.9 : 1.8;
+    ST.rate += (target - ST.rate) * Math.min(1, dt * 2.5);
+    const prevT = ST.t;
+    ST.t = clamp(ST.t + dt * 6 * ST.speed * ST.rate, 0, NDAYS);
+    if (ST.reading && !ST.attract && ST.t > prevT) {
+      const hit = EVENTS.filter(e => e.t <= 2 && ST.layers[e.k] !== false && !ST.readDone.has(e.id) && prevT < e.t0 && ST.t >= e.t0).sort((a, b) => a.t0 - b.t0)[0];
+      if (hit) { ST.readDone.add(hit.id); ST.t = hit.t0 + 0.05; ST.readingStop = hit.id; setPlaying(false); updateCards(ST.t); }
+    }
+    if (ST.t >= NDAYS) { setPlaying(false); if (ST.attract) setTimeout(() => { setT(0); setPlaying(true); }, 6000); }
+  }
+  if (!ST.playing && !ST.attract && performance.now() - ST.lastInteract > 150000 && !document.querySelector(".sheet.open")) { ST.attract = true; $("#attract").classList.add("show"); setT(0); setGuided(true); setPlaying(true); if (ST.reading) setReading(false); }
+  $("#readNext").hidden = !(ST.reading && !ST.playing && ST.readingStop);
+  updateDayText(ST.t); drawTimelineCursor();
+  cardTimer -= dt; if (cardTimer <= 0) { updateCards(ST.t); cardTimer = 0.12; }
+  if (SC.viewer) { updateCamera(dt); updateGlobe(ST.t, dt); updateOverlay(); }
+  requestAnimationFrame(loop);
+}
+boot();
+
+// ============================================================================
+//  Part 5: audio core. Recordings only — this build contains no synthesiser code at all.
+//  Provides the audio context, volume, mood detection and the Music controls; playlist.js plays the files.
+// ============================================================================
+const MUSIC = { ctx: null, on: false, vol: 0.55, muted: false, mood: "calm", nodes: {}, timer: null, sfxOnly: true };
+
+function musicSetup() {
+  if (MUSIC.ctx) return true;
+  const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return false;
+  const ctx = new AC(); MUSIC.ctx = ctx;
+  MUSIC.nodes.master = ctx.createGain(); MUSIC.nodes.master.gain.value = 0; MUSIC.nodes.master.connect(ctx.destination);
+  return true;
+}
+function musicApplyVolume() {
+  if (!MUSIC.ctx) return;
+  const v = MUSIC.muted || !MUSIC.on ? 0 : Math.pow(MUSIC.vol, 1.6);
+  MUSIC.nodes.master.gain.setTargetAtTime(v, MUSIC.ctx.currentTime, 0.25);
+}
+function musicStart() { if (!musicSetup()) return false; if (MUSIC.ctx.state === "suspended") MUSIC.ctx.resume(); MUSIC.on = true; musicApplyVolume(); return true; }
+function musicStop() { MUSIC.on = false; musicApplyVolume(); }
+function musicSchedule() {}
+
+function musicMood() {
+  if (typeof ST === "undefined" || typeof EVENTS === "undefined") return "voyage";
+  const t = ST.t, live = EVENTS.filter(e => t >= e.t0 - 0.5 && t <= e.t1 + 1);
+  if (live.some(e => e.k === "peril")) return "peril";
+  if (live.some(e => e.k === "death")) return "grief";
+  if (live.some(e => e.k === "rescue" || e.k === "home")) return "triumph";
+  if (live.some(e => e.k === "camp" || e.k === "ice")) return "ice";
+  return "voyage";
+}
+function musicUI() {
+  const btn = $("#musicBtn"), pop = $("#musicPop"), vol = $("#musicVol"), mute = $("#musicMute"); if (!btn) return;
+  try { const v = localStorage.getItem("tt-music-vol"); if (v != null) MUSIC.vol = clamp(+v, 0, 1); } catch (e) {}
+  vol.value = Math.round(MUSIC.vol * 100);
+  const setOn = on => { if (on) { if (!musicStart()) { btn.disabled = true; btn.textContent = "No audio"; return; } } else musicStop(); btn.setAttribute("aria-pressed", on); btn.textContent = on ? "♪ Music on" : "♪ Music"; };
+  btn.addEventListener("click", () => { if (!MUSIC.on) { setOn(true); pop.hidden = false; btn.setAttribute("aria-expanded", "true"); } else { pop.hidden = !pop.hidden; btn.setAttribute("aria-expanded", !pop.hidden); } poke(); });
+  vol.addEventListener("input", () => { MUSIC.vol = +vol.value / 100; if (MUSIC.vol > 0) MUSIC.muted = false; musicApplyVolume(); try { localStorage.setItem("tt-music-vol", String(MUSIC.vol)); } catch (e) {} });
+  mute.addEventListener("click", () => { MUSIC.muted = !MUSIC.muted; mute.textContent = MUSIC.muted ? "Unmute" : "Mute"; mute.setAttribute("aria-pressed", MUSIC.muted); musicApplyVolume(); });
+  $("#musicOff").addEventListener("click", () => { setOn(false); pop.hidden = true; btn.setAttribute("aria-expanded", "false"); });
+  document.addEventListener("click", ev => { if (!pop.hidden && !pop.contains(ev.target) && ev.target !== btn) { pop.hidden = true; btn.setAttribute("aria-expanded", "false"); } });
+  window.addEventListener("keydown", ev => { if ((ev.key === "m" || ev.key === "M") && (ev.target.tagName || "").toLowerCase() !== "input") setOn(!MUSIC.on); });
+  document.addEventListener("visibilitychange", () => { if (MUSIC.ctx && MUSIC.on) { if (document.hidden) MUSIC.ctx.suspend(); else MUSIC.ctx.resume(); } });
+}
+window.addEventListener("load", () => setTimeout(musicUI, 50));
+
+// ============================================================================
+//  Part 6: recorded music. Plays real recordings from the exhibit's audio/ folder, chosen by the mood
+//  of the moment and crossfaded, with credits. Sound effects come from sample files when present,
+//  otherwise from the synthesised fallback. If no tracks are configured, the generative score plays.
+//  Configure in the page header: window.AUDIO_CONFIG = { base, tracks: [...], sfx: {...} }
+// ============================================================================
+const PL = { on: false, cur: null, prev: null, els: [], idx: 0, history: [], startedAt: 0, mood: null, timer: null, buffers: {}, ready: false, loadErrors: 0, failed: [] };
+const _genStart = musicStart, _genStop = musicStop, _genVol = musicApplyVolume;
+function plConfig() { return window.AUDIO_CONFIG || { tracks: [], sfx: {} }; }
+function plHas() { const c = plConfig(); return Array.isArray(c.tracks) && c.tracks.length > 0 && PL.loadErrors < 3; }
+function plVol() { return MUSIC.muted || !MUSIC.on ? 0 : Math.pow(MUSIC.vol, 1.6); }
+
+musicStart = function () {
+  if (!plHas()) return _genStart();
+  musicSetup(); const ctx = MUSIC.ctx; if (ctx && ctx.state === "suspended") ctx.resume();
+  MUSIC.on = true; MUSIC.sfxOnly = true; musicApplyVolume();
+  const N = MUSIC.nodes, t0 = ctx.currentTime;                     // recordings replace the synthesised beds entirely
+  ["droneG", "seaG", "windG"].forEach(k => { if (N[k]) { N[k].gain.cancelScheduledValues(t0); N[k].gain.setTargetAtTime(0, t0, 0.3); } });
+  ["seaLFOG", "windLFOG"].forEach(k => { if (N[k]) N[k].gain.value = 0; });
+  if (typeof musicSchedule === "function" && !MUSIC.timer) { MUSIC.nextStep = ctx.currentTime + 0.5; MUSIC.timer = setInterval(musicSchedule, 100); }
+  if (!PL.timer) PL.timer = setInterval(plTick, 500);
+  plLoadSfx();
+  PL.on = true; plTick(true);
+  return true;
+};
+musicStop = function () {
+  if (!plHas()) return _genStop();
+  PL.on = false; MUSIC.on = false; musicApplyVolume();
+  PL.els.forEach(el => plFade(el, 0, 1.2, () => { try { el.pause(); } catch (e) {} }));
+  PL.cur = null; PL.mood = null;
+};
+musicApplyVolume = function () {
+  _genVol();
+  const v = plVol();
+  PL.els.forEach(el => { if (el === PL.cur) el.volume = v * (el._gain || 1); });
+  plCredit();
+};
+
+// ---- track selection
+function plMoodNow() {
+  if (typeof musicMood !== "function") return { mood: "calm", side: null };
+  const m = musicMood(); return typeof m === "string" ? { mood: m, side: null } : m;
+}
+function plPool(mood, side) {
+  const T = plConfig().tracks;
+  let pool = T.filter(t => (t.moods || ["any"]).includes(mood) && (!t.side || !side || t.side === side));
+  if (!pool.length) pool = T.filter(t => (t.moods || ["any"]).includes(mood));
+  if (!pool.length) pool = T.filter(t => (t.moods || ["any"]).includes("any"));
+  if (!pool.length) pool = T.slice();
+  const recent = PL.history.slice(-Math.min(3, Math.max(0, pool.length - 1)));
+  const fresh = pool.filter(t => !recent.includes(t.file));
+  return fresh.length ? fresh : pool;
+}
+function plFade(el, to, secs, done) {
+  const from = el.volume, t0 = performance.now();
+  const step = () => { const k = Math.min(1, (performance.now() - t0) / (secs * 1000)); el.volume = from + (to - from) * k; if (k < 1 && PL.on !== false) requestAnimationFrame(step); else if (done) done(); };
+  step();
+}
+function plPlay(track) {
+  const c = plConfig(), el = new Audio(); el.preload = "auto"; el.src = (c.base || "audio/") + track.file; el.loop = false; el.volume = 0; el._track = track; el._gain = track.gain || 1;
+  el.addEventListener("error", () => { PL.loadErrors++; PL.failed.push(track.file); console.warn("audio track failed to load:", el.src); plCredit(); if (PL.cur === el) { PL.cur = null; if (plHas()) plTick(true); else if (plConfig().fallback === false) { PL.on = false; plCredit(); } else { PL.on = false; MUSIC.sfxOnly = false; _genStart(); plCredit(); } } });
+  el.addEventListener("ended", () => { if (PL.cur === el) { PL.cur = null; plTick(true); } });
+  const p = el.play(); if (p && p.catch) p.catch(err => console.warn("playback blocked:", err.message));
+  const old = PL.cur; PL.cur = el; PL.els.push(el); PL.startedAt = performance.now();
+  PL.history.push(track.file); if (PL.history.length > 12) PL.history.shift();
+  plFade(el, plVol() * el._gain, 2.5);
+  if (old) plFade(old, 0, 3, () => { try { old.pause(); } catch (e) {} PL.els = PL.els.filter(x => x !== old); });
+  plCredit();
+}
+function plTick(force) {
+  if (!PL.on || !plHas()) return;
+  const now = plMoodNow(), moodKey = now.mood + ":" + (now.side || "");
+  const cur = PL.cur, playedFor = (performance.now() - PL.startedAt) / 1000;
+  const remaining = cur && isFinite(cur.duration) ? cur.duration - cur.currentTime : 999;
+  const moodChanged = PL.mood !== null && moodKey !== PL.mood && !(cur && (cur._track.moods || []).includes(now.mood));
+  if (!force && cur && playedFor < 6) { PL.mood = moodKey; return; }
+  if (force || !cur || remaining < 4 || (moodChanged && playedFor > 45)) {
+    const pool = plPool(now.mood, now.side);
+    if (pool.length) plPlay(pool[Math.floor(Math.random() * pool.length)]);
+  }
+  PL.mood = moodKey;
+}
+function plCredit() {
+  const box = $("#musicNow"); if (!box) return;
+  const t = PL.cur && PL.cur._track;
+  const base = new URL((plConfig().base || "audio/"), location.href).href;
+  const failed = PL.failed.length ? `<div class="lnote" style="color:#9E2B25">Could not load: ${PL.failed.map(esc).join(", ")}<br>Looked in: ${esc(base)}</div>` : "";
+  box.innerHTML = (t ? `<b>Now playing:</b> ${esc(t.title || t.file)}${t.by ? " — " + esc(t.by) : ""}${t.license ? ` <span class="lnote">(${esc(t.license)})</span>` : ""}` : (plHas() ? "" : plConfig().fallback === false ? "<b>No music</b> — the recordings could not be loaded." : "<b>Generated score</b> — the recordings could not be loaded.")) + failed;
+}
+
+// ---- sampled effects (optional); the synthesised versions remain the fallback
+async function plLoadSfx() {
+  const c = plConfig(), ctx = MUSIC.ctx; if (!ctx || PL.ready || !c.sfx) return; PL.ready = true;
+  for (const [name, files] of Object.entries(c.sfx)) {
+    PL.buffers[name] = [];
+    for (const f of files) { try { const r = await fetch((c.base || "audio/") + f); if (!r.ok) throw new Error(r.status); const b = await ctx.decodeAudioData(await r.arrayBuffer()); PL.buffers[name].push(b); } catch (e) { console.warn("sfx not loaded:", f, e.message); } }
+  }
+  // ambient loop, if provided
+  if (PL.buffers.ambience && PL.buffers.ambience.length) {
+    const s = ctx.createBufferSource(); s.buffer = PL.buffers.ambience[0]; s.loop = true; const g = ctx.createGain(); g.gain.value = 0.35; s.connect(g).connect(MUSIC.nodes.master); s.start(); PL.ambience = s; PL.ambGain = g;
+    const pop = $("#musicPop"), row = pop && pop.querySelector(".mrow");
+    if (pop && row && !$("#ambVol")) {
+      const lab = document.createElement("label"); lab.htmlFor = "ambVol"; lab.textContent = "Sea";
+      const r = document.createElement("input"); r.type = "range"; r.id = "ambVol"; r.min = 0; r.max = 100; r.value = 35; r.setAttribute("aria-label", "Sea ambience volume");
+      r.addEventListener("input", () => { g.gain.setTargetAtTime(+r.value / 100, ctx.currentTime, 0.1); });
+      pop.insertBefore(lab, row); pop.insertBefore(r, row);
+    }
+  }
+}
+function plSample(name, when, vel = 0.8, rateJitter = 0.1) {
+  const list = PL.buffers[name]; if (!list || !list.length || !MUSIC.ctx) return false;
+  const ctx = MUSIC.ctx, s = ctx.createBufferSource(); s.buffer = list[Math.floor(Math.random() * list.length)]; s.playbackRate.value = 1 + (Math.random() - 0.5) * 2 * rateJitter;
+  const g = ctx.createGain(); g.gain.value = vel; const pan = ctx.createStereoPanner ? ctx.createStereoPanner() : null; if (pan) pan.pan.value = (Math.random() - 0.5) * 0.8;
+  s.connect(g); (pan ? g.connect(pan).connect(MUSIC.nodes.guns || MUSIC.nodes.master) : g.connect(MUSIC.nodes.guns || MUSIC.nodes.master)); s.start(when); return true;
+}
+if (typeof cannon === "function") { const _cannon = cannon; cannon = function (when, vel) { if (!plSample("cannon", when, vel, 0.12)) _cannon(when, vel); }; }
+if (typeof musket === "function") { const _musket = musket; musket = function (when, vel) { if (!plSample("musket", when, vel, 0.15)) _musket(when, vel); }; }
+
+
+</script>
+</body>
+</html>
